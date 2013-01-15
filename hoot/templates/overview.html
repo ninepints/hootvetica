@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load static from staticfiles %}
+
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/overview.css" %}" />
+{% endblock %}
+
+{% block content %}
+    <div id="feature"></div>
+
+    <div class="column left">
+        <h2>Locations</h2>
+        <ul id="locations">{% for location in location_list %}
+            <a href="{% url 'location' location.uid %}">
+                <li{% if location.open %} class="open"{% endif %}>{{ location.name }}</li>
+            </a>
+        {% endfor %}</ul>
+    </div>
+
+    <div class="column double divider right">
+        <h2>About</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris posuere pulvinar diam, eu malesuada nisi sagittis quis. In bibendum ullamcorper suscipit. Vivamus enim purus, iaculis sed eleifend ut, facilisis a erat. Morbi eget turpis arcu, vel laoreet nunc. Maecenas tempor nisl quam. Praesent elementum odio quis risus pellentesque non fermentum arcu viverra. Suspendisse pretium nunc non nisl ultrices ac ornare elit pulvinar. Curabitur eu ante vel ipsum scelerisque varius. Cras malesuada gravida lectus, sit amet porttitor nulla congue ac. Fusce vitae mi justo, non sollicitudin dui. Curabitur ante leo, tempus eu scelerisque id, tempor vel enim. Praesent sodales diam et.</p>
+        <ul class="inline">
+            <li><a href="http://twitter.com/thehootrice">Twitter</a></li>
+            <li><a href="http://www.facebook.com/thehootrice">Facebook</a></li>
+        </ul>
+    </div>
+{% endblock %}

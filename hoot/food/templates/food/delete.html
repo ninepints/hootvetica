@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ model }} - {{ block.super }}{% endblock %}
+
+{% block contentclass %}colorbox{% endblock %}
+
+{% block content %}
+    <h2>Delete {{ model|capfirst }} "{{ name }}"</h2>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <p>Are you sure? Any children will be deleted as well. This action is permanent.</p>
+        <input type="submit" value="Confirm" />
+    </form>
+{% endblock %}

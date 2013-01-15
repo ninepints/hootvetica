@@ -1,0 +1,38 @@
+/* user menu */
+
+div#header
+{
+    position: relative;
+}
+
+ul#usermenu
+{
+    position: absolute;
+    top: 0.75em;
+    right: 0;
+    margin: 0;
+}
+
+ul#usermenu a
+{
+    text-decoration: none;
+    color: rgb(64,64,64);
+}
+
+a#userdropdownlink
+{
+    font-weight: bold;
+}
+
+ul#userdropdown
+{
+    position: absolute;
+    top: 3em;
+    right: -0.75em;
+    margin: 0;
+    border: 1px solid rgb(192,192,192);
+    padding: 0.75em;
+    text-align: right;
+    background-color: white;
+    z-index: 1;
+}

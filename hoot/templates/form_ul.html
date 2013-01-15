@@ -1,0 +1,21 @@
+<ul class="form">
+    {% for error in form.non_field_errors %}
+        <li class="error">{{ error }}</li>
+    {% endfor %}
+
+    {% for field in form.hidden_fields %}
+        {{ field }}
+    {% endfor %}
+
+    {% for field in form.visible_fields %}
+    <li>
+        <ul class="field">
+            <li>{{ field.label_tag }}</li>
+            <li>{{ field }}</li>
+            {% for error in field.errors %}
+                <li class="error">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>

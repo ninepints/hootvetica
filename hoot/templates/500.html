@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Internal Server Error - {{ block.super }}{% endblock %}
+
+{% block contentclass %}colorbox info{% endblock %}
+
+{% block content %}
+    <h2>Internal Server Error (HTTP 500)</h2>
+    <p>An unexpected error occurred.</p>
+    <p>Try going <a href="/">home</a> or <a href="javascript:history.back()">back a page.</a></p>
+{% endblock %}

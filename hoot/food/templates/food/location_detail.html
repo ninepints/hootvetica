@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load static from staticfiles %}
+
+{% block title %}{{ location.name }} - {{ block.super }}{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static "food/css/food.css" %}" />
+    <script type="text/javascript" src="{% static "js/ajax_csrf.js" %}"></script>
+    <script id="food" type="text/javascript" src="{% static "food/js/ajax_client.js" %}"></script>
+    <script>
+    $('#food').data('initData', {
+        "UIURL": "{% url 'ajax-ui' %}",
+        "userIsAuthenticated": {{ user.is_authenticated|lower }},
+        "userCanChangeLocation": {% if perms.food.change_location or perms.food.set_location_status %}true{% else %}false{% endif %},
+        "userCanAddCategories": {{ perms.food.add_category|lower }},
+        "userCanChangeCategories": {{ perms.food.change_category|lower }},
+        "userCanDeleteCategories": {{ perms.food.delete_category|lower }},
+        "userCanAddItems": {{ perms.food.add_item|lower }},
+        "userCanChangeItems": {{ perms.food.change_item|lower }},
+        "userCanDeleteItems": {{ perms.food.delete_item|lower }},
+        "location": {% include 'food/location_data.json' %}{% if refresh_interval %},
+        "refreshInterval": {{ refresh_interval }}{% endif %}{% if refresh_interval_err %},
+        "refreshIntervalErr": {{ refresh_interval_err }}{% endif %}
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="statusbar" style="display:none"><p></p></div>
+
+    <div class="location">
+        <div class="locationhead">
+            <h1>{{ location.name }}</h1>
+            {% if perms.food.change_location or perms.food.set_location_status or perms.food.add_category %}
+                <ul class="inline">
+                    {% if perms.food.change_location or perms.food.set_location_status %}
+                        <li><a href="{% url 'location-edit' location.uid %}" class="button toggle">Open/Close Location</a></li>
+                    {% endif %}
+                    {% if perms.food.add_category %}
+                        <li><a href="{% url 'category-add' %}?parent={{ location.uid }}" class="button add">Add Category</a></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+
+        {% if not location.open %}
+            <div class="colorbox info">
+                <h2>Location Closed</h2>
+                {% if perms.food.change_location or perms.food.set_location_status %}
+                    <p>This location is currently closed, and no information is visible to the public. You can open it using the controls above.</p>
+                {% elif user.is_authenticated %}
+                    <p>This location is currently closed, and no information is visible to the public.</p>
+                {% else %}
+                    <p>This location is currently closed, but check back later!</a></p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if location.open or user.is_authenticated %}
+            <div class="categories">
+                {% for category in location.category_set.all %}
+                    <div class="category">
+                        <div class="categoryhead">
+                            <h2>{{ category.name }}</h2>
+                            {% if perms.food.change_category or perms.food.delete_category or perms.food.add_item %}
+                                <ul class="inline">
+                                    {% if perms.food.change_category %}
+                                        <li><a href="{% url 'category-edit' category.uid %}" class="button edit">Edit</a></li>
+                                    {% endif %}
+                                    {% if perms.food.delete_category %}
+                                        <li><a href="{% url 'category-del' category.uid %}" class="button delete">Delete</a></li>
+                                    {% endif %}
+                                    {% if perms.food.add_item %}
+                                        <li><a href="{% url 'item-add' %}?parent={{ category.uid }}" class="button add">Add Item</a></li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </div>
+
+                        <div class="items">
+                            {% for item in category.item_set.all %}
+                                <div class="item">
+                                    <h3>{{ item.name }}</h3>
+
+                                    {# sorry about the next line #}
+                                    <p><span class="status{% if item.status == "AVA"%} available{% elif item.status == "LOW"%} low{% elif item.status == "OUT"%} out{% endif %}">{% if item.status == "QTY" %}{{ item.quantity }} Left{% else %}{{ item.get_status_display }}{% endif %}</span><span class="price">{% if item.price == 0 %}Free{% elif item.price %}${{ item.price|floatformat:2 }}{% endif %}</span></p>
+
+                                    {% if perms.food.change_item or perms.food.delete_item %}
+                                        <ul class="inline">
+                                            {% if perms.food.change_item %}
+                                                <li><a href="{% url 'item-edit' item.uid %}" class="button edit">Edit</a></li>
+                                            {% endif %}
+                                            {% if perms.food.delete_item %}
+                                                <li><a href="{% url 'item-del' item.uid %}" class="button delete">Delete</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,383 @@
+/* major divs */
+
+body
+{
+    background-color: rgb(224,224,224);
+}
+
+div#container
+{
+    margin: 0 auto;
+    width: 960px;
+}
+
+div#header
+{
+    min-height: 10.5em;
+}
+
+div#content
+{
+    padding: 3em;
+    border: 1px solid rgb(192,192,192);
+    background-color: white;
+    overflow: hidden;
+}
+
+div#feature
+{
+    position: relative;
+    height: 30em;
+    margin-bottom: 1.5em;
+    border: 1px solid rgb(192,192,192);
+    background-color: rgb(64,64,64);
+    overflow: hidden;
+}
+
+div#feature img
+{
+    width: 100%;
+}
+
+div#content > *:first-child
+{
+    margin-top: 0;
+}
+
+div#content > *:last-child
+{
+    margin-bottom: 0;
+}
+
+div#footer
+{
+    height: 10.5em;
+}
+
+/* column layout */
+
+.left
+{
+    float: left;
+}
+
+.right
+{
+    float: right;
+}
+
+div.center
+{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.column
+{
+    width: 30%;
+}
+
+div.column.double
+{
+    width: 65%;
+}
+
+div.column.divider.left
+{
+    border-right: 1px solid rgb(192,192,192);
+    padding-right: 2.5%;
+}
+
+div.column.divider.right
+{
+    border-left: 1px solid rgb(192,192,192);
+    padding-left: 2.5%;
+}
+
+div.column > *:first-child
+{
+    margin-top: 0;
+}
+
+div.column > *:last-child
+{
+    margin-bottom: 0;
+}
+
+/* box styles */
+
+div.colorbox, div#content.colorbox
+{
+    margin-top: 1.5em;
+    padding: 1.5em;
+}
+
+div#content.colorbox
+{
+    width: 480px;
+    margin: 0 auto;
+}
+
+div.colorbox > *:first-child
+{
+    margin-top: 0;
+}
+
+div.colorbox > *:last-child
+{
+    margin-bottom: 0;
+}
+
+div.colorbox > h2
+{
+    border-bottom: 1px solid rgb(192,192,192);
+}
+
+div.auth, div#content.auth
+{
+    border: 1px solid rgb(234,195,44);
+    background-color: rgb(244,231,123);
+}
+
+div.auth > h2
+{
+    border-bottom: 1px solid rgb(234,195,44);
+}
+
+div.info, div#content.info
+{
+    border: 1px solid rgb(146,172,241);
+    background-color: rgb(184,214,255);
+}
+
+div.info > h2
+{
+    border-bottom: 1px solid rgb(146,172,241);
+}
+
+/* lists */
+
+p.inline, ul.inline, .inline li
+{
+    display: inline;
+}
+
+ul.inline li
+{
+    margin: 0;
+    margin-right: 0.5em;
+    float: left;
+}
+
+ul.inline.divider li
+{
+    border-right: 1px solid rgb(192,192,192);
+    padding-right: 0.5em;
+}
+
+ul.inline li:last-child
+{
+    margin-right: 0;
+    border-right: 0;
+    padding-right: 0;
+}
+
+/* links */
+
+a
+{
+    text-decoration: none;
+    color: rgb(57, 0, 175);
+}
+
+a:hover
+{
+    text-decoration: underline;
+}
+
+a:active
+{
+    color: rgb(77, 0, 235);
+}
+
+a.external
+{}
+
+/* forms */
+
+ul.field
+{
+    margin-bottom: 0;
+}
+
+li.error
+{
+    color: red;
+}
+
+input[type="submit"], input[type="button"]
+{
+    margin: 0;
+    border: 1px solid rgb(192,192,192);
+    padding: 0.25em 0.5em;
+    background-color: rgb(224,224,224);
+    background-image: -webkit-linear-gradient(top, rgb(255,255,255), rgb(240,240,240) 10%, rgb(240,240,240) 80%, rgb(224,224,224));
+    background-image: -moz-linear-gradient(top, rgb(255,255,255), rgb(240,240,240) 10%, rgb(240,240,240) 80%, rgb(224,224,224));
+    background-image: -ms-linear-gradient(top, rgb(255,255,255), rgb(240,240,240) 10%, rgb(240,240,240) 80%, rgb(224,224,224));
+    background-image: -o-linear-gradient(top, rgb(255,255,255), rgb(240,240,240) 10%, rgb(240,240,240) 80%, rgb(224,224,224));
+    background-image: linear-gradient(to bottom, rgb(255,255,255), rgb(240,240,240) 10%, rgb(240,240,240) 80%, rgb(224,224,224));
+    display: block;
+    font-size: 1em;
+    font-family: "Helvetica";
+    font-weight: bold;
+    color: rgb(64,64,64);
+    text-decoration: none;
+    line-height: 1.5em;
+    cursor: pointer;
+}
+
+input[type="submit"]:active, input[type="button"]:active
+{
+    background-color: rgb(224,224,224);
+    background-image: none;
+}
+
+input[type="submit"]:disabled, input[type="button"]:disabled
+{
+    background-color: rgb(240,240,240);
+    background-image: none;
+    color: rgb(192,192,192);
+    cursor: default;
+}
+
+input[type="text"], input[type="password"]
+{
+    border: 1px solid rgb(192,192,192);
+    font-size: 1.25em;
+    line-height: 1.2em;
+}
+
+div.colorbox.auth input[type="text"], div.colorbox.auth input[type="password"]
+{
+    border: 1px solid rgb(234,195,44);
+}
+
+div.colorbox.info input[type="text"], div.colorbox.info input[type="password"]
+{
+    border: 1px solid rgb(146,172,241);
+}
+
+input[type="text"]:disabled, input[type="password"]:disabled
+{
+    background-color: rgb(240,240,240);
+    font-size: 1.25em;
+    line-height: 1.2em;
+    color: rgb(192,192,192);
+}
+
+/* messages */
+
+ul#messagelist
+{
+    margin: 0;
+}
+
+ul#messagelist > li
+{
+    padding: 0.25em 1.5em;
+}
+
+ul#messagelist > li.debug
+{
+    border: 1px solid rgb(192,192,192);
+    border-left: none;
+    border-right: none;
+    background-color: rgb(240,240,240);
+}
+
+ul#messagelist > li.info
+{
+    border: 1px solid rgb(146,172,241);
+    border-left: none;
+    border-right: none;
+    background-color: rgb(184,214,255);
+}
+
+ul#messagelist > li.success
+{
+    border: 1px solid rgb(125,223,100);
+    border-left: none;
+    border-right: none;
+    background-color: rgb(163,236,136);
+}
+
+ul#messagelist > li.warning
+{
+    border: 1px solid rgb(234,195,44);
+    border-left: none;
+    border-right: none;
+    background-color: rgb(244,231,123);
+}
+
+ul#messagelist > li.error
+{
+    border: 1px solid rgb(236,129,114);
+    border-left: none;
+    border-right: none;
+    background-color: rgb(243,169,153);
+    color: black;
+}
+
+a.close
+{
+    float: right;
+    text-decoration: none;
+    color: rgb(64,64,64);
+}
+
+a.close:hover
+{
+    font-weight: bold;
+}
+
+/* typography */
+
+body
+{
+    font-size: 0.75em;
+    font-family: "Helvetica", sans-serif;
+    line-height: 1.5em;
+}
+
+h1
+{
+    margin: 1em 0 0.5em;
+    font-size: 3em;
+    font-family: "Georgia", serif;
+    line-height: 1.5em;
+}
+
+h2
+{
+    margin: 1.5em 0 0.75em;
+    font-size: 2em;
+    font-family: "Georgia", serif;
+    line-height: 1.5em;
+}
+
+h3
+{
+    font-size: 1.5em;
+    font-family: "Georgia", serif;
+}
+
+p, ul
+{
+    margin: 1.5em 0;
+}
+
+h1, h2, h3, li, p
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

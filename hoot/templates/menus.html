@@ -1,0 +1,26 @@
+{% load url from future %}
+
+<ul id="usermenu" class="inline divider">
+    {% if user.is_authenticated %}
+        <noscript>
+            {% if user.is_staff %}
+                <li><a href="{% url 'admin:index' %}" class="external" target="_blank">Admin Site</a></li>
+            {% endif %}
+            <li><a href="{% url 'django.contrib.auth.views.password_change' %}" class="external" target="_blank">Change Password</a></li>
+            <li><a href="{% url 'django.contrib.auth.views.logout' %}?next={{ request.path }}">Log Out</a></li>
+        </noscript>
+        <li style="display:none">
+            <a href="#" id="userdropdownlink">{% if user.first_name and user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</a>
+        </li>
+    {% else %}
+        <li><a href="{% url 'django.contrib.auth.views.login' %}?next={{ request.path }}">Log In</a></li>
+    {% endif %}
+</ul>
+
+<ul id="userdropdown" style="display:none">
+    {% if user.is_staff %}
+        <li><a href="{% url 'admin:index' %}" class="external" target="_blank">Admin Site</a></li>
+    {% endif %}
+    <li><a href="{% url 'django.contrib.auth.views.password_change' %}" class="external" target="_blank">Change Password</a></li>
+    <li><a href="{% url 'django.contrib.auth.views.logout' %}?next={{ request.path }}">Log Out</a></li>
+</ul>

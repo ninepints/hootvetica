@@ -1,0 +1,29 @@
+{% load url from future %}{
+    "name": "{{ location.name|escapejs }}",
+    "open": {{ location.open|lower }},
+    "updateURL": "{% url 'location-ajax' location.uid %}",
+    "editURL": "{% url 'location-edit-ajax' location.uid %}",
+    "addChildURL": "{% url 'category-add-ajax' %}",
+    "modified": "{{ location.last_modified|date:"U" }}",
+    "uid": "{{ location.uid }}",
+    "categories": [{% for category in location.category_set.all %}{
+        "name": "{{ category.name|escapejs }}",
+        "editURL": "{% url 'category-edit-ajax' category.uid %}",
+        "deleteURL": "{% url 'category-del-ajax' category.uid %}",
+        "addChildURL": "{% url 'item-add-ajax' %}",
+        "modified": "{{ category.last_modified|date:"U" }}",
+        "uid": "{{ category.uid }}",
+        "items": [{% for item in category.item_set.all %}{
+            "name": "{{ item.name|escapejs }}",
+            "price": "{{ item.price|floatformat:2 }}",
+            "quantity": "{% if item.quantity %}{{ item.quantity }}{% endif %}",
+            "status": "{{ item.status }}",
+            "editURL": "{% url 'item-edit-ajax' item.uid %}",
+            "deleteURL": "{% url 'item-del-ajax' item.uid %}",
+            "modified": "{{ item.last_modified|date:"U" }}",
+            "uid": "{{ item.uid }}"
+        }{% if not forloop.last %},
+        {% endif %}{% endfor %}]
+    }{% if not forloop.last %},
+    {% endif %}{% endfor %}]
+}

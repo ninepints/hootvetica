@@ -1,0 +1,9 @@
+{
+    "accepted": false,
+    "fieldErrors": [{% for field in form %}{
+        "field": "{{ field.html_name }}",
+        "errors": [{% for error in field.errors %}"{{ error|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+    }{% if not forloop.last %},
+    {% endif %}{% endfor %}],
+    "nonFieldErrors": [{% for error in form.non_field_errors %}"{{ error|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+}
