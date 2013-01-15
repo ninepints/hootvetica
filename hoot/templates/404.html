@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Not Found - {{ block.super }}{% endblock %}
+
+{% block contentclass %}colorbox info{% endblock %}
+
+{% block content %}
+    <h2>Not Found (HTTP 404)</h2>
+    <p>The page you requested was not found.</p>
+    <p>Try going <a href="/">home</a> or <a href="javascript:history.back()">back a page.</a></p>
+{% endblock %}

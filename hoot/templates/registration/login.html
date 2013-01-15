@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load static from staticfiles %}
+
+{% block title %}Log In - {{ block.super }}{% endblock %}
+
+{% block extrahead %}
+    <script type="text/javascript" src="{% static "js/forms.js" %}"></script>
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block contentclass %}colorbox auth{% endblock %}
+
+{% block content %}
+    <h2>Authentication Required</h2>
+
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        {% csrf_token %}
+        {% include "form_ul.html" %}
+        <input type="submit" value="Log In" />
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+{% endblock %}

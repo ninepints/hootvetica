@@ -1,0 +1,29 @@
+ul#locations li
+{
+    margin: 1em 0;
+    border: 1px solid rgb(192,192,192);
+    padding: 1em;
+    font-size: 1.5em;
+    background-color: rgb(240,240,240);
+}
+
+ul#locations li.open
+{
+    border: 1px solid rgb(125,223,100);
+    background-color: rgb(163,236,136);
+}
+
+ul#locations a
+{
+    text-decoration: none;
+    color: rgb(64,64,64);
+}
+
+ul#locations:empty::after
+{
+    content: "no locations";
+    font-size: 2em;
+    line-height: 1.5em;
+    color: rgb(192,192,192);
+    text-align: center;
+}
