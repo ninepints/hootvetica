@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from hoot.food.models import Location, Category, Item
+from food.models import Location, Category, Item
 
 class LocationForm(ModelForm):
 	class Meta:

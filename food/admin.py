@@ -1,5 +1,5 @@
 from django.contrib import admin
-from hoot.food.models import Location
+from food.models import Location
 
 class LocationAdmin(admin.ModelAdmin):
     fields = ('name', 'uid', 'open')

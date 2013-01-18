@@ -1,8 +1,7 @@
 from django.conf.urls import patterns, url
-from hoot.food.views import (LocationView, LocationUpdateView,
-                             CategoryCreateView, CategoryUpdateView,
-                             CategoryDeleteView, ItemCreateView,
-                             ItemUpdateView, ItemDeleteView)
+from food.views import (LocationView, LocationUpdateView, CategoryCreateView,
+                        CategoryUpdateView,CategoryDeleteView, ItemCreateView,
+                        ItemUpdateView, ItemDeleteView)
 
 urlpatterns = patterns('',
     url(r'^location/(?P<pk>[\w-]+)/$', LocationView.as_view(),
