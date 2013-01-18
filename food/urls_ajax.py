@@ -1,9 +1,9 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
-from hoot.food.views import (LocationAjaxView, LocationAjaxUpdateView,
-                             CategoryAjaxCreateView, CategoryAjaxUpdateView,
-                             CategoryAjaxDeleteView, ItemAjaxCreateView,
-                             ItemAjaxUpdateView, ItemAjaxDeleteView)
+from food.views import (LocationAjaxView, LocationAjaxUpdateView,
+                        CategoryAjaxCreateView, CategoryAjaxUpdateView,
+                        CategoryAjaxDeleteView, ItemAjaxCreateView,
+                        ItemAjaxUpdateView, ItemAjaxDeleteView)
 
 urlpatterns = patterns('',
     url(r'^ui/$', TemplateView.as_view(template_name='food/ajax_ui.html'),

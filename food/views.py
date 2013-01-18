@@ -3,8 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllow
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.views import redirect_to_login
-from hoot.food.models import Location, Category, Item
-from hoot.food.forms import LocationForm, CategoryForm, ItemForm
+from food.models import Location, Category, Item
+from food.forms import LocationForm, CategoryForm, ItemForm
 
 # View mixins
 

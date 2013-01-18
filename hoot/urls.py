@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import ListView
-from hoot.food.models import Location
+from food.models import Location
 from django.contrib import admin
 admin.autodiscover()
 
@@ -19,6 +19,6 @@ urlpatterns = patterns('',
 
     (r'^$', ListView.as_view(queryset=Location.objects.all(),
         template_name='overview.html')),
-    (r'^', include('hoot.food.urls')),
-    (r'^ajax/', include('hoot.food.urls_ajax')),
+    (r'^', include('food.urls')),
+    (r'^ajax/', include('food.urls_ajax')),
 )
