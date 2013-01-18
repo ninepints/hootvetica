@@ -1,9 +1,14 @@
 from django.conf.urls import patterns, url
+from django.views.generic import ListView
+from food.models import Location
 from food.views import (LocationView, LocationUpdateView, CategoryCreateView,
                         CategoryUpdateView,CategoryDeleteView, ItemCreateView,
                         ItemUpdateView, ItemDeleteView)
 
 urlpatterns = patterns('',
+    (r'^$', ListView.as_view(queryset=Location.objects.all(),
+        template_name='overview.html')),
+
     url(r'^location/(?P<pk>[\w-]+)/$', LocationView.as_view(),
         name='location'),
     url(r'^location/(?P<pk>[\w-]+)/edit/$', LocationUpdateView.as_view(),
