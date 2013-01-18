@@ -5,9 +5,6 @@ from django.core.validators import validate_slug
 from django.core.exceptions import ValidationError
 
 class Location(models.Model):
-    name = models.CharField(max_length=32)
-    open = models.BooleanField()
-    last_modified = models.DateTimeField(auto_now=True, editable=False)
     uid = models.CharField(
         'ID',
         max_length=24,
@@ -16,6 +13,9 @@ class Location(models.Model):
         help_text='The unique ID of this location, which will determine the \
         location\'s URL. For instance, entering "foo" would yield something \
         like "example.com/location/foo/".')
+    name = models.CharField(max_length=32)
+    open = models.BooleanField()
+    last_modified = models.DateTimeField(auto_now=True, editable=False)
 
     def get_location_uid(self):
         return self.uid
@@ -33,14 +33,18 @@ class Location(models.Model):
 
 
 class Category(models.Model):
-    parent = models.ForeignKey(Location)
-    name = models.CharField(max_length=32)
-    last_modified = models.DateTimeField(auto_now=True, editable=False)
     uid = models.CharField('UUID', max_length=32,
                            editable=False, primary_key=True)
+    parent = models.ForeignKey(Location)
+    name = models.CharField(max_length=32)
+    contains_hot_food = models.BooleanField()
+    last_modified = models.DateTimeField(auto_now=True, editable=False)
 
     def get_location_uid(self):
         return self.parent.uid
+
+    def is_available(self):
+        return self.item_set.exclude(status='OUT').count() > 0
 
     def clean(self):
         if not self.uid:
@@ -50,23 +54,22 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('contains_hot_food', 'name')
         verbose_name_plural = 'categories'
 
 
 class Item(models.Model):
+    uid = models.CharField('UUID', max_length=32,
+                           editable=False, primary_key=True)
     parent = models.ForeignKey(Category)
     name = models.CharField(max_length=32)
-    price = models.DecimalField(blank=True, null=True, max_digits=8, decimal_places=2)
-    quantity = models.PositiveIntegerField(blank=True, null=True)
     status = models.CharField(blank=True, max_length=3, choices=(
         ('AVA', 'Available'),
         ('LOW', 'Running Low'),
         ('OUT', 'Sold Out'),
         ('QTY', 'Quantity')))
+    quantity = models.PositiveIntegerField(blank=True, null=True)
     last_modified = models.DateTimeField(auto_now=True, editable=False)
-    uid = models.CharField('UUID', max_length=32,
-                           editable=False, primary_key=True)
 
     def get_location_uid(self):
         return self.parent.parent.uid
