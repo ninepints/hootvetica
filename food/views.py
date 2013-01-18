@@ -54,12 +54,16 @@ class AjaxFormMixin(AjaxMixin):
 
 
 class PermissionRequiredMixin(object):
+    def __init__(self):
+        self.required_permissions = ()
+
     def dispatch(self, request, *args, **kwargs):
         user = request.user
         if not user.is_authenticated():
             # Blindly assuming it's OK to use a relative URL here
             return redirect_to_login(request.path)
-        if not any(user.has_perm(perm) for perm in self.required_permissions):
+        if self.required_permissions and not any(user.has_perm(perm) for perm
+                                                 in self.required_permissions):
             raise PermissionDenied
         return super(PermissionRequiredMixin, self).dispatch(request=request,
                                                              *args, **kwargs)
