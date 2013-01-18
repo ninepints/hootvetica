@@ -148,64 +148,8 @@ class AjaxDeleteView(PermissionRequiredMixin, DeleteView):
 
 # Editing views
 
-class CategoryCreateView(CategoryMixin, FoodCreateView):
-    required_permissions = ('food.add_category',)
-
-    def get_initial(self):
-        initial = super(CategoryCreateView, self).get_initial()
-        try:
-            initial['parent'] = Location.objects.get(
-                uid=self.request.GET['parent'])
-        except (KeyError, Location.DoesNotExist):
-            pass
-        return initial
-
-
-class CategoryAjaxCreateView(CategoryMixin, AjaxCreateView):
-    required_permissions = ('food.add_category',)
-
-class ItemCreateView(ItemMixin, FoodCreateView):
-    required_permissions = ('food.add_item',)
-
-    def get_initial(self):
-        initial = super(ItemCreateView, self).get_initial()
-        try:
-            initial['parent'] = Category.objects.get(
-                uid=self.request.GET['parent'])
-        except (KeyError, Category.DoesNotExist):
-            pass
-        return initial
-
-
-class ItemAjaxCreateView(ItemMixin, AjaxCreateView):
-    required_permissions = ('food.add_item',)
-
-class LocationUpdateView(LocationMixin, FoodUpdateView):
-    required_permissions = ('food.change_location', 'food.set_location_status')
-
-class LocationAjaxUpdateView(LocationMixin, AjaxUpdateView):
-    required_permissions = ('food.change_location', 'food.set_location_status')
-
-class CategoryUpdateView(CategoryMixin, FoodUpdateView):
-    required_permissions = ('food.change_category',)
-
-class CategoryAjaxUpdateView(CategoryMixin, AjaxUpdateView):
-    required_permissions = ('food.change_category',)
-
 class ItemUpdateView(ItemMixin, FoodUpdateView):
-    required_permissions = ('food.change_item',)
+    pass
 
 class ItemAjaxUpdateView(ItemMixin, AjaxUpdateView):
-    required_permissions = ('food.change_item',)
-
-class CategoryDeleteView(CategoryMixin, FoodDeleteView):
-    required_permissions = ('food.delete_category',)
-
-class CategoryAjaxDeleteView(CategoryMixin, AjaxDeleteView):
-    required_permissions = ('food.delete_category',)
-
-class ItemDeleteView(ItemMixin, FoodDeleteView):
-    required_permissions = ('food.delete_item',)
-
-class ItemAjaxDeleteView(ItemMixin, AjaxDeleteView):
-    required_permissions = ('food.delete_item',)
+    pass
