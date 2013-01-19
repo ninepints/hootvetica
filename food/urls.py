@@ -7,7 +7,7 @@ from food.views import (LocationView, LocationUpdateView, CategoryCreateView,
 
 urlpatterns = patterns('',
     (r'^$', ListView.as_view(queryset=Location.objects.all(),
-        template_name='overview.html')),
+        template_name='food/index.html')),
 
     url(r'^location/(?P<pk>[\w-]+)/$', LocationView.as_view(),
         name='location'),
