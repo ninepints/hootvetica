@@ -498,11 +498,11 @@ hoot.food = {};
             if (bool) {
                 confirmButton.removeClass('disabled');
                 buttonsEnabled = true;
-                formInputs.removeAttr('disabled');
+                formInputs.prop('disabled', false);
             } else {
                 confirmButton.addClass('disabled');
                 buttonsEnabled = false;
-                formInputs.attr('disabled', 'disabled');
+                formInputs.prop('disabled', true);
             }
         };
 
