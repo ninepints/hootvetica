@@ -557,7 +557,8 @@ hoot.food = {};
         var postRequest;
 
         // Local functions
-        var processUpdates, runRetryCountdown, refreshData, postData;
+        var processUpdates, runRetryCountdown, refreshData, postData,
+            getCookie, sameOrigin, safeMethod;
 
 
         /* Note that for minimodels, this.viewAdapter is the minimodel to
@@ -898,6 +899,23 @@ hoot.food = {};
             });
         };
 
+        // Gets the value of the specified cookie
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         // Checks whether the given URL is same-origin
         // (relative to the current location)
         function sameOrigin(url) {
@@ -927,7 +945,7 @@ hoot.food = {};
             initLocationData = locationData;
             refreshInterval = rInterval ||  300;
             refreshIntervalErr = rIntervalErr || 30;
-            csrftoken = jQuery.cookie('csrftoken');
+            csrftoken = getCookie('csrftoken');
             jQuery.ajaxSetup({
                 beforeSend: function(xhr, settings) {
                     if (!safeMethod(settings.type) && sameOrigin(settings.url))
