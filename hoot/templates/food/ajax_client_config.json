@@ -1,0 +1,14 @@
+{% load url from future %}{
+    "UIURL": "{% url 'ajax-ui' %}",
+    "userIsAuthenticated": {{ user.is_authenticated|lower }},
+    "userCanChangeLocation": {% if perms.food.change_location or perms.food.set_location_status %}true{% else %}false{% endif %},
+    "userCanAddCategories": {{ perms.food.add_category|lower }},
+    "userCanChangeCategories": {{ perms.food.change_category|lower }},
+    "userCanDeleteCategories": {{ perms.food.delete_category|lower }},
+    "userCanAddItems": {{ perms.food.add_item|lower }},
+    "userCanChangeItems": {{ perms.food.change_item|lower }},
+    "userCanDeleteItems": {{ perms.food.delete_item|lower }},
+    "location": {% include 'food/location_data.json' %}{% if refresh_interval %},
+    "refreshInterval": {{ refresh_interval }}{% endif %}{% if refresh_interval_err %},
+    "refreshIntervalErr": {{ refresh_interval_err }}{% endif %}
+}

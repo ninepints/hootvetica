@@ -8,22 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static "food/css/food.css" %}" />
     <script type="text/javascript" src="{% static "js/ajax_csrf.js" %}"></script>
     <script id="food" type="text/javascript" src="{% static "food/js/ajax_client.js" %}"></script>
-    <script>
-    $('#food').data('initData', {
-        "UIURL": "{% url 'ajax-ui' %}",
-        "userIsAuthenticated": {{ user.is_authenticated|lower }},
-        "userCanChangeLocation": {% if perms.food.change_location or perms.food.set_location_status %}true{% else %}false{% endif %},
-        "userCanAddCategories": {{ perms.food.add_category|lower }},
-        "userCanChangeCategories": {{ perms.food.change_category|lower }},
-        "userCanDeleteCategories": {{ perms.food.delete_category|lower }},
-        "userCanAddItems": {{ perms.food.add_item|lower }},
-        "userCanChangeItems": {{ perms.food.change_item|lower }},
-        "userCanDeleteItems": {{ perms.food.delete_item|lower }},
-        "location": {% include 'food/location_data.json' %}{% if refresh_interval %},
-        "refreshInterval": {{ refresh_interval }}{% endif %}{% if refresh_interval_err %},
-        "refreshIntervalErr": {{ refresh_interval_err }}{% endif %}
-    });
-    </script>
+    <script>$('#food').data('initData', {% include 'food/ajax_client_config.json' %});</script>
 {% endblock %}
 
 {% block content %}
