@@ -542,6 +542,8 @@ hoot.food = {};
         // Location data refresh intervals following successful/failed refresh
         var refreshInterval, refreshIntervalErr;
 
+        var csrftoken;
+
         // Location data parsed from script tag
         var initLocationData;
 
@@ -859,7 +861,7 @@ hoot.food = {};
             });
         };
 
-        // POSTs given data to given url, closing popup on success
+        // POSTs given data to given URL, closing popup on success
         function postData(data, url, errorCallback) {
             if (postRequest) postRequest.abort();
             viewAdapter.enableButtons(false);
@@ -896,12 +898,42 @@ hoot.food = {};
             });
         };
 
+        // Checks whether the given URL is same-origin
+        // (relative to the current location)
+        function sameOrigin(url) {
+            // URL could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return url == origin ||
+                url.slice(0, origin.length + 1) == (origin + '/') ||
+                url == sr_origin ||
+                url.slice(0, sr_origin.length + 1) == (sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute
+                // i.e relative.
+                !(/^(\/\/|http:|https:).*/.test(url));
+        }
+
+        // Checks whether the given method is non-destructive
+        function safeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
 
         // Main model initialization
         this.init = function(locationData, rInterval, rIntervalErr, adapter) {
             initLocationData = locationData;
             refreshInterval = rInterval ||  300;
             refreshIntervalErr = rIntervalErr || 30;
+            csrftoken = jQuery.cookie('csrftoken');
+            jQuery.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!safeMethod(settings.type) && sameOrigin(settings.url))
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                }
+            });
             viewAdapter = adapter;
         };
 
