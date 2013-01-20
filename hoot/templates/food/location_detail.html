@@ -6,7 +6,6 @@
 
 {% block extrahead %}
     <link rel="stylesheet" type="text/css" href="{% static "food/css/food.css" %}" />
-    <script type="text/javascript" src="{% static "js/ajax_csrf.js" %}"></script>
     <script id="food" type="text/javascript" src="{% static "food/js/ajax_client.js" %}"></script>
     <script>$('#food').data('initData', {% include 'food/ajax_client_config.json' %});</script>
 {% endblock %}
