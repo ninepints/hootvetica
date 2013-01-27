@@ -6,8 +6,8 @@ from food.views import (LocationView, LocationUpdateView, CategoryCreateView,
                         ItemUpdateView, ItemDeleteView)
 
 urlpatterns = patterns('',
-    (r'^$', ListView.as_view(queryset=Location.objects.all(),
-        template_name='food/index.html')),
+    url(r'^$', ListView.as_view(queryset=Location.objects.all(),
+        template_name='food/index.html'), name='index'),
 
     url(r'^location/(?P<pk>[\w-]+)/$', LocationView.as_view(),
         name='location'),
