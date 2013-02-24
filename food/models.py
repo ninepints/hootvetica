@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.db.models.loading import get_model
 from django.core.validators import validate_slug
 from django.core.exceptions import ValidationError
 
@@ -19,6 +20,13 @@ class Location(models.Model):
     def get_location_uid(self):
         return self.uid
 
+    def hot_food_available(self):
+        item_class = get_model('food', 'Item')
+        return (item_class.objects.filter(parent__parent_id=self.uid)
+                            .filter(parent__contents_hot=True)
+                            .exclude(status='OUT')
+                            .count() > 0)
+
     @models.permalink
     def get_absolute_url(self):
         return ('location', (), {'pk': self.uid})
@@ -36,13 +44,13 @@ class Category(models.Model):
                            editable=False, primary_key=True)
     parent = models.ForeignKey(Location)
     name = models.CharField(max_length=32)
-    contains_hot_food = models.BooleanField()
+    contents_hot = models.BooleanField()
     last_modified = models.DateTimeField(auto_now=True, editable=False)
 
     def get_location_uid(self):
         return self.parent.uid
 
-    def is_available(self):
+    def food_available(self):
         return self.item_set.exclude(status='OUT').count() > 0
 
     def clean(self):
@@ -53,7 +61,7 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('contains_hot_food', 'name')
+        ordering = ('-contents_hot', 'name')
         verbose_name_plural = 'categories'
 
 
