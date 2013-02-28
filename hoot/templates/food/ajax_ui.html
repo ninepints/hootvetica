@@ -1,5 +1,5 @@
 <div id="overlay">
-    <div id="popup">
+    <div class="popup">
         <h2></h2>
         <p></p>
 
@@ -45,45 +45,44 @@
             <input id="iparent" name="parent" type="hidden" value="" />
         </form>
 
-        <ul class="inline">
-            <li><a href="#" class="button confirm">OK</a></li>
+        <ul class="popup-buttons">
+            <li><a href="#" class="button confirm">Done</a></li>
             <li><a href="#" class="button cancel">Cancel</a></li>
         </ul>
+
         <div class="statusbar"><p></p></div>
     </div>
 </div>
 
 <div class="location">
-    <div class="locationhead">
-        <h1></h1>
-        <ul class="inline">
-            <li><a href="#" class="button toggle">Open/Close Location</a></li>
-            <li><a href="#" class="button add">Add Category</a></li>
-        </ul>
-    </div>
-    <div class="colorbox info">
+    <h1></h1>
+    <ul class="location-buttons">
+        <li><a href="#" class="button toggle">Open/Close Location</a></li>
+        <li><a href="#" class="button add">Add Category</a></li>
+    </ul>
+    <div class="indented banner info">
         <h2>Location Closed</h2>
+        <h3>You can't buy any food.</h3>
         <p></p>
     </div>
     <div class="categories"></div>
 </div>
 
-<div class="category">
-    <div class="categoryhead">
-        <h2></h2>
-        <ul class="inline">
-            <li><a href="#" class="button edit">Edit</a></li>
-            <li><a href="#" class="button delete">Delete</a></li>
-            <li><a href="#" class="button add">Add Item</a></li>
-        </ul>
-    </div>
+<div class="category collapsed indented banner">
+    <h2></h2>
+    <h3></h3>
+    <ul class="category-buttons">
+        <li><a href="#" class="button edit">Edit</a></li>
+        <li><a href="#" class="button delete">Delete</a></li>
+        <li><a href="#" class="button add">Add Item</a></li>
+    </ul>
     <div class="items"></div>
 </div>
 
 <div class="item">
     <h3></h3>
-    <ul class="inline">
     <p></p>
+    <ul class="item-buttons">
         <li><a href="#" class="button edit">Edit</a></li>
         <li><a href="#" class="button delete">Delete</a></li>
     </ul>
