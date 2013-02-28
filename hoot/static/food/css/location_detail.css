@@ -1,320 +1,217 @@
-/* locations */
+/* Buttons */
 
-div.locationhead
+a.button
 {
-    position: relative;
-    min-height: 7.5em;
-    border: 1px solid rgb(192,192,192);
+    display: inline-block;
+    border: 0.125em solid rgb(64,64,64);
+    padding: 0.125em 0.5em;
+    line-height: 1em;
+    text-align: center;
+    text-decoration: none;
+    background-color: transparent;
+    color: rgb(64,64,64);
 }
 
-div.locationhead > img
+a.button:active
 {
-    width: 100%;
-    display: block;
-}
-
-div.locationhead > h1
-{
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: 0;
-    padding: 0.5em 7.5em 0.5em 0.5em;
-    height: 1.5em;
-    background-color: rgba(64,64,64,0.5);
+    background-color: rgb(64,64,64);
     color: white;
 }
 
-div.locationhead > ul
+/* Locations */
+
+div.location > h1
 {
-    position: absolute;
-    right: 1.5em;
-    bottom: 2.75em;
-    margin: 0;
+    margin: 0.375em 0.125em;
 }
 
-div.location > div.colorbox.info
+div.location > div.info
 {
-    height: 6em;
-    overflow: hidden;
-    -webkit-transition: height 0.5s, margin 0.5s, padding 0.5s, opacity 0.5s;
-    -moz-transition: height 0.5s, margin 0.5s, padding 0.5s, opacity 0.5s;
-    -ms-transition: height 0.5s, margin 0.5s, padding 0.5s, opacity 0.5s;
-    -o-transition: height 0.5s, margin 0.5s, padding 0.5s, opacity 0.5s;
-    transition: height 0.5s, margin 0.5s, padding 0.5s, opacity 0.5s;
+    height: 12em;
+    opacity: 1;
+
+    -webkit-transition-property: height margin, opacity;
+    -moz-transition-property: height, margin, opacity;
+    -ms-transition-property: height, margin, opacity;
+    -o-transition-property: height, margin, opacity;
+    transition-property: height, margin, opacity;
+
+    -webkit-transition-duration: 0.35s;
+    -moz-transition-duration: 0.35s;
+    -ms-transition-duration: 0.35s;
+    -o-transition-duration: 0.35s;
+    transition-duration: 0.35s;
 }
 
-div.location > div.colorbox.hidden
+div.location > div.info.hidden
 {
     height: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    border-top: none;
-    border-bottom: none;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
     opacity: 0;
 }
 
-/* categories */
-
-div.categories
+ul.location-buttons
 {
-    margin-top: 1.5em;
-}
-
-div.categories:empty
-{
-    text-align: center;
-}
-
-div.categories:empty::after
-{
-    content: "no categories";
-    font-size: 2em;
-    line-height: 1.5em;
-    color: rgb(192,192,192);
-}
-
-div.category
-{
-    border-bottom: 1px dashed rgb(192,192,192);
-}
-
-div.category:last-child
-{
-    border-bottom: none;
-}
-
-div.categoryhead
-{
-    position: relative;
-    height: 6em;
-    -webkit-transition: background-color 2s;
-    -moz-transition: background-color 2s;
-    -ms-transition: background-color 2s;
-    -o-transition: background-color 2s;
-    transition: background-color 2s;
-}
-
-div.categoryhead.highlight
-{
-    background-color: rgb(244,231,123);
-    -webkit-transition: background-color 0s;
-    -moz-transition: background-color 0s;
-    -ms-transition: background-color 0s;
-    -o-transition: background-color 0s;
-    transition: background-color 0s;
-}
-
-div.categoryhead > h2
-{
+    display: inline-block;
     margin: 0;
-    padding: 0.75em 0;
-}
-
-div.categoryhead > ul
-{
-    position: absolute;
-    top: 2em;
-    right: 0;
-    margin: 0;
-}
-
-/* items */
-
-div.items
-{
-    padding-left: 1.5em;
+    padding-left: 1em;
+    background-color: rgb(240,240,240);
     overflow: hidden;
 }
 
-div.items:empty
+ul.location-buttons > li
 {
-    padding: 0 0 1.5em;
-    text-align: center;
+    margin: 1.5em 1em 1.5em 0;
+    float: left;
 }
 
-div.items:empty::after
+div.location > div.categories.hidden
 {
-    content: "no items";
-    font-size: 2em;
-    line-height: 1.5em;
-    color: rgb(192,192,192);
+    display: none;
 }
+
+/* Categories */
+
+div.category
+{
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+}
+
+div.category:nth-child(2n)
+{
+    background-color: rgb(240,240,240);
+}
+
+div.category.empty
+{
+    background-color: rgb(224,224,224);
+}
+
+div.category.empty:nth-child(2n)
+{
+    background-color: rgb(208,208,208);
+}
+
+div.category.out
+{
+    background-color: rgb(245,164,157);
+}
+
+div.category.out:nth-child(2n)
+{
+    background-color: rgb(220,148,141);
+}
+
+div.category.highlight
+{
+    background-color: rgb(255,213,125)
+}
+
+div.category.collapsed
+{}
+
+ul.category-buttons
+{
+    overflow: hidden;
+}
+
+ul.category-buttons > li
+{
+    margin-right: 1em;
+    float: left;
+}
+
+/* Items */
 
 div.item
 {
     position: relative;
-    height: 4.5em;
-    min-width: 8em;
-    margin: 0 1.5em 1.5em 0;
-    border: 1px solid rgb(192,192,192);
-    padding: 1.5em;
+    display: inline-block;
+    height: 7.5em;
+    margin: 0 1em 1.5em 0;
+    padding: 0 1em;
+    background-color: rgb(175,230,116);
     float: left;
-    background-color: rgb(224,224,224);
-    -webkit-transition: border 2s, background-color 2s;
-    -moz-transition: border 2s, background-color 2s;
-    -ms-transition: border 2s, background-color 2s;
-    -o-transition: border 2s, background-color 2s;
-    transition: border 2s, background-color 2s;
+    overflow: hidden;
+
+    -webkit-transition-property: padding-right;
+    -moz-transition-property: padding-right;
+    -ms-transition-property: padding-right;
+    -o-transition-property: padding-right;
+    transition-property: padding-right;
+
+    -webkit-transition-duration: 0.35s;
+    -moz-transition-duration: 0.35s;
+    -ms-transition-duration: 0.35s;
+    -o-transition-duration: 0.35s;
+    transition-duration: 0.35s;
+}
+
+div.item.active
+{
+    padding: 0 8.5em 0 1em;
+}
+
+div.item.out
+{
+    background-color: rgb(245,164,157);
 }
 
 div.item.highlight
 {
-    border: 1px solid rgb(234,195,44);
-    background-color: rgb(244,231,123);
-    -webkit-transition: border 0s, background-color 0s;
-    -moz-transition: border 0s, background-color 0s;
-    -ms-transition: border 0s, background-color 0s;
-    -o-transition: border 0s, background-color 0s;
-    transition: border 0s, background-color 0s;
+    background-color: rgb(255,213,125)
+}
+
+div.item > h3
+{
+    margin-bottom: 0;
 }
 
 div.item > p
 {
-    position: relative;
-    left: -1.5em;
-    margin-right: -1.5em;
-    margin-bottom: 0;
+    margin-top: 0;
+    font-weight: 200;
 }
 
-div.item span.status, div.item span.price
-{
-    border: 1px solid rgb(192,192,192);
-    border-left: none;
-    padding: 0.25em 0.75em;
-    background-color: rgb(240,240,240);
-    display: inline-block;
-}
-
-div.item span.status.available
-{
-    border: 1px solid rgb(125,223,100);
-    border-left: none;
-    background-color: rgb(163,236,136);
-}
-
-div.item span.status.low
-{
-    border: 1px solid rgb(234,195,44);
-    border-left: none;
-    background-color: rgb(244,231,123);
-}
-
-div.item span.status.out
-{
-    border: 1px solid rgb(236,129,114);
-    border-left: none;
-    background-color: rgb(243,169,153);
-}
-
-div.item  span.status, div.item span.status:empty + span.price
-{
-    padding-left: 1.5em;
-}
-
-div.item span.status:empty, div.item span.price:empty
-{
-    display: none;
-}
-
-div.item > ul
+ul.item-buttons
 {
     position: absolute;
     top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: 0;
-    padding: 2.75em 1.5em;
-    background-color: rgba(64,64,64,0.8);
-    display: none;
+    right: -8.5em;
+    opacity: 0;
+
+    -webkit-transition-property: right, opacity;
+    -moz-transition-property: right, opacity;
+    -ms-transition-property: right, opacity;
+    -o-transition-property: right, opacity;
+    transition-property: right, opacity;
+
+    -webkit-transition-duration: 0.35s;
+    -moz-transition-duration: 0.35s;
+    -ms-transition-duration: 0.35s;
+    -o-transition-duration: 0.35s;
+    transition-duration: 0.35s;
 }
 
-div.item:hover > ul
+div.item.active > ul.item-buttons
 {
-    display: block;
+    right: 1em;
+    opacity: 1;
 }
 
-/* statusbars */
-
-div.statusbar
+ul.item-buttons > li
 {
-    min-height: 1.5em;
-    margin: 1.5em 0;
-    padding: 0.25em 1.5em;
+    margin: 0.75em 0;
 }
 
-div.statusbar.busy
+ul.item-buttons a
 {
-    border: 1px solid rgb(192,192,192);
-    background-image: -webkit-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 10px, rgb(224,224,224) 10px, rgb(224,224,224) 20px);
-    background-image: -moz-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 10px, rgb(224,224,224) 10px, rgb(224,224,224) 20px);
-    background-image: -ms-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 10px, rgb(224,224,224) 10px, rgb(224,224,224) 20px);
-    background-image: -o-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 10px, rgb(224,224,224) 10px, rgb(224,224,224) 20px);
-    background-image: repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 10px, rgb(224,224,224) 10px, rgb(224,224,224) 20px);
-    -webkit-animation-name: busyAnim;
-    -moz-animation-name: busyAnim;
-    -ms-animation-name: busyAnim;
-    -o-animation-name: busyAnim;
-    animation-name: busyAnim;
-    -webkit-animation-duration: 60s;
-    -moz-animation-duration: 60s;
-    -ms-animation-duration: 60s;
-    -o-animation-duration: 60s;
-    animation-duration: 60s;
-    -webkit-animation-timing-function: linear;
-    -moz-animation-timing-function: linear;
-    -ms-animation-timing-function: linear;
-    -o-animation-timing-function: linear;
-    animation-timing-function: linear;
-    -webkit-animation-iteration-count: infinite;
-    -moz-animation-iteration-count: infinite;
-    -ms-animation-iteration-count: infinite;
-    -o-animation-iteration-count: infinite;
-    animation-iteration-count: infinite;
+    width: 4.5em;
 }
 
-@-webkit-keyframes busyAnim
-{
-    from { background-position-x: -4000px; }
-    to { background-position-x: 0; }
-}
-@-moz-keyframes busyAnim
-{
-    from { background-position-x: -4000px; }
-    to { background-position-x: 0; }
-}
-@-ms-keyframes busyAnim
-{
-    from { background-position-x: -4000px; }
-    to { background-position-x: 0; }
-}
-@-o-keyframes busyAnim
-{
-    from { background-position-x: -4000px; }
-    to { background-position-x: 0; }
-}
-@keyframes busyAnim
-{
-    from { background-position-x: -4000px; }
-    to { background-position-x: 0; }
-}
-
-div.statusbar.error
-{
-    border: 1px solid rgb(236,129,114);
-    background-color: rgb(243,169,153);
-}
-
-div.statusbar > p
-{
-    margin: 0;
-}
-
-/* overlay */
+/* Popups */
 
 body.noscroll
 {
@@ -325,90 +222,34 @@ div#overlay
 {
     position: fixed;
     top: 0;
-    left: 0;
-    bottom: 0;
     right: 0;
-    overflow: scroll;
-    background-color: rgba(64,64,64,0.5);
-    z-index: 10;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.5);
+    overflow-y: scroll;
+    z-index: 2;
 }
 
-div#popup
+div.popup
 {
-    position: relative;
-    width: 480px;
-    margin: 10.5em auto;
-    border: 1px solid rgb(192,192,192);
-    padding: 3em 3em 6em;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 768px;
+    max-width: 1024px;
+    margin: 4.5em auto;
+    padding: 0 1em;
+    box-shadow: 0 0 85px rgba(0,0,0,0.3);
     background-color: white;
+    overflow: hidden;
 }
 
-div#popup > *:first-child
+ul.popup-buttons
 {
-    margin-top: 0;
+    overflow: hidden;
 }
 
-div#popup > h2
+ul.popup-buttons > li
 {
-    border-bottom: 1px solid rgb(192,192,192);
+    margin-right: 1em;
+    float: left;
 }
-
-div#popup > ul
-{
-    position: absolute;
-    left: 3em;
-    bottom: 3em;
-    margin: 0;
-}
-
-div#popup > div.statusbar
-{
-    position: absolute;
-    bottom: 3em;
-    right: 3em;
-    width: 50%;
-    margin: 0;
-    padding: 0.25em 0.5em;
-}
-
-/* buttons */
-
-a.button
-{
-    margin: 0;
-    border: 1px solid rgb(192,192,192);
-    padding: 0.25em 0.5em;
-    background-color: rgb(224,224,224);
-    background-image: -webkit-linear-gradient(top, rgb(255,255,255), rgb(244,244,244) 20%, rgb(234,234,234) 80%, rgb(224,224,224));
-    background-image: -moz-linear-gradient(top, rgb(255,255,255), rgb(244,244,244) 20%, rgb(234,234,234) 80%, rgb(224,224,224));
-    background-image: -ms-linear-gradient(top, rgb(255,255,255), rgb(244,244,244) 20%, rgb(234,234,234) 80%, rgb(224,224,224));
-    background-image: -o-linear-gradient(top, rgb(255,255,255), rgb(244,244,244) 20%, rgb(234,234,234) 80%, rgb(224,224,224));
-    background-image: linear-gradient(to bottom, rgb(255,255,255), rgb(244,244,244) 20%, rgb(234,234,234) 80%, rgb(224,224,224));
-    display: block;
-    font-weight: bold;
-    color: rgb(64,64,64);
-    text-decoration: none;
-}
-
-a.button:active
-{
-    background-color: rgb(224,224,224);
-    background-image: none;
-}
-
-a.button.disabled
-{
-    background-color: rgb(240,240,240);
-    background-image: none;
-    color: rgb(192,192,192);
-    cursor: default;
-}
-
-a.button.confirm
-{}
-
-a.button.confirm:active
-{}
-
-a.button.confirm.disabled
-{}

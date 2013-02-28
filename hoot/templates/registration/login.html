@@ -8,17 +8,19 @@
     <script type="text/javascript" src="{% static "food/js/forms.js" %}"></script>
 {% endblock %}
 
-{% block header %}{% endblock %}
+{% block usermenu %}{% endblock %}
 
-{% block contentclass %}colorbox auth{% endblock %}
+{% block messages %}{% endblock %}
 
 {% block content %}
-    <h2>Authentication Required</h2>
+    <section class="auth banner indented">
+        <h2>Log In</h2>
 
-    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-        {% csrf_token %}
-        {% include "form_ul.html" %}
-        <input type="submit" value="Log In" />
-        <input type="hidden" name="next" value="{{ next }}" />
-    </form>
+        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+            {% csrf_token %}
+            {% include "form_ul.html" %}
+            <input type="submit" value="Submit" />
+            <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+    </section>
 {% endblock %}

@@ -2,14 +2,16 @@
 
 {% block title %}Delete {{ model }} - {{ block.super }}{% endblock %}
 
-{% block contentclass %}colorbox{% endblock %}
+{% block messages %}{% endblock %}
 
 {% block content %}
-    <h2>Delete {{ model|capfirst }} "{{ name }}"</h2>
+    <section class="gray banner indented">
+        <h2>Delete {{ model|capfirst }} "{{ name }}"</h2>
 
-    <form method="post" action="">
-        {% csrf_token %}
-        <p>Are you sure? This action is permanent.</p>
-        <input type="submit" value="Confirm" />
-    </form>
+        <form method="post" action="">
+            {% csrf_token %}
+            <p>Are you sure? This action is permanent.</p>
+            <input type="submit" value="Delete" />
+        </form>
+    </section>
 {% endblock %}

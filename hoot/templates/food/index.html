@@ -6,24 +6,41 @@
     <link rel="stylesheet" type="text/css" href="{% static "food/css/index.css" %}" />
 {% endblock %}
 
+{% block homelink %}
+    <span id="homelink">Hootvetica</span>
+{% endblock %}
+
 {% block content %}
-    <div id="feature"></div>
-
-    <div class="column left">
-        <h2>Locations</h2>
-        <ul id="locations">{% for location in location_list %}
-            <a href="{% url 'location' location.uid %}">
-                <li{% if location.open %} class="open"{% endif %}>{{ location.name }}</li>
-            </a>
-        {% endfor %}</ul>
-    </div>
-
-    <div class="column double divider right">
-        <h2>About</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris posuere pulvinar diam, eu malesuada nisi sagittis quis. In bibendum ullamcorper suscipit. Vivamus enim purus, iaculis sed eleifend ut, facilisis a erat. Morbi eget turpis arcu, vel laoreet nunc. Maecenas tempor nisl quam. Praesent elementum odio quis risus pellentesque non fermentum arcu viverra. Suspendisse pretium nunc non nisl ultrices ac ornare elit pulvinar. Curabitur eu ante vel ipsum scelerisque varius. Cras malesuada gravida lectus, sit amet porttitor nulla congue ac. Fusce vitae mi justo, non sollicitudin dui. Curabitur ante leo, tempus eu scelerisque id, tempor vel enim. Praesent sodales diam et.</p>
-        <ul class="inline">
-            <li><a href="http://twitter.com/thehootrice">Twitter</a></li>
-            <li><a href="http://www.facebook.com/thehootrice">Facebook</a></li>
+    <section>
+        <ul>
+            {% for location in location_list %}
+                <li>
+                    <a href="{% url 'location' location.uid %}" class="noline">
+                        <div class='location{% if not location.open %} closed{% elif not location.hot_food_available %} out{% endif %} indented banner'>
+                            <h2>{{ location.name }}</h2>
+                            <h3>{% if not location.open %}Location closed{% elif not location.hot_food_available %}No hot food{% else %}Location open{% endif %}</h3>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
         </ul>
-    </div>
+    </section>
+
+    <section class="indented">
+        <h3>About</h3>
+        <p>The Hoot is great, but sometimes they run out of hot food. Sometimes you don't know when they've run out of hot food and you trek all the way over even though it's cold and raining outside because you're hungry goddamnit and you eventually get there and discover the aforementioned lack of hot food and a soda or candy bar is just not going to cut it and you sink silently to the floor as tears stream down your face. When that happens, let your peers know here and save them the trip.</p>
+        <ul id="testimonials">
+            <li>
+                <blockquote><p>Lorem ipsum dolor sit amet.</p></blockquote>
+                <p class="cite">Anonymous</p>
+            </li>
+        </ul>
+        <p><strong>All inventory data is user-provided,</strong> so it may not be completely accurate. You can help by correcting errors as you find them.</p>
+    </section>
+
+    <footer id="credits">
+        <p>Site by <span id="byline">X</span></p>
+        <a href="http://jquery.com" target="_blank"><img src="{% static "food/img/jquery-24.png" %}" /></a>
+        <a href="http://djangoproject.com" target="_blank"><img src="{% static "food/img/django-24.png" %}" /></a>
+    </footer>
 {% endblock %}

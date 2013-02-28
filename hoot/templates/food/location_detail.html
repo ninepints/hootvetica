@@ -14,29 +14,28 @@
     <div class="statusbar" style="display:none"><p></p></div>
 
     <div class="location">
-        <div class="locationhead">
-            <h1>{{ location.name }}</h1>
-            {% if perms.food.change_location or perms.food.set_location_status or perms.food.add_category %}
-                <ul class="inline">
-                    {% if perms.food.change_location or perms.food.set_location_status %}
-                        <li><a href="{% url 'location-edit' location.uid %}" class="button toggle">Open/Close Location</a></li>
-                    {% endif %}
-                    {% if perms.food.add_category %}
-                        <li><a href="{% url 'category-add' %}?parent={{ location.uid }}" class="button add">Add Category</a></li>
-                    {% endif %}
-                </ul>
-            {% endif %}
-        </div>
+        <h1>{{ location.name }}</h1>
+
+        {% if perms.food.change_location or perms.food.set_location_status or perms.food.add_category %}
+            <ul class="location-buttons">
+                {% if perms.food.change_location or perms.food.set_location_status %}
+                    <li><a class="button" href="{% url 'location-edit' location.uid %}" class="button toggle">Open/Close Location</a></li>
+                {% endif %}
+                {% if perms.food.add_category %}
+                    <li><a class="button" href="{% url 'category-add' %}?parent={{ location.uid }}" class="button add">Add Category</a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
 
         {% if not location.open %}
-            <div class="colorbox info">
+            <div class="indented banner info">
                 <h2>Location Closed</h2>
                 {% if perms.food.change_location or perms.food.set_location_status %}
-                    <p>This location is currently closed, and no information is visible to the public. You can open it using the controls above.</p>
+                    <p>No information is visible to the public. You can open this location using the controls above.</p>
                 {% elif user.is_authenticated %}
-                    <p>This location is currently closed, and no information is visible to the public.</p>
+                    <p>No information is visible to the public.</p>
                 {% else %}
-                    <p>This location is currently closed, but check back later!</a></p>
+                    <h3>You can't buy any food.</h3>
                 {% endif %}
             </div>
         {% endif %}
@@ -44,34 +43,32 @@
         {% if location.open or user.is_authenticated %}
             <div class="categories">
                 {% for category in location.category_set.all %}
-                    <div class="category">
-                        <div class="categoryhead">
-                            <h2>{{ category.name }}</h2>
-                            {% if perms.food.change_category or perms.food.delete_category or perms.food.add_item %}
-                                <ul class="inline">
-                                    {% if perms.food.change_category %}
-                                        <li><a href="{% url 'category-edit' category.uid %}" class="button edit">Edit</a></li>
-                                    {% endif %}
-                                    {% if perms.food.delete_category %}
-                                        <li><a href="{% url 'category-del' category.uid %}" class="button delete">Delete</a></li>
-                                    {% endif %}
-                                    {% if perms.food.add_item %}
-                                        <li><a href="{% url 'item-add' %}?parent={{ category.uid }}" class="button add">Add Item</a></li>
-                                    {% endif %}
-                                </ul>
-                            {% endif %}
-                        </div>
+                    <div class="category{% if category.item_set.count == 0 %} empty{% elif not category.food_available %} out{% endif %} indented banner">
+                        <h2>{{ category.name }}</h2>
+                        <h3>{% if category.item_set.count == 0 %}No items{% elif not category.food_available %}Sold out{% else %}Available{% endif %}</h3>
+
+                        {% if perms.food.change_category or perms.food.delete_category or perms.food.add_item %}
+                            <ul class="category-buttons">
+                                {% if perms.food.change_category %}
+                                    <li><a href="{% url 'category-edit' category.uid %}" class="button edit">Edit</a></li>
+                                {% endif %}
+                                {% if perms.food.delete_category %}
+                                    <li><a href="{% url 'category-del' category.uid %}" class="button delete">Delete</a></li>
+                                {% endif %}
+                                {% if perms.food.add_item %}
+                                    <li><a href="{% url 'item-add' %}?parent={{ category.uid }}" class="button add">Add Item</a></li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
 
                         <div class="items">
                             {% for item in category.item_set.all %}
-                                <div class="item">
+                                <div class="item{% if item.status == "LOW" %} low{% elif item.status == "OUT" %} out{% endif %}">
                                     <h3>{{ item.name }}</h3>
-
-                                    {# sorry about the next line #}
-                                    <p><span class="status{% if item.status == "AVA"%} available{% elif item.status == "LOW"%} low{% elif item.status == "OUT"%} out{% endif %}">{% if item.status == "QTY" %}{{ item.quantity }} Left{% else %}{{ item.get_status_display }}{% endif %}</span><span class="price">{% if item.price == 0 %}Free{% elif item.price %}${{ item.price|floatformat:2 }}{% endif %}</span></p>
+                                    <p>{% if item.status == "QTY" %}{{ item.quantity }} Left{% else %}{{ item.get_status_display }}{% endif %}</p>
 
                                     {% if perms.food.change_item or perms.food.delete_item %}
-                                        <ul class="inline">
+                                        <ul class="item-buttons">
                                             {% if perms.food.change_item %}
                                                 <li><a href="{% url 'item-edit' item.uid %}" class="button edit">Edit</a></li>
                                             {% endif %}
@@ -84,6 +81,8 @@
                             {% endfor %}
                         </div>
                     </div>
+                {% empty %}
+                    <h3>There aren't any items associated with this location.</h3>
                 {% endfor %}
             </div>
         {% endif %}
