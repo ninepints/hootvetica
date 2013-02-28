@@ -1,38 +1,52 @@
 {% load static from staticfiles %}
+{% load url from future %}
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
-    <title>{% block title %}The Hoot{% endblock %}</title>
+    <title>{% block title %}Hootvetica{% endblock %}</title>
 
     <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
     <link rel="stylesheet" type="text/css" href="{% static "food/css/base.css" %}" />
     <script type="text/javascript" src="{% static "js/jquery-1.9.0.min.js" %}"></script>
 
-    <link rel="stylesheet" type="text/css" href="{% static "css/menus.css" %}" />
-    <script type="text/javascript" src="{% static "js/menus.js" %}"></script>
-
-    <script type="text/javascript" src="{% static "js/messages.js" %}"></script>
-
     {% block extrahead %}{% endblock %}
 </head>
 
 <body>
-    {% block banners %}{% if messages %}
-        <ul id="messagelist">{% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}</ul>
-    {% endif %}{% endblock %}
     <div id="container">
-        <div id="header">
-            {% block header %}{% include 'menus.html' %}{% endblock %}
-        </div>
-        <div id="content" class="{% block contentclass %}{% endblock %}">
-            {% block content %}{% endblock %}
-        </div>
-        <div id="footer">
-            {% block footer %}{% endblock %}
-        </div>
+        <nav id="topmenu">
+            {% block homelink %}
+                <a href="{% url 'index' %}" id="homelink">Hootvetica</a>
+            {% endblock %}
+
+            <ul id="usermenu">
+                {% block usermenu %}
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <li><a href="{% url 'admin:index' %}">Admin Site</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'django.contrib.auth.views.password_change' %}">Change Password</a></li>
+                        <li><a href="{% url 'django.contrib.auth.views.logout' %}?next={{ request.path }}">Log Out</a></li>
+                    {% else %}
+                        <li><a href="{% url 'django.contrib.auth.views.login' %}?next={{ request.path }}">Log In</a></li>
+                    {% endif %}
+                {% endblock %}
+            </ul>
+        </nav>
+
+        {% block messages %}
+            {% if messages %}
+                <ul id="messagelist">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                    <script type="text/javascript" src="{% static "food/js/messages.js" %}"></script>
+                </ul>
+            {% endif %}
+        {% endblock %}
+
+        {% block content %}{% endblock %}
     </div>
 </body>
 </html>

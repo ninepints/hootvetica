@@ -7,9 +7,10 @@
     <script type="text/javascript" src="{% static "food/js/forms.js" %}"></script>
 {% endblock %}
 
-{% block contentclass %}colorbox{% endblock %}
+{% block messages %}{% endblock %}
 
 {% block content %}
+<section class="gray banner indented">
     <h2>{{ action|capfirst }} {{ model|capfirst }}</h2>
 
     <form method="post" action="">
@@ -17,4 +18,5 @@
         {% include "form_ul.html" %}
         <input type="submit" value="Submit" />
     </form>
+</section>
 {% endblock %}
