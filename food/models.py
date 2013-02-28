@@ -72,8 +72,8 @@ class Item(models.Model):
     name = models.CharField(max_length=32)
     status = models.CharField(blank=True, max_length=3, choices=(
         ('AVA', 'Available'),
-        ('LOW', 'Running Low'),
-        ('OUT', 'Sold Out'),
+        ('LOW', 'Running low'),
+        ('OUT', 'Sold out'),
         ('QTY', 'Quantity')))
     quantity = models.PositiveIntegerField(blank=True, null=True)
     last_modified = models.DateTimeField(auto_now=True, editable=False)
