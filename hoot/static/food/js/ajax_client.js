@@ -30,9 +30,8 @@ hoot.food = {};
         // Downloaded elements
         var overlay, popupTitle, deletionWarning, formInputs;
         var locationForm, locationOpen;
-        var categoryForm, categoryName, categoryParent;
-        var itemForm, itemName, itemPrice, itemQty,
-            itemQtyUl, itemStatus, itemParent;
+        var categoryForm, categoryName, categoryHeat, categoryParent;
+        var itemForm, itemName, itemQty, itemQtyUl, itemStatus, itemParent;
         var confirmButton, cancelButton, buttonsEnabled;
         var popupStatusbar, popupStatusbarText;
         var locationHTML, categoryHTML, itemHTML;
@@ -143,7 +142,7 @@ hoot.food = {};
             attachCallback(this.container);
         };
 
-        CategoryMiniView.prototype.update = function(name, suppressFlash) {
+        CategoryMiniView.prototype.update = function(name, hot, suppressFlash) {
             this.nameText.text(name);
             if (!suppressFlash) this.flash();
         };
@@ -171,7 +170,6 @@ hoot.food = {};
             this.container = itemHTML.clone();
             this.nameText = this.container.children('h3');
             this.statusSpan = this.container.find('span.status');
-            this.priceSpan = this.container.find('span.price');
 
             this.editButton = this.container.find('a.edit')
                 .on('click', function() {
@@ -197,7 +195,7 @@ hoot.food = {};
             attachCallback(this.container);
         };
 
-        ItemMiniView.prototype.update = function(name, price, qty, status,
+        ItemMiniView.prototype.update = function(name, qty, status,
                 suppressFlash) {
             this.nameText.text(name);
             this.statusSpan.removeClass('available low out');
@@ -212,9 +210,6 @@ hoot.food = {};
                 this.statusSpan.addClass('out');
             } else if (status === 'QTY') this.statusSpan.text(qty + ' Left');
             else this.statusSpan.text('');
-            if (price === '') this.priceSpan.text('');
-            else if (parseFloat(price) === 0) this.priceSpan.text('Free');
-            else this.priceSpan.text('$' + price);
             if (!suppressFlash) this.flash();
         };
 
@@ -302,10 +297,10 @@ hoot.food = {};
                     locationOpen = locationForm.children('input#open');
                     categoryForm = overlay.find('#categoryform');
                     categoryName = categoryForm.find('input#cname');
+                    categoryHeat = categoryForm.find('input#heat');
                     categoryParent = categoryForm.children('input#cparent');
                     itemForm = overlay.find('#itemform');
                     itemName = itemForm.find('input#iname');
-                    itemPrice = itemForm.find('input#price');
                     itemQty = itemForm.find('input#quantity');
                     itemQtyUl = itemQty.parent().parent();
                     itemStatus = itemForm.find('select#status')
@@ -409,10 +404,11 @@ hoot.food = {};
 
         // Displays editing popup with given category information
         // and confirmation callback function
-        this.showCategoryForm = function(name, parent, confirmCallback) {
+        this.showCategoryForm = function(name, hot, parent, confirmCallback) {
             this.showPopup(true, 'Edit Category');
             categoryForm.show();
             categoryName.val(name).focus().select();
+            categoryHeat.prop('checked', hot);
             categoryParent.val(parent);
             setConfirmCallback(function() {
                 confirmCallback(categoryForm.serialize());
@@ -426,6 +422,7 @@ hoot.food = {};
                 var error = fieldErrors[i];
                 var field = null;
                 if (error.field === 'name') field = categoryName.parent();
+                else if (error.field === 'contents_hot') field = categoryHeat.parent();
                 if (field) {
                     for (var j = 0; j < error.errors.length; j++) {
                         field.after('<li class="error">' +
@@ -441,17 +438,15 @@ hoot.food = {};
 
         // Displays editing popup with given item information
         // and confirmation callback function
-        this.showItemForm = function(name, price, qty, status,
+        this.showItemForm = function(name, qty, status,
                                      parent, confirmCallback) {
             this.showPopup(true, 'Edit Item');
             itemForm.show();
             itemName.val(name).focus().select();
-            itemPrice.val(price);
             itemQty.val(qty);
             itemStatus.val(status).change();
             itemParent.val(parent);
             setConfirmCallback(function() {
-                itemPrice.val(itemPrice.val().replace('$', ''));
                 confirmCallback(itemForm.serialize());
             });
         };
@@ -463,7 +458,6 @@ hoot.food = {};
                 var error = fieldErrors[i];
                 var field = null;
                 if (error.field === 'name') field = itemName.parent();
-                else if (error.field === 'price') field = itemPrice.parent();
                 else if (error.field === 'quantity') field = itemQty.parent();
                 else if (error.field === 'status') field = itemStatus.parent();
                 if (field) {
@@ -602,7 +596,7 @@ hoot.food = {};
 
         // Displays category add dialog
         LocationMiniModel.prototype.showAddChildDialog = function() {
-            viewAdapter.showCategoryForm('New Category', this.uid,
+            viewAdapter.showCategoryForm('New Category', false, this.uid,
                 jQuery.proxy(this.confirmAddChild, this));
         };
 
@@ -642,7 +636,7 @@ hoot.food = {};
 
         CategoryMiniModel.prototype.setViewAdapter = function(viewAdapter) {
             this.viewAdapter = viewAdapter;
-            this.viewAdapter.update(this.name, true);
+            this.viewAdapter.update(this.name, this.heat, true);
         };
 
         // Prepends an element to the model's view's children div
@@ -652,7 +646,7 @@ hoot.food = {};
 
         // Displays item add dialog
         CategoryMiniModel.prototype.showAddChildDialog = function() {
-            viewAdapter.showItemForm('New Item', '', '', 'AVA', this.uid,
+            viewAdapter.showItemForm('New Item', '', 'AVA', this.uid,
                 jQuery.proxy(this.confirmAddChild, this));
         };
 
@@ -663,7 +657,7 @@ hoot.food = {};
 
         // Shows category edit dialog
         CategoryMiniModel.prototype.showEditDialog = function() {
-            viewAdapter.showCategoryForm(this.name, this.parent,
+            viewAdapter.showCategoryForm(this.name, this.heat, this.parent,
                 jQuery.proxy(this.confirmEdit, this));
         };
 
@@ -686,8 +680,9 @@ hoot.food = {};
         CategoryMiniModel.prototype.update = function(json) {
             if (json.modified > this.modified) {
                 this.name = json.name;
+                this.heat = json.contents_hot;
                 this.modified = json.modified;
-                if (this.viewAdapter) this.viewAdapter.update(this.name);
+                if (this.viewAdapter) this.viewAdapter.update(this.name, this.heat);
             }
         };
 
@@ -711,15 +706,13 @@ hoot.food = {};
 
         ItemMiniModel.prototype.setViewAdapter = function(viewAdapter) {
             this.viewAdapter = viewAdapter;
-            this.viewAdapter.update(this.name, this.price, this.qty,
-                this.status, true);
+            this.viewAdapter.update(this.name, this.qty, this.status, true);
         };
 
         // Displays item edit dialog
         ItemMiniModel.prototype.showEditDialog = function() {
-            viewAdapter.showItemForm(this.name, this.price, this.qty,
-                this.status, this.parent,
-                jQuery.proxy(this.confirmEdit, this));
+            viewAdapter.showItemForm(this.name, this.qty, this.status,
+                this.parent, jQuery.proxy(this.confirmEdit, this));
         };
 
         // Sends item edit request to server
@@ -741,13 +734,11 @@ hoot.food = {};
         ItemMiniModel.prototype.update = function(json) {
             if (json.modified > this.modified) {
                 this.name = json.name;
-                this.price = json.price;
                 this.qty = json.quantity;
                 this.status = json.status;
                 this.modified = json.modified;
                 if (this.viewAdapter)
-                    this.viewAdapter.update(this.name, this.price,
-                        this.qty, this.status);
+                    this.viewAdapter.update(this.name, this.qty, this.status);
             }
         };
 
@@ -1009,15 +1000,15 @@ hoot.food = {};
                 showLocationToggle: function(opening, confirmCallback) {
                     view.showLocationToggle(opening, confirmCallback);
                 },
-                showCategoryForm: function(name, parent, confirmCallback) {
-                    view.showCategoryForm(name, parent, confirmCallback);
+                showCategoryForm: function(name, hot, parent, confirmCallback) {
+                    view.showCategoryForm(name, hot, parent, confirmCallback);
                 },
                 addCategoryErrors: function(fieldErrors, nonFieldErrors) {
                     view.addCategoryErrors(fieldErrors, nonFieldErrors);
                 },
-                showItemForm: function(name, price, qty, status,
+                showItemForm: function(name, qty, status,
                                        parent, confirmCallback) {
-                    view.showItemForm(name, price, qty, status,
+                    view.showItemForm(name, qty, status,
                                       parent, confirmCallback);
                 },
                 addItemErrors: function(fieldErrors, nonFieldErrors) {
@@ -1070,8 +1061,8 @@ hoot.food = {};
                             }
                         }, attachCallback);
                     return {
-                        update: function(name, suppressFlash) {
-                            miniView.update(name, suppressFlash);
+                        update: function(name, hot, suppressFlash) {
+                            miniView.update(name, hot, suppressFlash);
                         },
                         flash: function() { miniView.flash(); },
                         prepend: function(element) {
@@ -1090,10 +1081,8 @@ hoot.food = {};
                             }
                         }, attachCallback);
                     return {
-                        update: function(name, price, qty, status,
-                                suppressFlash) {
-                            miniView.update(name, price, qty, status,
-                                suppressFlash);
+                        update: function(name, qty, status, suppressFlash) {
+                            miniView.update(name, qty, status, suppressFlash);
                         },
                         flash: function() { miniView.flash(); },
                         remove: function() { miniView.remove(); }
