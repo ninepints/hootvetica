@@ -161,6 +161,23 @@ hoot.food = {};
                 this.flash();
         };
 
+        CategoryMiniView.prototype.childDependentUpdate = function() {
+            var children = this.childrenDiv.children();
+            var soldOutChildren = children.filter('.out');
+            this.container.removeClass('empty out');
+            if (children.length === 0) {
+                this.container.addClass('empty');
+                this.statusText.text('No items');
+            }
+            else if (children.length === soldOutChildren.length) {
+                this.container.addClass('out');
+                this.statusText.text('Sold out')
+            }
+            else {
+                this.statusText.text('Available');
+            }
+        };
+
         // Applies a highlight class for 50ms, which should fade slowly using
         // a CSS transition
         CategoryMiniView.prototype.flash = function() {
@@ -710,6 +727,10 @@ hoot.food = {};
             }
         };
 
+        CategoryMiniModel.prototype.childDependentUpdate = function() {
+            this.viewAdapter.childDependentUpdate();
+        }
+
         CategoryMiniModel.prototype.flash = function() {
             this.viewAdapter.flash();
         };
@@ -833,6 +854,12 @@ hoot.food = {};
             // Remove old models and corresponding views
             for (var uid in minimodels) { minimodels[uid].remove(); }
             minimodels = newMinimodels;
+
+            // Trigger updates that are dependent on children
+            for (var uid in minimodels) {
+                if ('childDependentUpdate' in minimodels[uid])
+                    minimodels[uid].childDependentUpdate();
+            }
         };
 
         // Displays countdown then refreshes data
@@ -996,6 +1023,13 @@ hoot.food = {};
                     minimodels[itemData.uid] = item;
                 }
             }
+
+            // Trigger updates that are dependent on children
+            for (var uid in minimodels) {
+                if ('childDependentUpdate' in minimodels[uid])
+                    minimodels[uid].childDependentUpdate();
+            }
+
             refreshTimer = setTimeout(refreshData, refreshInterval * 1000);
         };
 
@@ -1087,6 +1121,9 @@ hoot.food = {};
                     return {
                         update: function(name, hot, suppressFlash) {
                             miniView.update(name, hot, suppressFlash);
+                        },
+                        childDependentUpdate: function() {
+                            miniView.childDependentUpdate();
                         },
                         flash: function() { miniView.flash(); },
                         append: function(element) {
