@@ -34,7 +34,7 @@ hoot.food = {};
         var itemForm, itemName, itemQty, itemQtyUl, itemStatus, itemParent;
         var confirmButton, cancelButton, buttonsEnabled;
         var popupStatusbar, popupStatusbarText;
-        var locationHTML, categoryHTML, itemHTML;
+        var locationTemplate, categoryTemplate, itemTemplate;
 
         // Main statusbar display timer
         var statusbarTimer;
@@ -45,21 +45,28 @@ hoot.food = {};
 
         function LocationMiniView(miniModelAdapter, attachCallback) {
             // Clone/customize template markup and attach event handlers
-            this.container = locationHTML.clone();
-            this.nameText = this.container.find('h1');
-            this.closedBox = this.container.children('div.colorbox.info');
-            if (userCanChangeLocation)
-                this.closedBox.children('p').text('This location is currently' +
-                    ' closed, and no information is visible to the public.' +
-                    ' You can open it using the controls above.');
-            else if (userIsAuthenticated)
-                this.closedBox.children('p').text('This location is currently' +
-                    ' closed, and no information is visible to the public.');
-            else
-                this.closedBox.children('p').text('This location is currently' +
-                    ' closed, but check back later!');
-
+            this.container = locationTemplate.clone();
             this.childrenDiv = this.container.children('div.categories');
+            this.nameText = this.container.find('h1');
+            this.closedBox = this.container.children('div.info');
+            if (userCanChangeLocation)
+            {
+                this.closedBox.children('p').text('No information is visible' +
+                    ' to the public. You can open this location using the' +
+                    ' controls above.');
+                this.closedBox.children('h3').remove();
+            }
+            else if (userIsAuthenticated)
+            {
+                this.closedBox.children('p').text('No information is visible' +
+                    ' to the public.');
+                this.closedBox.children('h3').remove();
+            }
+            else
+            {
+                this.closedBox.children('p').remove();
+            }
+
             this.toggleButton = this.container.find('a.toggle')
                 .on('click', function() {
                     miniModelAdapter.showToggleDialog();
@@ -86,15 +93,22 @@ hoot.food = {};
 
         LocationMiniView.prototype.update = function(name, open) {
             this.nameText.text(name);
-            if (open) this.closedBox.addClass('hidden');
-            else this.closedBox.removeClass('hidden');
-            if (!open && !userIsAuthenticated) this.childrenDiv.hide();
-            else this.childrenDiv.show();
+
+            if (open)
+                this.closedBox.addClass('hidden');
+            else
+                this.closedBox.removeClass('hidden');
+
+            if (!open && !userIsAuthenticated)
+                this.childrenDiv.addClass('hidden');
+            else
+                this.childrenDiv.removeClass('hidden');
+
             this.toggleButton.text(open ? 'Close Location' : 'Open Location');
         };
 
-        LocationMiniView.prototype.prepend = function(element) {
-            this.childrenDiv.prepend(element);
+        LocationMiniView.prototype.append = function(element) {
+            this.childrenDiv.append(element);
         };
 
         LocationMiniView.prototype.remove = function() {
@@ -104,12 +118,11 @@ hoot.food = {};
 
         function CategoryMiniView(miniModelAdapter, attachCallback) {
             // Clone/customize template markup and attach event handlers
-            this.container = categoryHTML.clone();
-            this.headerDiv = this.container.children('div.categoryhead');
-            this.nameText = this.headerDiv.children('h2');
-
-
+            this.container = categoryTemplate.clone();
             this.childrenDiv = this.container.children('div.items');
+            this.nameText = this.container.children('h2');
+            this.statusText = this.container.children('h3');
+
             this.editButton = this.container.find('a.edit')
                 .on('click', function() {
                     miniModelAdapter.showEditDialog();
@@ -144,20 +157,21 @@ hoot.food = {};
 
         CategoryMiniView.prototype.update = function(name, hot, suppressFlash) {
             this.nameText.text(name);
-            if (!suppressFlash) this.flash();
+            if (!suppressFlash)
+                this.flash();
         };
 
         // Applies a highlight class for 50ms, which should fade slowly using
         // a CSS transition
         CategoryMiniView.prototype.flash = function() {
-            this.headerDiv.addClass('highlight');
+            this.container.addClass('highlight');
             setTimeout(jQuery.proxy(function() {
-                this.headerDiv.removeClass('highlight');
+                this.container.removeClass('highlight');
             }, this), 50);
         };
 
-        CategoryMiniView.prototype.prepend = function(element) {
-            this.childrenDiv.prepend(element);
+        CategoryMiniView.prototype.append = function(element) {
+            this.childrenDiv.append(element);
         };
 
         CategoryMiniView.prototype.remove = function() {
@@ -167,9 +181,9 @@ hoot.food = {};
 
         function ItemMiniView(miniModelAdapter, attachCallback) {
             // Clone/customize template markup and attach event handlers
-            this.container = itemHTML.clone();
-            this.nameText = this.container.children('h3');
-            this.statusSpan = this.container.find('span.status');
+            this.container = itemTemplate.clone();
+            this.nameText = this.container.find('h3');
+            this.statusText = this.container.find('p');
 
             this.editButton = this.container.find('a.edit')
                 .on('click', function() {
@@ -198,19 +212,29 @@ hoot.food = {};
         ItemMiniView.prototype.update = function(name, qty, status,
                 suppressFlash) {
             this.nameText.text(name);
-            this.statusSpan.removeClass('available low out');
-            if (status === 'AVA') {
-                this.statusSpan.text('Available');
-                this.statusSpan.addClass('available');
-            } else if (status === 'LOW') {
-                this.statusSpan.text('Running Low');
-                this.statusSpan.addClass('low');
-            } else if (status === 'OUT') {
-                this.statusSpan.text('Sold Out');
-                this.statusSpan.addClass('out');
-            } else if (status === 'QTY') this.statusSpan.text(qty + ' Left');
-            else this.statusSpan.text('');
-            if (!suppressFlash) this.flash();
+            this.container.removeClass('low out');
+
+            if (status === 'AVA')
+            {
+                this.statusText.text('Available');
+            }
+            else if (status === 'LOW')
+            {
+                this.statusText.text('Running low');
+                this.container.addClass('low');
+            }
+            else if (status === 'OUT')
+            {
+                this.statusText.text('Sold out');
+                this.container.addClass('out');
+            }
+            else if (status === 'QTY')
+            {
+                this.statusText.text(qty + ' Left');
+            }
+
+            if (!suppressFlash)
+                this.flash();
         };
 
         // Applies a highlight class for 50ms, which should fade slowly using
@@ -264,8 +288,8 @@ hoot.food = {};
             userCanDeleteItems = canDeleteItems;
             modelAdapter = adapter;
             body = $('body');
-            contentDiv = $('div#content');
-            statusbar = $('div#content > div.statusbar');
+            contentDiv = $('div#container');
+            statusbar = $('div#container > div.statusbar');
             statusbarText = statusbar.children('p');
         };
 
@@ -273,7 +297,7 @@ hoot.food = {};
         // Downloads UI elements then starts model
         this.start = function() {
             // Hide static content
-            var staticUI = contentDiv.children().not(statusbar).hide();
+            var staticUI = contentDiv.children('div.location').hide();
             this.showStatusbar(true);
             this.setStatusbar('busy', 'Loading UI...');
 
@@ -288,9 +312,11 @@ hoot.food = {};
                     // On success, process new DOM tree
                     var parsedData = $(data);
                     overlay = parsedData.filter('#overlay').on('click', cancel);
-                    overlay.children('#popup').on('click', false);
-                    popupTitle = overlay.find('div#popup > h2');
-                    deletionWarning = overlay.find('div#popup > p');
+                    overlay.children('.popup').on('click', function(event) {
+                        event.stopPropagation();
+                    });
+                    popupTitle = overlay.find('div.popup > h2');
+                    deletionWarning = overlay.find('div.popup > p');
                     formInputs = overlay.find('input, select');
 
                     locationForm = overlay.find('#locationform');
@@ -326,11 +352,11 @@ hoot.food = {};
                     buttonsEnabled = true;
                     popupStatusbar = overlay.find('div.statusbar');
                     popupStatusbarText = popupStatusbar.children('p');
-                    locationHTML = parsedData.filter('div.location');
-                    categoryHTML = parsedData.filter('div.category');
-                    itemHTML = parsedData.filter('div.item');
+                    locationTemplate = parsedData.filter('div.location');
+                    categoryTemplate = parsedData.filter('div.category');
+                    itemTemplate = parsedData.filter('div.item');
 
-                    overlay.insertAfter('div#container').hide();
+                    overlay.appendTo(body).hide();
 
                     // Done starting view, start model
                     this.showStatusbar(false);
@@ -350,8 +376,6 @@ hoot.food = {};
             });
         };
 
-        this.prepend = function(element) { contentDiv.prepend(element); };
-
         this.append = function(element) { contentDiv.append(element) };
 
         // Shows/hides the main statusbar
@@ -370,7 +394,8 @@ hoot.food = {};
         this.setStatusbar = function(sbclass, text) {
             statusbar.removeClass().addClass('statusbar');
             statusbarText.text(text);
-            if (sbclass) statusbar.addClass(sbclass);
+            if (sbclass)
+                statusbar.addClass(sbclass);
         };
 
         // Hides or resets and displays the editing popup
@@ -475,14 +500,16 @@ hoot.food = {};
 
         // Displays delete confirmation dialog with given callback function
         this.showDeletionWarning = function(model, name,
-                                            extraOminous, confirmCallback) {
+                                            ominous, confirmCallback) {
             this.showPopup(true, 'Delete ' + model + ' "' + name + '"');
             deletionWarning.show();
-            if (extraOminous) deletionWarning.text('Are you sure?' +
-                ' Any children will be deleted as well.' +
-                ' This action is permanent.');
-            else deletionWarning.text('Are you sure?' +
-                ' This action is permanent.');
+            if (ominous)
+                deletionWarning.text('Are you sure?' +
+                    ' Any children will be deleted as well.' +
+                    ' This action is permanent.');
+            else
+                deletionWarning.text('Are you sure?' +
+                    ' This action is permanent.');
             this.setPopupConfirmText('Delete');
             setConfirmCallback(confirmCallback);
         };
@@ -509,7 +536,8 @@ hoot.food = {};
         this.setPopupStatusbar = function(sbclass, text) {
             popupStatusbar.removeClass().addClass('statusbar');
             popupStatusbarText.text(text);
-            if (sbclass) popupStatusbar.addClass(sbclass);
+            if (sbclass)
+                popupStatusbar.addClass(sbclass);
         };
 
         // Accessors for mini-view constructors
@@ -573,12 +601,12 @@ hoot.food = {};
             this.viewAdapter.update(this.name, this.open);
         };
 
-        // Prepends an element to the model's view's children div
-        LocationMiniModel.prototype.prepend = function(element) {
-            this.viewAdapter.prepend(element);
+        // Appends an element to the model's view's children div
+        LocationMiniModel.prototype.append = function(element) {
+            this.viewAdapter.append(element);
         };
 
-        // Sends a toggle dialog (and automatically sends toggle request)
+        // Shows a toggle dialog (and automatically sends toggle request)
         LocationMiniModel.prototype.showToggleDialog = function() {
             viewAdapter.showLocationToggle(!this.open,
                 jQuery.proxy(this.confirmToggle, this));
@@ -615,10 +643,6 @@ hoot.food = {};
             }
         };
 
-        LocationMiniModel.prototype.flash = function() {
-            this.viewAdapter.flash()
-        };
-
         LocationMiniModel.prototype.remove = function() {
             this.viewAdapter.remove();
         };
@@ -639,9 +663,9 @@ hoot.food = {};
             this.viewAdapter.update(this.name, this.heat, true);
         };
 
-        // Prepends an element to the model's view's children div
-        CategoryMiniModel.prototype.prepend = function(element) {
-            this.viewAdapter.prepend(element);
+        // Appends an element to the model's view
+        CategoryMiniModel.prototype.append = function(element) {
+            this.viewAdapter.append(element);
         };
 
         // Displays item add dialog
@@ -778,7 +802,7 @@ hoot.food = {};
                                                      locationData.uid);
                     category.setViewAdapter(
                         viewAdapter.makeCategoryMiniViewAdapter(category,
-                            jQuery.proxy(location.prepend, location)));
+                            jQuery.proxy(location.append, location)));
                     newMinimodels[categoryData.uid] = category;
                     category.flash();
                 }
@@ -799,7 +823,7 @@ hoot.food = {};
                         var item = new ItemMiniModel(itemData,
                                                      categoryData.uid);
                         item.setViewAdapter(viewAdapter.makeItemMiniViewAdapter(
-                            item, jQuery.proxy(category.prepend, category)));
+                            item, jQuery.proxy(category.append, category)));
                         newMinimodels[itemData.uid] = item;
                         item.flash();
                     }
@@ -954,20 +978,21 @@ hoot.food = {};
                 location, viewAdapter.append));
             minimodels[initLocationData.uid] = location;
 
+            // Initialize mini-models
             for (var i = 0; i < initLocationData.categories.length; i++) {
                 var categoryData = initLocationData.categories[i];
                 var category = new CategoryMiniModel(categoryData,
                                                      initLocationData.uid);
                 category.setViewAdapter(
                     viewAdapter.makeCategoryMiniViewAdapter(
-                        category, jQuery.proxy(location.prepend, location)));
+                        category, jQuery.proxy(location.append, location)));
                 minimodels[categoryData.uid] = category;
 
                 for (var j = 0; j < categoryData.items.length; j++) {
                     var itemData = categoryData.items[j];
                     var item = new ItemMiniModel(itemData, categoryData.uid);
                     item.setViewAdapter(viewAdapter.makeItemMiniViewAdapter(
-                        item, jQuery.proxy(category.prepend, category)));
+                        item, jQuery.proxy(category.append, category)));
                     minimodels[itemData.uid] = item;
                 }
             }
@@ -988,7 +1013,6 @@ hoot.food = {};
 
             model.init(initData.location, initData.refreshInterval,
                        initData.refreshIntervalErr, {
-                prepend: function(element) { view.prepend(element); },
                 append: function(element) { view.append(element); },
                 showStatusbar: function(bool) { view.showStatusbar(bool); },
                 setStatusbar: function(sbclass, text) {
@@ -1015,9 +1039,9 @@ hoot.food = {};
                     view.addItemErrors(fieldErrors, nonFieldErrors);
                 },
                 showDeletionWarning: function(model, name,
-                                              extraOminous, confirmCallback) {
+                                              ominous, confirmCallback) {
                     view.showDeletionWarning(model, name,
-                                             extraOminous, confirmCallback);
+                                             ominous, confirmCallback);
                 },
                 enableButtons: function(bool) {
                     view.enableButtons(bool);
@@ -1042,8 +1066,8 @@ hoot.food = {};
                             miniView.update(name, open);
                         },
                         flash: function() { miniView.flash(); },
-                        prepend: function(element) {
-                            miniView.prepend(element);
+                        append: function(element) {
+                            miniView.append(element);
                         },
                         remove: function() { miniView.remove(); }
                     };
@@ -1065,8 +1089,8 @@ hoot.food = {};
                             miniView.update(name, hot, suppressFlash);
                         },
                         flash: function() { miniView.flash(); },
-                        prepend: function(element) {
-                            miniView.prepend(element);
+                        append: function(element) {
+                            miniView.append(element);
                         },
                         remove: function() { miniView.remove(); }
                     };
@@ -1106,5 +1130,5 @@ hoot.food = {};
 
 // On load, initialize with data from script tag
 $(document).ready(function() {
-    hoot.food.start($('#food').data('initData'));
+    hoot.food.start($('#ajax-client-script').data('initData'));
 });
