@@ -13,6 +13,10 @@
                     <li><label for="cname">Name</label></li>
                     <li><input id="cname" name="name" type="text" maxlength="32" /></li>
                 </ul></li>
+                <li><ul class="field">
+                    <li><label for="heat">Contains hot food</label></li>
+                    <li><input type="checkbox" name="contents_hot" id="heat"></li>
+                </ul></li>
             </ul>
             <input id="cparent" name="parent" type="hidden" value="" />
         </form>
@@ -21,11 +25,7 @@
             <ul class="form">
                 <li><ul class="field">
                     <li><label for="iname">Name</label></li>
-                    <li><input id="iname" name="name"type="text" maxlength="32" /></li>
-                </ul></li>
-                <li><ul class="field">
-                    <li><label for="price">Price</label></li>
-                    <li><input id="price" name="price" type="text" maxlength="9" size="9" /></li>
+                    <li><input id="iname" name="name" type="text" maxlength="32" /></li>
                 </ul></li>
                 <li><ul class="field">
                     <li><label for="status">Status</label></li>
@@ -82,10 +82,8 @@
 
 <div class="item">
     <h3></h3>
-    <p>
-    <span class="status"></span><span class="price"></span>
-    </p>
     <ul class="inline">
+    <p></p>
         <li><a href="#" class="button edit">Edit</a></li>
         <li><a href="#" class="button delete">Delete</a></li>
     </ul>

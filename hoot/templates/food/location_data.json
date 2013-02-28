@@ -8,6 +8,7 @@
     "uid": "{{ location.uid }}",
     "categories": [{% for category in location.category_set.all %}{
         "name": "{{ category.name|escapejs }}",
+        "contents_hot": {{ category.contents_hot|lower }},
         "editURL": "{% url 'category-edit-ajax' category.uid %}",
         "deleteURL": "{% url 'category-del-ajax' category.uid %}",
         "addChildURL": "{% url 'item-add-ajax' %}",
@@ -15,7 +16,6 @@
         "uid": "{{ category.uid }}",
         "items": [{% for item in category.item_set.all %}{
             "name": "{{ item.name|escapejs }}",
-            "price": "{{ item.price|floatformat:2 }}",
             "quantity": "{% if item.quantity %}{{ item.quantity }}{% endif %}",
             "status": "{{ item.status }}",
             "editURL": "{% url 'item-edit-ajax' item.uid %}",
