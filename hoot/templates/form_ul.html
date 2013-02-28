@@ -5,6 +5,9 @@
 
     {% for field in form.hidden_fields %}
         {{ field }}
+        {% for error in field.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
     {% endfor %}
 
     {% for field in form.visible_fields %}
