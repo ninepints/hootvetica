@@ -68,14 +68,14 @@ hoot.food = {};
             }
 
             this.toggleButton = this.container.find('a.toggle')
-                .on('click', function() {
+                .on('click', function(event) {
                     miniModelAdapter.showToggleDialog();
-                    return false;
+                    event.preventDefault();
                 });
             this.addButton = this.container.find('a.add')
-                .on('click', function() {
+                .on('click', function(event) {
                     miniModelAdapter.showAddChildDialog();
-                    return false;
+                    event.preventDefault();
                 });
 
             if (!userCanChangeLocation && !userCanAddCategories)
@@ -124,19 +124,19 @@ hoot.food = {};
             this.statusText = this.container.children('h3');
 
             this.editButton = this.container.find('a.edit')
-                .on('click', function() {
+                .on('click', function(event) {
                     miniModelAdapter.showEditDialog();
-                    return false;
+                    event.preventDefault();
                 });
             this.deleteButton = this.container.find('a.delete')
-                .on('click', function() {
+                .on('click', function(event) {
                     miniModelAdapter.showDeleteDialog();
-                    return false;
+                    event.preventDefault();
                 });
             this.addButton = this.container.find('a.add')
-                .on('click', function() {
+                .on('click', function(event) {
                     miniModelAdapter.showAddChildDialog();
-                    return false;
+                    event.preventDefault();
                 });
 
             if (!userCanChangeCategories && !userCanDeleteCategories &&
@@ -186,14 +186,14 @@ hoot.food = {};
             this.statusText = this.container.find('p');
 
             this.editButton = this.container.find('a.edit')
-                .on('click', function() {
+                .on('click', function(event) {
                     miniModelAdapter.showEditDialog();
-                    return false;
+                    event.preventDefault();
                 });
             this.deleteButton = this.container.find('a.delete')
-                .on('click', function() {
+                .on('click', function(event) {
                     miniModelAdapter.showDeleteDialog();
-                    return false;
+                    event.preventDefault();
                 });
 
             if (!userCanChangeItems && !userCanDeleteItems)
@@ -259,17 +259,17 @@ hoot.food = {};
 
         // Attaches provided click handler to popup confirm button
         function setConfirmCallback(confirmCallback) {
-            confirmButton.off('click').on('click', function() {
+            confirmButton.off('click').on('click', function(event) {
                 if (buttonsEnabled) confirmCallback();
-                return false;
+                event.preventDefault();
             });
         };
 
         // Hides popup and cancels active request
-        function cancel() {
+        function cancel(event) {
             view.showPopup(false);
             modelAdapter.cancelRequest();
-            return false;
+            event.preventDefault();
         };
 
 
