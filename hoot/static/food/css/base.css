@@ -176,6 +176,11 @@ input[type="text"], input[type="password"]
     height: 1.5em;
 }
 
+input[type="text"]:disabled, input[type="password"]:disabled
+{
+    opacity: 0.5;
+}
+
 input[type="button"], input[type="submit"]
 {
     border: 0.125em solid rgb(64,64,64);
@@ -189,6 +194,13 @@ input[type="button"]:active, input[type="submit"]:active
 {
     background-color: rgb(64,64,64);
     color: white;
+}
+
+input[type="button"]:disabled, input[type="submit"]:disabled
+{
+    opacity: 0.5;
+    background-color: transparent;
+    color: rgb(64,64,64);
 }
 
 input[type="submit"]
