@@ -221,6 +221,16 @@ hoot.food = {};
                     this.editButton.parent().remove();
                 if (!userCanDeleteItems)
                     this.deleteButton.parent().remove();
+
+                this.container.on('click', jQuery.proxy(function(event) {
+                    $('div.item.active').not(this.container)
+                        .removeClass('active');
+                    this.container.addClass('active');
+                    event.stopPropagation();
+                }, this));
+                $('body').on('click', function() {
+                    $('div.item.active').removeClass('active');
+                });
             }
 
             attachCallback(this.container);
@@ -283,10 +293,9 @@ hoot.food = {};
         };
 
         // Hides popup and cancels active request
-        function cancel(event) {
+        function cancel() {
             view.showPopup(false);
             modelAdapter.cancelRequest();
-            event.preventDefault();
         };
 
 
@@ -328,7 +337,11 @@ hoot.food = {};
 
                     // On success, process new DOM tree
                     var parsedData = $(data);
-                    overlay = parsedData.filter('#overlay').on('click', cancel);
+                    overlay = parsedData.filter('#overlay')
+                        .on('click', function(event) {
+                            cancel();
+                            event.stopPropagation();
+                        });
                     overlay.children('.popup').on('click', function(event) {
                         event.stopPropagation();
                     });
@@ -356,7 +369,10 @@ hoot.food = {};
                     confirmButton = overlay.find('a.confirm')
                         .on('click', false);
                     cancelButton = overlay.find('a.cancel')
-                        .on('click', cancel);
+                        .on('click', function(event) {
+                            cancel();
+                            event.preventDefault();
+                        });
                     $(document).on('keydown', function(event) {
                         if (event.which === 13) {
                             confirmButton.trigger('click');
