@@ -79,6 +79,7 @@ hoot.food = {};
                 this.toggleButton.parent().parent().remove();
             else
             {
+                this.container.addClass('editable');
                 if (!userCanChangeLocation)
                     this.toggleButton.parent().remove();
                 if (!userCanAddCategories)
@@ -141,6 +142,7 @@ hoot.food = {};
                 this.editButton.parent().parent().remove();
             else
             {
+                this.container.addClass('editable');
                 if (!userCanChangeCategories)
                     this.editButton.parent().remove();
                 if (!userCanDeleteCategories)
@@ -214,6 +216,7 @@ hoot.food = {};
                 this.editButton.parent().parent().remove();
             else
             {
+                this.container.addClass('editable');
                 if (!userCanChangeItems)
                     this.editButton.parent().remove();
                 if (!userCanDeleteItems)
