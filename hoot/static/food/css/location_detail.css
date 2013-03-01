@@ -35,14 +35,14 @@ div.location > h1
 
 div.location > div.info
 {
-    height: 12em;
+    max-height: 15em;
     opacity: 1;
 
-    -webkit-transition-property: height margin, opacity;
-    -moz-transition-property: height, margin, opacity;
-    -ms-transition-property: height, margin, opacity;
-    -o-transition-property: height, margin, opacity;
-    transition-property: height, margin, opacity;
+    -webkit-transition-property: max-height, margin, opacity;
+    -moz-transition-property: max-height, margin, opacity;
+    -ms-transition-property: max-height, margin, opacity;
+    -o-transition-property: max-height, margin, opacity;
+    transition-property: max-height, margin, opacity;
 
     -webkit-transition-duration: 0.35s;
     -moz-transition-duration: 0.35s;
@@ -53,7 +53,7 @@ div.location > div.info
 
 div.location > div.info.hidden
 {
-    height: 0;
+    max-height: 0;
     margin: 0;
     opacity: 0;
 }
