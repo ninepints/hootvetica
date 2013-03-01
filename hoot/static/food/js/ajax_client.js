@@ -893,7 +893,7 @@ hoot.food = {};
             countdownTimer = setInterval(function() {
                 if (timeLeft >= 1) {
                     var msg = 'Refresh failed, retrying in ' + timeLeft +
-                        ' seconds...';
+                        (timeLeft === 1 ? ' second...' : ' seconds...');
                     viewAdapter.setStatusbar('error', errorThrown ? msg +
                         ' (' + errorThrown + ')' : msg);
                     timeLeft--;
