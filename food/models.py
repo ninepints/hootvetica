@@ -70,7 +70,7 @@ class Item(models.Model):
                            editable=False, primary_key=True)
     parent = models.ForeignKey(Category)
     name = models.CharField(max_length=32)
-    status = models.CharField(blank=True, max_length=3, choices=(
+    status = models.CharField(max_length=3, choices=(
         ('AVA', 'Available'),
         ('LOW', 'Running low'),
         ('OUT', 'Sold out'),
