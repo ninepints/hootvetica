@@ -271,6 +271,11 @@ div.popup
     overflow: hidden;
 }
 
+div.popup > h2
+{
+    margin-bottom: 0;
+}
+
 ul.popup-buttons
 {
     overflow: hidden;
@@ -280,4 +285,125 @@ ul.popup-buttons > li
 {
     margin-right: 1em;
     float: left;
+}
+
+/* Statusbars */
+
+div.statusbar
+{
+    height: 1.5em;
+    margin-top: 1.5em;
+    padding: 0.75em 1em;
+    background-color: rgb(240,240,240);
+    overflow: hidden;
+
+    -webkit-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
+    -moz-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
+    -ms-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
+    -o-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
+    transition-property: height, margin-top, padding-top, padding-bottom, opacity;
+
+    -webkit-transition-duration: 0.35s;
+    -moz-transition-duration: 0.35s;
+    -ms-transition-duration: 0.35s;
+    -o-transition-duration: 0.35s;
+    transition-duration: 0.35s;
+}
+
+div.statusbar.error
+{
+    background-color: rgb(245,164,157);
+}
+
+div.statusbar.warning
+{
+    background-color: rgb(255,216,148);
+}
+
+div.statusbar.success
+{
+    background-color: rgb(175,230,116);
+}
+
+div.statusbar.info
+{
+    background-color: rgb(151,203,255);
+}
+
+div.statusbar.busy
+{
+    background-image: -webkit-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
+    background-image: -moz-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
+    background-image: -ms-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
+    background-image: -o-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
+    background-image: repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
+    -webkit-animation-name: busyAnim;
+    -moz-animation-name: busyAnim;
+    -ms-animation-name: busyAnim;
+    -o-animation-name: busyAnim;
+    animation-name: busyAnim;
+    -webkit-animation-duration: 60s;
+    -moz-animation-duration: 60s;
+    -ms-animation-duration: 60s;
+    -o-animation-duration: 60s;
+    animation-duration: 60s;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+    -ms-animation-timing-function: linear;
+    -o-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -ms-animation-iteration-count: infinite;
+    -o-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes busyAnim
+{
+    from { background-position-x: -375em; }
+    to { background-position-x: 0; }
+}
+@-moz-keyframes busyAnim
+{
+    from { background-position-x: -375em; }
+    to { background-position-x: 0; }
+}
+@-ms-keyframes busyAnim
+{
+    from { background-position-x: -375em; }
+    to { background-position-x: 0; }
+}
+@-o-keyframes busyAnim
+{
+    from { background-position-x: -375em; }
+    to { background-position-x: 0; }
+}
+@keyframes busyAnim
+{
+    from { background-position-x: -375em; }
+    to { background-position-x: 0; }
+}
+
+div.statusbar.hidden
+{
+    height: 0;
+    margin-top: 0;
+    padding: 0 1em;
+    opacity: 0;
+}
+
+div.statusbar > p
+{
+    margin: 0;
+}
+
+div.popup > div.statusbar
+{
+    margin: 1.5em -1em 0;
+}
+
+div.popup > div.statusbar.hidden
+{
+    margin: 0 -1em;
 }
