@@ -142,7 +142,7 @@ div.category.out:nth-child(2n)
     background-color: rgb(220,148,141);
 }
 
-div.category.highlight
+div.category.highlight, div.category.highlight:nth-child(2n)
 {
     background-color: rgb(255,213,125);
 
