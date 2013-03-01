@@ -389,7 +389,7 @@ hoot.food = {};
                     categoryTemplate = parsedData.filter('div.category');
                     itemTemplate = parsedData.filter('div.item');
 
-                    overlay.appendTo(body).hide();
+                    overlay.appendTo(body);
 
                     // Done starting view, start model
                     this.showStatusbar(false);
@@ -441,10 +441,10 @@ hoot.food = {};
                 deletionWarning.add(categoryForm).add(itemForm).hide();
                 this.setPopupStatusbar('', '');
                 body.addClass('noscroll');
-                overlay.show();
+                overlay.removeClass('hidden');
             } else {
                 this.enableButtons(false);
-                overlay.hide();
+                overlay.addClass('hidden');
                 body.removeClass('noscroll');
             }
         };
