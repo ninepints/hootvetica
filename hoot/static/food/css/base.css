@@ -146,7 +146,7 @@ div.warning, div.auth, section.warning, section.auth
     background-color: rgb(255,216,148);
 }
 
-div.success, div.ok, section.success, section.ok
+div.success, section.success
 {
     background-color: rgb(175,230,116);
 }
