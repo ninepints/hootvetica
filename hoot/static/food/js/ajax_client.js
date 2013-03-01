@@ -36,9 +36,6 @@ hoot.food = {};
         var popupStatusbar, popupStatusbarText;
         var locationTemplate, categoryTemplate, itemTemplate;
 
-        // Main statusbar display timer
-        var statusbarTimer;
-
         // Local functions
         var qtyFieldVisCheck, setConfirmCallback, cancel;
 
@@ -413,19 +410,18 @@ hoot.food = {};
 
         // Shows/hides the main statusbar
         this.showStatusbar = function(bool) {
-            if (bool) {
-                // Delay 250ms to avoid content jumping during short displays
-                statusbarTimer = setTimeout(function() { statusbar.show(); },
-                    250);
-            } else {
-                clearTimeout(statusbarTimer);
-                statusbar.hide();
-            }
+            if (bool)
+                statusbar.removeClass('hidden');
+            else
+                statusbar.addClass('hidden');
         };
 
         // Gives the main statusbar the specified style and message
         this.setStatusbar = function(sbclass, text) {
+            var wasHidden = statusbar.hasClass('hidden');
             statusbar.removeClass().addClass('statusbar');
+            if (wasHidden)
+                statusbar.addClass('hidden');
             statusbarText.text(text);
             if (sbclass)
                 statusbar.addClass(sbclass);
@@ -439,11 +435,11 @@ hoot.food = {};
                 this.setPopupConfirmText('Done');
                 overlay.find('li.error').remove();
                 deletionWarning.add(categoryForm).add(itemForm).hide();
-                this.setPopupStatusbar('', '');
                 body.addClass('noscroll');
                 overlay.removeClass('hidden');
             } else {
                 this.enableButtons(false);
+                this.showPopupStatusbar(false);
                 overlay.addClass('hidden');
                 body.removeClass('noscroll');
             }
@@ -565,9 +561,20 @@ hoot.food = {};
             confirmButton.text(text);
         };
 
+        // Shows/hides the editing popup statusbar
+        this.showPopupStatusbar = function(bool) {
+            if (bool)
+                popupStatusbar.removeClass('hidden');
+            else
+                popupStatusbar.addClass('hidden');
+        };
+
         // Gives the editing popup statusbar the specified style and message
         this.setPopupStatusbar = function(sbclass, text) {
+            var wasHidden = popupStatusbar.hasClass('hidden');
             popupStatusbar.removeClass().addClass('statusbar');
+            if (wasHidden)
+                popupStatusbar.addClass('hidden');
             popupStatusbarText.text(text);
             if (sbclass)
                 popupStatusbar.addClass(sbclass);
@@ -650,6 +657,7 @@ hoot.food = {};
             postData(data, this.editURL, function() {
                 // This only gets invoked if the server rejects the update
                 // request (so hopefully never)
+                viewAdapter.showPopupStatusbar(true);
                 viewAdapter.setPopupStatusbar('error',
                             'Server rejected update');
             });
@@ -924,6 +932,7 @@ hoot.food = {};
         function postData(data, url, errorCallback) {
             if (postRequest) postRequest.abort();
             viewAdapter.enableButtons(false);
+            viewAdapter.showPopupStatusbar(true);
             viewAdapter.setPopupStatusbar('busy', 'Sending request...');
 
             postRequest = jQuery.ajax({
@@ -935,7 +944,7 @@ hoot.food = {};
                     if (!data.accepted) {
                         // Bad data, display model validation errors
                         viewAdapter.enableButtons(true);
-                        viewAdapter.setPopupStatusbar('', '');
+                        viewAdapter.showPopupStatusbar(false);
                         if (errorCallback) {
                             errorCallback(data.fieldErrors,
                                           data.nonFieldErrors);
@@ -951,6 +960,7 @@ hoot.food = {};
                     viewAdapter.setPopupConfirmText('Retry');
                     viewAdapter.enableButtons(true);
                     var msg = 'Request failed';
+                    viewAdapter.showPopupStatusbar(true);
                     viewAdapter.setPopupStatusbar('error', errorThrown ? msg +
                         ' (' + errorThrown + ')' : msg);
                 }
@@ -1098,6 +1108,9 @@ hoot.food = {};
                 },
                 setPopupConfirmText: function(text) {
                     view.setPopupConfirmText(text);
+                },
+                showPopupStatusbar: function(bool) {
+                    view.showPopupStatusbar(bool);
                 },
                 setPopupStatusbar: function(sbclass, text) {
                     view.setPopupStatusbar(sbclass, text);

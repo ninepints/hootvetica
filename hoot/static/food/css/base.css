@@ -310,15 +310,14 @@ ul#messagelist
 ul#messagelist > li
 {
     height: 1.5em;
-    margin: 1.5em 1em 0 1em;
     padding: 0.75em 1em;
     overflow: hidden;
 
-    -webkit-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    -moz-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    -ms-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    -o-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    transition-property: height, margin-top, padding-top, padding-bottom, opacity;
+    -webkit-transition-property: height, padding-top, padding-bottom, opacity;
+    -moz-transition-property: height, padding-top, padding-bottom, opacity;
+    -ms-transition-property: height, padding-top, padding-bottom, opacity;
+    -o-transition-property: height, padding-top, padding-bottom, opacity;
+    transition-property: height, padding-top, padding-bottom, opacity;
 
     -webkit-transition-duration: 0.35s;
     -moz-transition-duration: 0.35s;
@@ -330,7 +329,6 @@ ul#messagelist > li
 ul#messagelist > li.collapsed
 {
     height: 0;
-    margin-top: 0;
     padding: 0 1em;
     opacity: 0;
 }
