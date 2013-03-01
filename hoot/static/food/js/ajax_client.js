@@ -264,10 +264,13 @@ hoot.food = {};
         // Applies a highlight class for 50ms, which should fade slowly using
         // a CSS transition
         ItemMiniView.prototype.flash = function() {
-            this.container.addClass('highlight');
+            this.container.addClass('highlight slow-trans');
             setTimeout(jQuery.proxy(function() {
-                this.container.removeClass('highlight')
+                this.container.removeClass('highlight');
             }, this), 50);
+            setTimeout(jQuery.proxy(function() {
+                this.container.removeClass('slow-trans');
+            }, this), 3050);
         };
 
         ItemMiniView.prototype.remove = function() {

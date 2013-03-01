@@ -85,6 +85,18 @@ div.category
     position: relative;
     margin: 0;
     overflow: hidden;
+
+    -webkit-transition-property: background-color;
+    -moz-transition-property: background-color;
+    -ms-transition-property: background-color;
+    -o-transition-property: background-color;
+    transition-property: background-color;
+
+    -webkit-transition-duration: 3s;
+    -moz-transition-duration: 3s;
+    -ms-transition-duration: 3s;
+    -o-transition-duration: 3s;
+    transition-duration: 3s;
 }
 
 div.category:nth-child(2n)
@@ -114,7 +126,13 @@ div.category.out:nth-child(2n)
 
 div.category.highlight
 {
-    background-color: rgb(255,213,125)
+    background-color: rgb(255,213,125);
+
+    -webkit-transition-duration: 0s;
+    -moz-transition-duration: 0s;
+    -ms-transition-duration: 0s;
+    -o-transition-duration: 0s;
+    transition-duration: 0s;
 }
 
 div.category.collapsed
@@ -144,17 +162,26 @@ div.item
     float: left;
     overflow: hidden;
 
-    -webkit-transition-property: padding-right;
-    -moz-transition-property: padding-right;
-    -ms-transition-property: padding-right;
-    -o-transition-property: padding-right;
-    transition-property: padding-right;
+    -webkit-transition-property: padding-right, background-color;
+    -moz-transition-property: padding-right, background-color;
+    -ms-transition-property: padding-right, background-color;
+    -o-transition-property: padding-right, background-color;
+    transition-property: padding-right, background-color;
 
     -webkit-transition-duration: 0.35s;
     -moz-transition-duration: 0.35s;
     -ms-transition-duration: 0.35s;
     -o-transition-duration: 0.35s;
     transition-duration: 0.35s;
+}
+
+div.item.slow-trans
+{
+    -webkit-transition-duration: 3s;
+    -moz-transition-duration: 3s;
+    -ms-transition-duration: 3s;
+    -o-transition-duration: 3s;
+    transition-duration: 3s;
 }
 
 div.item.active
@@ -169,7 +196,13 @@ div.item.out
 
 div.item.highlight
 {
-    background-color: rgb(255,213,125)
+    background-color: rgb(255,213,125);
+
+    -webkit-transition-duration: 0s;
+    -moz-transition-duration: 0s;
+    -ms-transition-duration: 0s;
+    -o-transition-duration: 0s;
+    transition-duration: 0s;
 }
 
 div.item > h3
