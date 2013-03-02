@@ -121,6 +121,10 @@ hoot.food = {};
             this.nameText = this.container.children('h2');
             this.statusText = this.container.children('h3');
 
+            this.nameText.on('click', jQuery.proxy(function() {
+                this.container.toggleClass('collapsed');
+            }, this));
+
             this.editButton = this.container.find('a.edit')
                 .on('click', function(event) {
                     miniModelAdapter.showEditDialog();
