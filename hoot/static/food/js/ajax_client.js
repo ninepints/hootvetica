@@ -122,7 +122,8 @@ hoot.food = {};
             this.statusText = this.container.children('h3');
 
             this.nameText.on('click', jQuery.proxy(function() {
-                this.container.toggleClass('collapsed');
+                if (!this.container.hasClass('empty'))
+                    this.container.toggleClass('collapsed');
             }, this));
 
             this.editButton = this.container.find('a.edit')
@@ -169,7 +170,7 @@ hoot.food = {};
             var soldOutChildren = children.filter('.out');
             this.container.removeClass('empty out');
             if (children.length === 0) {
-                this.container.addClass('empty');
+                this.container.addClass('empty collapsed');
                 this.statusText.text('No items');
             }
             else if (children.length === soldOutChildren.length) {
