@@ -105,11 +105,11 @@ div.category
     -o-transition-property: background-color;
     transition-property: background-color;
 
-    -webkit-transition-duration: 3s;
-    -moz-transition-duration: 3s;
-    -ms-transition-duration: 3s;
-    -o-transition-duration: 3s;
-    transition-duration: 3s;
+    -webkit-transition-duration: 0s;
+    -moz-transition-duration: 0s;
+    -ms-transition-duration: 0s;
+    -o-transition-duration: 0s;
+    transition-duration: 0s;
 }
 
 div.category.editable > h2
@@ -196,15 +196,6 @@ div.item
     -ms-transition-duration: 0.35s;
     -o-transition-duration: 0.35s;
     transition-duration: 0.35s;
-}
-
-div.item.slow-trans
-{
-    -webkit-transition-duration: 3s;
-    -moz-transition-duration: 3s;
-    -ms-transition-duration: 3s;
-    -o-transition-duration: 3s;
-    transition-duration: 3s;
 }
 
 div.item.active
@@ -462,4 +453,15 @@ div.popup > div.statusbar
 div.popup > div.statusbar.hidden
 {
     margin: 0 -1em;
+}
+
+/* Misc. */
+
+div.slow-trans
+{
+    -webkit-transition-duration: 3s;
+    -moz-transition-duration: 3s;
+    -ms-transition-duration: 3s;
+    -o-transition-duration: 3s;
+    transition-duration: 3s;
 }
