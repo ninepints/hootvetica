@@ -97,6 +97,7 @@ div.category
 {
     position: relative;
     margin: 0;
+    background-color: rgb(175,230,116);
     overflow: hidden;
 
     -webkit-transition-property: background-color;
@@ -171,17 +172,17 @@ div.category.collapsed > h2::after
 
 div.category:nth-child(2n)
 {
-    background-color: rgb(240,240,240);
+    background-color: rgb(163,207,104);
 }
 
 div.category.empty
 {
-    background-color: rgb(224,224,224);
+    background-color: white;
 }
 
 div.category.empty:nth-child(2n)
 {
-    background-color: rgb(208,208,208);
+    background-color: rgb(240,240,240);
 }
 
 div.category.out
