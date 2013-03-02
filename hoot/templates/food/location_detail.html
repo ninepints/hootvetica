@@ -13,7 +13,7 @@
 {% block content %}
     <div class="statusbar hidden"><p></p></div>
 
-    <div class="location">
+    <div class="location no-js{% if perms.food.change_location or perms.food.set_location_status or perms.food.add_category %} editable{% endif %}">
         <h1>{{ location.name }}</h1>
 
         {% if perms.food.change_location or perms.food.set_location_status or perms.food.add_category %}
@@ -43,7 +43,7 @@
         {% if location.open or user.is_authenticated %}
             <div class="categories">
                 {% for category in location.category_set.all %}
-                    <div class="category{% if category.item_set.count == 0 %} empty{% elif not category.food_available %} out{% endif %} indented banner">
+                    <div class="category{% if category.item_set.count == 0 %} empty{% elif not category.food_available %} out{% endif %}{% if perms.food.change_category or perms.food.delete_category or perms.food.add_item %} editable{% endif %} indented banner">
                         <h2>{{ category.name }}</h2>
                         <h3>{% if category.item_set.count == 0 %}No items{% elif not category.food_available %}Sold out{% else %}Available{% endif %}</h3>
 
@@ -63,7 +63,7 @@
 
                         <div class="items">
                             {% for item in category.item_set.all %}
-                                <div class="item{% if item.status == "LOW" %} low{% elif item.status == "OUT" %} out{% endif %}">
+                                <div class="item{% if item.status == "LOW" %} low{% elif item.status == "OUT" %} out{% endif %}{% if perms.food.change_item or perms.food.delete_item %} editable{% endif %}">
                                     <h3>{{ item.name }}</h3>
                                     <p>{% if item.status == "QTY" %}{{ item.quantity }} Left{% else %}{{ item.get_status_display }}{% endif %}</p>
 
