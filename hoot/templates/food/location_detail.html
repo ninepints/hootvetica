@@ -5,7 +5,9 @@
 
 {% block extrahead %}
     <link rel="stylesheet" type="text/css" href="{% static "food/css/location_detail.css" %}" />
-    <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax_client.js" %}"></script>
+    <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-model.js" %}"></script>
+    <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-view.js" %}"></script>
+    <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-launcher.js" %}"></script>
     <script>$('#ajax-client-script').data('initData', {% include 'food/ajax_client_config.json' %});</script>
 {% endblock %}
 
