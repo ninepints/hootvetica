@@ -34,7 +34,8 @@ ajaxClient.view = {};
         // Clone/customize template markup and attach event handlers
         this.container = locationTemplate.clone();
         this.childrenDiv = this.container.children('div.categories');
-        this.nameText = this.container.find('h1');
+        this.nameText = this.container.children('h1');
+        this.emptyText = this.childrenDiv.children('h3').hide();
         this.closedBox = this.container.children('div.info');
         if (userCanChangeLocation) {
             this.closedBox.children('p').text('No information is visible' +
@@ -89,6 +90,13 @@ ajaxClient.view = {};
             this.childrenDiv.removeClass('hidden');
 
         this.toggleButton.text(open ? 'Close Location' : 'Open Location');
+    };
+
+    LocationMiniView.prototype.childDependentUpdate = function() {
+        if (this.childrenDiv.children().length === 1)
+            this.emptyText.show();
+        else
+            this.emptyText.hide();
     };
 
     LocationMiniView.prototype.append = function(element) {
@@ -191,8 +199,8 @@ ajaxClient.view = {};
     function ItemMiniView(miniModelAdapter, attachCallback) {
         // Clone/customize template markup and attach event handlers
         this.container = itemTemplate.clone();
-        this.nameText = this.container.find('h3');
-        this.statusText = this.container.find('p');
+        this.nameText = this.container.children('h3');
+        this.statusText = this.container.children('p');
 
         this.availableButton = this.container.find('a.available')
             .on('click', function(event) {

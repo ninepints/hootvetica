@@ -65,6 +65,9 @@ $(document).ready(function() {
                     update: function(name, open) {
                         miniView.update(name, open);
                     },
+                    childDependentUpdate: function() {
+                        miniView.childDependentUpdate();
+                    },
                     flash: function() { miniView.flash(); },
                     append: function(element) {
                         miniView.append(element);

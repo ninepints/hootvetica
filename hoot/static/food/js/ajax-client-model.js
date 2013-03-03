@@ -86,6 +86,10 @@ ajaxClient.model = {};
         }
     };
 
+    LocationMiniModel.prototype.childDependentUpdate = function() {
+        this.viewAdapter.childDependentUpdate();
+    }
+
     LocationMiniModel.prototype.remove = function() {
         this.viewAdapter.remove();
     };
