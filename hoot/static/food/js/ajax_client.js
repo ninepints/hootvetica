@@ -265,7 +265,7 @@ hoot.food = {};
             }
             else if (status === 'QTY')
             {
-                this.statusText.text(qty + ' Left');
+                this.statusText.text(qty + ' left');
             }
 
             if (!suppressFlash)
