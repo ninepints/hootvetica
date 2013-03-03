@@ -47,21 +47,18 @@ hoot.food = {};
             this.childrenDiv = this.container.children('div.categories');
             this.nameText = this.container.find('h1');
             this.closedBox = this.container.children('div.info');
-            if (userCanChangeLocation)
-            {
+            if (userCanChangeLocation) {
                 this.closedBox.children('p').text('No information is visible' +
                     ' to the public. You can open this location using the' +
                     ' controls above.');
                 this.closedBox.children('h3').remove();
             }
-            else if (userIsAuthenticated)
-            {
+            else if (userIsAuthenticated) {
                 this.closedBox.children('p').text('No information is visible' +
                     ' to the public.');
                 this.closedBox.children('h3').remove();
             }
-            else
-            {
+            else {
                 this.closedBox.children('p').remove();
             }
 
@@ -78,8 +75,7 @@ hoot.food = {};
 
             if (!userCanChangeLocation && !userCanAddCategories)
                 this.toggleButton.parent().parent().remove();
-            else
-            {
+            else {
                 this.container.addClass('editable');
                 if (!userCanChangeLocation)
                     this.toggleButton.parent().remove();
@@ -146,8 +142,7 @@ hoot.food = {};
             if (!userCanChangeCategories && !userCanDeleteCategories &&
                     !userCanAddItems)
                 this.editButton.parent().parent().remove();
-            else
-            {
+            else {
                 this.container.addClass('editable');
                 if (!userCanChangeCategories)
                     this.editButton.parent().remove();
@@ -234,8 +229,7 @@ hoot.food = {};
             if (!userCanChangeItems && !userCanChangeItemStatuses &&
                 !userCanDeleteItems)
                 this.editButton.parent().parent().remove();
-            else
-            {
+            else {
                 this.container.addClass('editable');
                 if (userCanChangeItems || !userCanChangeItemStatuses) {
                     this.availableButton.parent().remove();
@@ -266,23 +260,17 @@ hoot.food = {};
             this.container.removeClass('low out');
 
             if (status === 'AVA')
-            {
                 this.statusText.text('Available');
-            }
-            else if (status === 'LOW')
-            {
+            else if (status === 'LOW') {
                 this.statusText.text('Running low');
                 this.container.addClass('low');
             }
-            else if (status === 'OUT')
-            {
+            else if (status === 'OUT') {
                 this.statusText.text('Sold out');
                 this.container.addClass('out');
             }
             else if (status === 'QTY')
-            {
                 this.statusText.text(qty + ' left');
-            }
 
             if (!suppressFlash)
                 this.flash();
@@ -469,7 +457,8 @@ hoot.food = {};
                 deletionWarning.add(categoryForm).add(itemForm).hide();
                 body.addClass('noscroll');
                 overlay.removeClass('hidden');
-            } else {
+            }
+            else {
                 this.enableButtons(false);
                 this.showPopupStatusbar(false);
                 overlay.addClass('hidden');
@@ -479,7 +468,7 @@ hoot.food = {};
 
         // Displays editing popup with given location status
         // and confirmation callback function, automatically invoking callback
-        this.showLocationToggle = function(opening, confirmCallback) {
+        this.showLocationForm = function(opening, confirmCallback) {
             this.showPopup(true, (opening ? 'Opening' : 'Closing')+' Location');
             locationOpen.val(opening.toString());
             setConfirmCallback(function() {
@@ -519,7 +508,7 @@ hoot.food = {};
             var form = categoryForm.children('ul.form');
             for (var i = nonFieldErrors.length - 1; i >= 0; i--) {
                 form.prepend('<li class="error">' + nonFieldErrors[i] + '</li>');
-            };
+            }
         };
 
         // Displays editing popup with given item information
@@ -556,7 +545,7 @@ hoot.food = {};
             var form = itemForm.children('ul.form');
             for (var i = nonFieldErrors.length - 1; i >= 0; i--) {
                 form.prepend('<li class="error">' + nonFieldErrors[i] + '</li>');
-            };
+            }
         };
 
         // Displays editing popup with given item status
@@ -592,7 +581,8 @@ hoot.food = {};
                 confirmButton.removeClass('disabled');
                 buttonsEnabled = true;
                 formInputs.prop('disabled', false);
-            } else {
+            }
+            else {
                 confirmButton.addClass('disabled');
                 buttonsEnabled = false;
                 formInputs.prop('disabled', true);
@@ -691,7 +681,7 @@ hoot.food = {};
 
         // Shows a toggle dialog (and automatically sends toggle request)
         LocationMiniModel.prototype.showToggleDialog = function() {
-            viewAdapter.showLocationToggle(!this.open,
+            viewAdapter.showLocationForm(!this.open,
                 jQuery.proxy(this.confirmToggle, this));
         };
 
@@ -905,7 +895,8 @@ hoot.food = {};
                     delete minimodels[categoryData.uid];
                     newMinimodels[categoryData.uid] = category;
                     category.update(categoryData);
-                } else {
+                }
+                else {
                     // Make a new model
                     category = new CategoryMiniModel(categoryData,
                                                      locationData.uid);
@@ -927,7 +918,8 @@ hoot.food = {};
                         delete minimodels[itemData.uid];
                         newMinimodels[itemData.uid] = item;
                         item.update(itemData);
-                    } else {
+                    }
+                    else {
                         // Make a new model
                         var item = new ItemMiniModel(itemData,
                                                      categoryData.uid);
@@ -961,7 +953,8 @@ hoot.food = {};
                     viewAdapter.setStatusbar('error', errorThrown ? msg +
                         ' (' + errorThrown + ')' : msg);
                     timeLeft--;
-                } else {
+                }
+                else {
                     clearInterval(countdownTimer);
                     refreshData();
                 }
@@ -1013,7 +1006,8 @@ hoot.food = {};
                             errorCallback(data.fieldErrors,
                                           data.nonFieldErrors);
                         }
-                    } else {
+                    }
+                    else {
                         // Update accepted, close popup and refresh data
                         viewAdapter.showPopup(false);
                         refreshData();
@@ -1145,8 +1139,8 @@ hoot.food = {};
                 showPopup: function(bool, title) {
                     view.showPopup(bool, title);
                 },
-                showLocationToggle: function(opening, confirmCallback) {
-                    view.showLocationToggle(opening, confirmCallback);
+                showLocationForm: function(opening, confirmCallback) {
+                    view.showLocationForm(opening, confirmCallback);
                 },
                 showCategoryForm: function(name, hot, parent, confirmCallback) {
                     view.showCategoryForm(name, hot, parent, confirmCallback);
