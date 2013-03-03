@@ -7,6 +7,7 @@
     "userCanDeleteCategories": {{ perms.food.delete_category|lower }},
     "userCanAddItems": {{ perms.food.add_item|lower }},
     "userCanChangeItems": {{ perms.food.change_item|lower }},
+    "userCanChangeItemStatuses": true,
     "userCanDeleteItems": {{ perms.food.delete_item|lower }},
     "location": {% include 'food/location_data.json' %}{% if refresh_interval %},
     "refreshInterval": {{ refresh_interval }}{% endif %}{% if refresh_interval_err %},

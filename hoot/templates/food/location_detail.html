@@ -67,16 +67,16 @@
                                     <h3>{{ item.name }}</h3>
                                     <p>{% if item.status == "QTY" %}{{ item.quantity }} left{% else %}{{ item.get_status_display }}{% endif %}</p>
 
-                                    {% if perms.food.change_item or perms.food.delete_item %}
-                                        <ul class="item-buttons">
-                                            {% if perms.food.change_item %}
-                                                <li><a href="{% url 'item-edit' item.uid %}" class="button edit">Edit</a></li>
-                                            {% endif %}
-                                            {% if perms.food.delete_item %}
-                                                <li><a href="{% url 'item-del' item.uid %}" class="button delete">Delete</a></li>
-                                            {% endif %}
-                                        </ul>
-                                    {% endif %}
+                                    <ul class="item-buttons">
+                                        {% if perms.food.change_item %}
+                                            <li><a href="{% url 'item-edit' item.uid %}" class="button edit">Edit</a></li>
+                                        {% else %}
+                                            <li><a href="{% url 'item-edit-status' item.uid %}" class="button edit">Edit</a></li>
+                                        {% endif %}
+                                        {% if perms.food.delete_item %}
+                                            <li><a href="{% url 'item-del' item.uid %}" class="button delete">Delete</a></li>
+                                        {% endif %}
+                                    </ul>
                                 </div>
                             {% endfor %}
                         </div>

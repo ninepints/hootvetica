@@ -19,7 +19,8 @@ hoot.food = {};
         var userIsAuthenticated;
         var userCanChangeLocation, userCanAddCategories,
             userCanChangeCategories, userCanDeleteCategories,
-            userCanAddItems, userCanChangeItems, userCanDeleteItems;
+            userCanAddItems, userCanChangeItems, userCanChangeItemStatuses,
+            userCanDeleteItems;
 
         // Existing page elements
         var body, contentDiv, statusbar, statusbarText;
@@ -209,6 +210,16 @@ hoot.food = {};
             this.nameText = this.container.find('h3');
             this.statusText = this.container.find('p');
 
+            this.availableButton = this.container.find('a.available')
+                .on('click', function(event) {
+                    miniModelAdapter.showSetAvailableDialog();
+                    event.preventDefault();
+                });
+            this.unavailableButton = this.container.find('a.out')
+                .on('click', function(event) {
+                    miniModelAdapter.showSetUnavailableDialog();
+                    event.preventDefault();
+                });
             this.editButton = this.container.find('a.edit')
                 .on('click', function(event) {
                     miniModelAdapter.showEditDialog();
@@ -220,11 +231,16 @@ hoot.food = {};
                     event.preventDefault();
                 });
 
-            if (!userCanChangeItems && !userCanDeleteItems)
+            if (!userCanChangeItems && !userCanChangeItemStatuses &&
+                !userCanDeleteItems)
                 this.editButton.parent().parent().remove();
             else
             {
                 this.container.addClass('editable');
+                if (userCanChangeItems || !userCanChangeItemStatuses) {
+                    this.availableButton.parent().remove();
+                    this.unavailableButton.parent().remove();
+                }
                 if (!userCanChangeItems)
                     this.editButton.parent().remove();
                 if (!userCanDeleteItems)
@@ -313,7 +329,8 @@ hoot.food = {};
         // Main view initialization
         this.init = function(URL, authenticated, canChangeLocation,
                 canAddCategories, canChangeCategories, canDeleteCategories,
-                canAddItems, canChangeItems, canDeleteItems, adapter) {
+                canAddItems, canChangeItems, canChangeItemStatuses,
+                canDeleteItems, adapter) {
             UIURL = URL;
             userIsAuthenticated = authenticated;
             userCanChangeLocation = canChangeLocation;
@@ -322,6 +339,7 @@ hoot.food = {};
             userCanDeleteCategories = canDeleteCategories;
             userCanAddItems = canAddItems;
             userCanChangeItems = canChangeItems;
+            userCanChangeItemStatuses = canChangeItemStatuses;
             userCanDeleteItems = canDeleteItems;
             modelAdapter = adapter;
             body = $('body');
@@ -459,7 +477,7 @@ hoot.food = {};
             }
         };
 
-        // Displays editing popup with given location information
+        // Displays editing popup with given location status
         // and confirmation callback function, automatically invoking callback
         this.showLocationToggle = function(opening, confirmCallback) {
             this.showPopup(true, (opening ? 'Opening' : 'Closing')+' Location');
@@ -539,6 +557,17 @@ hoot.food = {};
             for (var i = nonFieldErrors.length - 1; i >= 0; i--) {
                 form.prepend('<li class="error">' + nonFieldErrors[i] + '</li>');
             };
+        };
+
+        // Displays editing popup with given item status
+        // and confirmation callback function, automatically invoking callback
+        this.showItemStatusForm = function(status, confirmCallback) {
+            this.showPopup(true, 'Updating Item');
+            itemStatus.val(status);
+            setConfirmCallback(function() {
+                confirmCallback(itemForm.serialize());
+            });
+            confirmCallback(itemForm.serialize());
         };
 
         // Displays delete confirmation dialog with given callback function
@@ -780,6 +809,7 @@ hoot.food = {};
 
         function ItemMiniModel(json, parent) {
             this.editURL = json.editURL;
+            this.editStatusURL = json.editStatusURL;
             this.deleteURL = json.deleteURL;
             this.parent = parent;
             this.uid = json.uid;
@@ -801,6 +831,26 @@ hoot.food = {};
         // Sends item edit request to server
         ItemMiniModel.prototype.confirmEdit = function(data) {
             postData(data, this.editURL, viewAdapter.addItemErrors);
+        };
+
+        ItemMiniModel.prototype.showSetAvailableDialog = function() {
+            viewAdapter.showItemStatusForm('AVA',
+                jQuery.proxy(this.confirmEditStatus, this));
+        };
+
+        ItemMiniModel.prototype.showSetUnavailableDialog = function() {
+            viewAdapter.showItemStatusForm('OUT',
+                jQuery.proxy(this.confirmEditStatus, this));
+        };
+
+        ItemMiniModel.prototype.confirmEditStatus = function(data) {
+            postData(data, this.editStatusURL, function() {
+                // Again, only gets invoked if the server rejects the update
+                // request (so hopefully never)
+                viewAdapter.showPopupStatusbar(true);
+                viewAdapter.setPopupStatusbar('error',
+                            'Server rejected update');
+            });
         };
 
         // Displays item delete dialog
@@ -1112,6 +1162,9 @@ hoot.food = {};
                 addItemErrors: function(fieldErrors, nonFieldErrors) {
                     view.addItemErrors(fieldErrors, nonFieldErrors);
                 },
+                showItemStatusForm: function(status, confirmCallback) {
+                    view.showItemStatusForm(status, confirmCallback);
+                },
                 showDeletionWarning: function(model, name,
                                               ominous, confirmCallback) {
                     view.showDeletionWarning(model, name,
@@ -1180,6 +1233,12 @@ hoot.food = {};
                             showEditDialog: function() {
                                 miniModel.showEditDialog();
                             },
+                            showSetAvailableDialog: function() {
+                                miniModel.showSetAvailableDialog();
+                            },
+                            showSetUnavailableDialog: function() {
+                                miniModel.showSetUnavailableDialog();
+                            },
                             showDeleteDialog: function() {
                                 miniModel.showDeleteDialog();
                             }
@@ -1198,7 +1257,7 @@ hoot.food = {};
                 initData.userCanChangeLocation, initData.userCanAddCategories,
                 initData.userCanChangeCategories, initData.userCanDeleteCategories,
                 initData.userCanAddItems, initData.userCanChangeItems,
-                initData.userCanDeleteItems,
+                initData.userCanChangeItemStatuses, initData.userCanDeleteItems,
                 {
                     start: function() { model.start(); },
                     cancelRequest: function() { model.cancelRequest(); }
