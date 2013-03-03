@@ -3,6 +3,7 @@
 var ajaxClient = ajaxClient || {};
 ajaxClient.view = {};
 
+
 (function() {
     var modelAdapter;
 
@@ -27,9 +28,6 @@ ajaxClient.view = {};
     var confirmButton, cancelButton, buttonsEnabled;
     var popupStatusbar, popupStatusbarText;
     var locationTemplate, categoryTemplate, itemTemplate;
-
-    // Local functions
-    var qtyFieldVisCheck, setConfirmCallback, cancel;
 
 
     function LocationMiniView(miniModelAdapter, attachCallback) {
@@ -300,7 +298,7 @@ ajaxClient.view = {};
 
     // Hides popup and cancels active request
     function cancel() {
-        view.showPopup(false);
+        ajaxClient.view.showPopup(false);
         modelAdapter.cancelRequest();
     };
 
