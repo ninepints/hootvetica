@@ -97,3 +97,4 @@ class Item(models.Model):
 
     class Meta:
         ordering = ('name',)
+        permissions = (('set_item_status', 'Can change item status'),)

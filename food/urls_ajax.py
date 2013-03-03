@@ -3,7 +3,8 @@ from django.views.generic import TemplateView
 from food.views import (LocationAjaxView, LocationAjaxUpdateView,
                         CategoryAjaxCreateView, CategoryAjaxUpdateView,
                         CategoryAjaxDeleteView, ItemAjaxCreateView,
-                        ItemAjaxUpdateView, ItemAjaxDeleteView)
+                        ItemAjaxUpdateView, ItemStatusAjaxUpdateView,
+                        ItemAjaxDeleteView)
 
 urlpatterns = patterns('',
     url(r'^ui/$', TemplateView.as_view(template_name='food/ajax_ui.html'),
@@ -25,6 +26,8 @@ urlpatterns = patterns('',
         name='item-add-ajax'),
     url(r'^item/(?P<pk>\w+)/edit/$', ItemAjaxUpdateView.as_view(),
         name='item-edit-ajax'),
+    url(r'^item/(?P<pk>\w+)/edit-status/$', ItemStatusAjaxUpdateView.as_view(),
+        name='item-edit-status-ajax'),
     url(r'^item/(?P<pk>\w+)/delete/$', ItemAjaxDeleteView.as_view(),
         name='item-del-ajax'),
 )
