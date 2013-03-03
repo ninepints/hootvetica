@@ -65,7 +65,7 @@
                             {% for item in category.item_set.all %}
                                 <div class="item{% if item.status == "LOW" %} low{% elif item.status == "OUT" %} out{% endif %}{% if perms.food.change_item or perms.food.delete_item %} editable{% endif %}">
                                     <h3>{{ item.name }}</h3>
-                                    <p>{% if item.status == "QTY" %}{{ item.quantity }} Left{% else %}{{ item.get_status_display }}{% endif %}</p>
+                                    <p>{% if item.status == "QTY" %}{{ item.quantity }} left{% else %}{{ item.get_status_display }}{% endif %}</p>
 
                                     {% if perms.food.change_item or perms.food.delete_item %}
                                         <ul class="item-buttons">
