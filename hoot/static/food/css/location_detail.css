@@ -71,7 +71,7 @@ div.location > div.info.hidden
 ul.location-buttons
 {
     position: absolute;
-    top: 3em;
+    top: 2.5em;
     right: 0;
     display: inline-block;
     margin: 0;
@@ -116,6 +116,7 @@ div.category
 div.category > h2
 {
     padding-right: 1.25em;
+    cursor: pointer;
 }
 
 div.category.editable > h2
@@ -158,6 +159,7 @@ div.category.collapsed > h2::after
 .no-js div.category > h2, div.category.empty > h2
 {
     padding-right: 0;
+    cursor: default;
 }
 
 .no-js div.category.editable > h2, div.category.editable.empty > h2
@@ -245,7 +247,7 @@ div.category.collapsed > div.items
 ul.category-buttons
 {
     position: absolute;
-    top: 2em;
+    top: 1.6em;
     right: 6em;
     margin: 0;
     padding-right: 1em;
