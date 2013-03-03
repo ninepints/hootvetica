@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.views import redirect_to_login
 from food.models import Location, Category, Item
-from food.forms import LocationForm, CategoryForm, ItemForm
+from food.forms import LocationForm, CategoryForm, ItemForm, ItemStatusForm
 
 # View mixins
 
@@ -19,6 +19,9 @@ class CategoryMixin(object):
 class ItemMixin(object):
     model = Item
     form_class = ItemForm
+
+class ItemStatusMixin(ItemMixin):
+    form_class = ItemStatusForm
 
 
 class FoodModelMixin(object):
@@ -203,11 +206,21 @@ class CategoryAjaxUpdateView(PermissionRequiredMixin,
     required_permissions = ('food.change_category',)
 
 
-class ItemUpdateView(ItemMixin, FoodUpdateView):
+class ItemUpdateView(PermissionRequiredMixin,
+                     ItemMixin, FoodUpdateView):
+    required_permissions = ('food.change_item',)
+
+
+class ItemAjaxUpdateView(PermissionRequiredMixin,
+                         ItemMixin, AjaxUpdateView):
+    required_permissions = ('food.change_item',)
+
+
+class ItemStatusUpdateView(ItemStatusMixin, FoodUpdateView):
     pass
 
 
-class ItemAjaxUpdateView(ItemMixin, AjaxUpdateView):
+class ItemStatusAjaxUpdateView(ItemStatusMixin, AjaxUpdateView):
     pass
 
 

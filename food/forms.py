@@ -15,3 +15,8 @@ class ItemForm(ModelForm):
     class Meta:
         model = Item
         widgets = {'parent': HiddenInput}
+
+class ItemStatusForm(ModelForm):
+    class Meta:
+        model = Item
+        fields = ('status', 'quantity')

@@ -3,7 +3,7 @@ from django.views.generic import ListView
 from food.models import Location
 from food.views import (LocationView, LocationUpdateView, CategoryCreateView,
                         CategoryUpdateView,CategoryDeleteView, ItemCreateView,
-                        ItemUpdateView, ItemDeleteView)
+                        ItemUpdateView, ItemStatusUpdateView, ItemDeleteView)
 
 urlpatterns = patterns('',
     url(r'^$', ListView.as_view(queryset=Location.objects.all(),
@@ -25,6 +25,8 @@ urlpatterns = patterns('',
         name='item-add'),
     url(r'^item/(?P<pk>\w+)/edit/$', ItemUpdateView.as_view(),
         name='item-edit'),
+    url(r'^item/(?P<pk>\w+)/edit-status/$', ItemStatusUpdateView.as_view(),
+        name='item-edit-status'),
     url(r'^item/(?P<pk>\w+)/delete/$', ItemDeleteView.as_view(),
         name='item-del'),
 )
