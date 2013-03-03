@@ -1,4 +1,4 @@
-{% load url from future %}{
+{
     "UIURL": "{% url 'ajax-ui' %}",
     "userIsAuthenticated": {{ user.is_authenticated|lower }},
     "userCanChangeLocation": {% if perms.food.change_location or perms.food.set_location_status %}true{% else %}false{% endif %},

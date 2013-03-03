@@ -1,4 +1,4 @@
-{% load url from future %}{
+{
     "name": "{{ location.name|escapejs }}",
     "open": {{ location.open|lower }},
     "modified": "{{ location.last_modified|date:"U" }}",
