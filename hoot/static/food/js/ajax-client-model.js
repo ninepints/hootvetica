@@ -3,6 +3,7 @@
 var ajaxClient = ajaxClient || {};
 ajaxClient.model = {};
 
+
 (function() {
     var viewAdapter;
 
@@ -22,10 +23,6 @@ ajaxClient.model = {};
 
     // Last model update request object
     var postRequest;
-
-    // Local functions
-    var processUpdates, runRetryCountdown, refreshData, postData,
-        getCookie, sameOrigin, safeMethod;
 
 
     /* Note that for minimodels, this.viewAdapter is the minimodel to
