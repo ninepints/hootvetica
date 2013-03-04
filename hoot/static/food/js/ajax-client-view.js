@@ -276,13 +276,10 @@ ajaxClient.view = {};
     // Applies a highlight class for 50ms, which should fade slowly using
     // a CSS transition
     ItemMiniView.prototype.flash = function() {
-        this.container.addClass('highlight slow-trans');
+        this.container.addClass('highlight');
         setTimeout(jQuery.proxy(function() {
             this.container.removeClass('highlight');
         }, this), 50);
-        setTimeout(jQuery.proxy(function() {
-            this.container.removeClass('slow-trans');
-        }, this), 3050);
     };
 
     ItemMiniView.prototype.remove = function() {

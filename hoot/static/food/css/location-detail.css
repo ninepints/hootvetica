@@ -118,6 +118,15 @@ div.category
     transition-duration: 0s;
 }
 
+div.category.slow-trans
+{
+    -webkit-transition-duration: 3s;
+    -moz-transition-duration: 3s;
+    -ms-transition-duration: 3s;
+    -o-transition-duration: 3s;
+    transition-duration: 3s;
+}
+
 div.category > h2
 {
     padding-right: 1.25em;
@@ -289,11 +298,11 @@ div.item
     -o-transition-property: padding-right, background-color;
     transition-property: padding-right, background-color;
 
-    -webkit-transition-duration: 0.35s;
-    -moz-transition-duration: 0.35s;
-    -ms-transition-duration: 0.35s;
-    -o-transition-duration: 0.35s;
-    transition-duration: 0.35s;
+    -webkit-transition-duration: 0.35s, 3s;
+    -moz-transition-duration: 0.35s, 3s;
+    -ms-transition-duration: 0.35s, 3s;
+    -o-transition-duration: 0.35s, 3s;
+    transition-duration: 0.35s, 3s;
 }
 
 div.item.active, .no-js div.item
@@ -310,11 +319,11 @@ div.item.highlight
 {
     background-color: rgb(255,213,125);
 
-    -webkit-transition-duration: 0s;
-    -moz-transition-duration: 0s;
-    -ms-transition-duration: 0s;
-    -o-transition-duration: 0s;
-    transition-duration: 0s;
+    -webkit-transition-duration: 0.35s, 0s;
+    -moz-transition-duration: 0.35s, 0s;
+    -ms-transition-duration: 0.35s, 0s;
+    -o-transition-duration: 0.35s, 0s;
+    transition-duration: 0.35s, 0s;
 }
 
 div.item > h3
@@ -549,15 +558,4 @@ div.popup > div.statusbar
 div.popup > div.statusbar.hidden
 {
     margin: 0 -1em;
-}
-
-/* Misc. */
-
-div.slow-trans
-{
-    -webkit-transition-duration: 3s;
-    -moz-transition-duration: 3s;
-    -ms-transition-duration: 3s;
-    -o-transition-duration: 3s;
-    transition-duration: 3s;
 }
