@@ -14,6 +14,7 @@
         {{ block.super }}
         <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-model.js" %}"></script>
         <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-view.js" %}"></script>
+        <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-utils.js" %}"></script>
         <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-launcher.js" %}"></script>
     {% endcompress %}
     <script>ajaxClient.initData = {% include 'food/ajax_client_config.json' %};</script>
