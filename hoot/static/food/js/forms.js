@@ -6,7 +6,9 @@ $(document).ready(function() {
         var field = fields.eq(i);
         if (field.val() == '') {
             field.focus();
-            break;
+            return;
         }
     }
+    if (fields.length >= 1)
+        fields.eq(0).focus();
 });
