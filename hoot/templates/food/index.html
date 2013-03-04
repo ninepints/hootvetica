@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% load static from staticfiles %}
+{% load compress %}
 
-{% block extrahead %}
+{% block css %}{% compress css %}
+    {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "food/css/index.css" %}" />
+{% endcompress %}{% endblock %}
+
+{% block js %}{% compress js %}
+    {{ block.super }}
     <script type="text/javascript" src="{% static "food/js/cs.js" %}"></script>
-{% endblock %}
+{% endcompress %}{% endblock %}
 
 {% block homelink %}
     <span id="homelink">Hootvetica</span>

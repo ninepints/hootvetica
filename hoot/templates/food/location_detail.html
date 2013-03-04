@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
 {% load static from staticfiles %}
+{% load compress %}
 
 {% block title %}{{ location.name }} - {{ block.super }}{% endblock %}
 
-{% block extrahead %}
+{% block css %}{% compress css %}
+    {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "food/css/location-detail.css" %}" />
-    <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-model.js" %}"></script>
-    <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-view.js" %}"></script>
-    <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-launcher.js" %}"></script>
-    <script>$('#ajax-client-script').data('initData', {% include 'food/ajax_client_config.json' %});</script>
+{% endcompress %}{% endblock %}
+
+{% block js %}
+    {% compress js %}
+        {{ block.super }}
+        <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-model.js" %}"></script>
+        <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-view.js" %}"></script>
+        <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-launcher.js" %}"></script>
+    {% endcompress %}
+    <script>ajaxClient.initData = {% include 'food/ajax_client_config.json' %};</script>
 {% endblock %}
 
 {% block content %}

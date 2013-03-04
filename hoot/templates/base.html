@@ -5,11 +5,14 @@
 <head>
     <title>{% block title %}Hootvetica{% endblock %}</title>
 
-    <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "food/css/base.css" %}" />
-    <script type="text/javascript" src="{% static "js/jquery-1.9.0.min.js" %}"></script>
+    {% block css %}
+        <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static "food/css/base.css" %}" />
+    {% endblock %}
 
-    {% block extrahead %}{% endblock %}
+    {% block js %}
+        <script type="text/javascript" src="{% static "js/jquery-1.9.0.min.js" %}"></script>
+    {% endblock %}
 </head>
 
 <body>

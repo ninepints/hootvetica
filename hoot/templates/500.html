@@ -1,6 +1,10 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load compress %}
 
 {% block title %}Internal Server Error - {{ block.super }}{% endblock %}
+
+{% block css %}{% compress css %}{{ block.super }}{% endcompress %}{% endblock %}
+{% block js %}{% compress js %}{{ block.super }}{% endcompress %}{% endblock %}
 
 {% block usermenu %}{% endblock %}
 
