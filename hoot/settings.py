@@ -43,7 +43,9 @@ USE_L10N = True
 USE_TZ = True
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
+STATICFILES_STORAGE = 'hoot.storage.CachedS3BotoStorage'
+COMPRESS_STORAGE = STATICFILES_STORAGE
+COMPRESS_OUTPUT_DIR = 'compress'
 
 AWS_ACCESS_KEY_ID = os.environ['AWS_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET']
@@ -83,7 +85,16 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
+
+COMPRESS_CSS_FILTERS = (
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.datauri.CssDataUriFilter',
+    'compressor.filters.cssmin.CSSMinFilter'
+)
+COMPRESS_DATA_URI_MAX_SIZE = 40960
+COMPRESS_OFFLINE = True
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.environ['DJANGO_SECRET']
@@ -140,6 +151,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'food',
     'storages',
+    'compressor',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
