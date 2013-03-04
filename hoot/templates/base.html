@@ -16,6 +16,7 @@
 </head>
 
 <body>
+    {% block precontainer %}{% endblock %}
     <div id="container">
         <nav id="topmenu">
             {% block homelink %}
@@ -50,5 +51,6 @@
 
         {% block content %}{% endblock %}
     </div>
+    {% block postcontainer %}{% endblock %}
 </body>
 </html>
