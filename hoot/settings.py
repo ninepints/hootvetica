@@ -118,7 +118,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'hoot.urls'
 
-ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(';')
+ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
 LOGIN_REDIRECT_URL = '/'
 
