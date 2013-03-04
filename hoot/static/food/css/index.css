@@ -91,9 +91,9 @@ span#byline
 footer#credits > a
 {
     display: inline-block;
-    margin-right: 1em;
-    padding: 0.75em 0;
-    line-height: 0.5em;
+    height: 24px;
+    margin: 0.75em 1em 0.75em 0;
+    color: transparent;
     float: right;
     opacity: 0.275;
 }
@@ -101,4 +101,16 @@ footer#credits > a
 footer#credits > a:hover
 {
     opacity: 1;
+}
+
+footer#credits > a.django
+{
+    width: 69px;
+    background-image: url(../img/django-24.png);
+}
+
+footer#credits > a.jquery
+{
+    width: 85px;
+    background-image: url(../img/jquery-24.png);
 }
