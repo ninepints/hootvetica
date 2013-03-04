@@ -3,7 +3,7 @@
 $(document).ready(function() {
     if (ajaxClient.utils.getCookie('completedIntro') === 'true')
         return;
-    document.cookie = 'completedIntro=true';
+    document.cookie = 'completedIntro=true;path=/';
     if (disableIntro)
         return;
 
