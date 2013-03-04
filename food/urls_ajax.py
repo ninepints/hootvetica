@@ -9,6 +9,8 @@ from food.views import (LocationAjaxView, LocationAjaxUpdateView,
 urlpatterns = patterns('',
     url(r'^ui/$', TemplateView.as_view(template_name='food/ajax_ui.html'),
         name='ajax-ui'),
+    url(r'^intro/$', TemplateView.as_view(template_name='food/ajax_intro.html'),
+        name='ajax-intro'),
 
     url(r'^location/(?P<pk>[\w-]+)/$', LocationAjaxView.as_view(),
         name='location-ajax'),
