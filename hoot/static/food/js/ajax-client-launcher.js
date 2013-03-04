@@ -138,5 +138,5 @@ $(document).ready(function() {
         view.start();
     };
 
-    start($('#ajax-client-script').data('initData'));
+    start(ajaxClient.initData);
 });
