@@ -69,7 +69,7 @@ STATIC_ROOT = BASE_PATH + '/collectedstatic/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '//s3.amazonaws.com/{}/'.format(AWS_STORAGE_BUCKET_NAME)
+STATIC_URL = 'https://{}.s3.amazonaws.com/'.format(AWS_STORAGE_BUCKET_NAME)
 
 # Additional locations of static files
 STATICFILES_DIRS = (
