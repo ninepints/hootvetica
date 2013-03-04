@@ -15,13 +15,13 @@ ajaxClient.view = {};
         userCanDeleteItems;
 
     // Existing page elements
-    var body, contentDiv, statusbar, statusbarText;
+    var body, contentDiv, statusbar, statusbarText, overlay;
 
     // URL for downloading UI elements
     var UIURL;
 
     // Downloaded elements
-    var overlay, popupTitle, deletionWarning, formInputs;
+    var popup, popupTitle, deletionWarning, formInputs;
     var locationForm, locationOpen;
     var categoryForm, categoryName, categoryHeat, categoryParent;
     var itemForm, itemName, itemQty, itemQtyUl, itemStatus, itemParent;
@@ -328,6 +328,7 @@ ajaxClient.view = {};
         contentDiv = $('div#container');
         statusbar = $('div#container > div.statusbar');
         statusbarText = statusbar.children('p');
+        overlay = $('div#overlay');
     };
 
     // Main view start
@@ -348,25 +349,25 @@ ajaxClient.view = {};
 
                 // On success, process new DOM tree
                 var parsedData = $(data);
-                overlay = parsedData.filter('#overlay')
-                    .on('click', function(event) {
-                        cancel();
-                        event.stopPropagation();
-                    });
-                overlay.children('.popup').on('click', function(event) {
+                popup = parsedData.filter('div.popup').hide();
+                overlay.on('click', function(event) {
+                    cancel();
                     event.stopPropagation();
                 });
-                popupTitle = overlay.find('div.popup > h2');
-                deletionWarning = overlay.find('div.popup > p');
-                formInputs = overlay.find('input, select');
+                popup.on('click', function(event) {
+                    event.stopPropagation();
+                });
+                popupTitle = popup.children('h2');
+                deletionWarning = popup.children('p');
+                formInputs = popup.find('input, select');
 
-                locationForm = overlay.find('#locationform');
+                locationForm = popup.children('#locationform');
                 locationOpen = locationForm.children('input#open');
-                categoryForm = overlay.find('#categoryform');
+                categoryForm = popup.children('#categoryform');
                 categoryName = categoryForm.find('input#cname');
                 categoryHeat = categoryForm.find('input#heat');
                 categoryParent = categoryForm.children('input#cparent');
-                itemForm = overlay.find('#itemform');
+                itemForm = popup.children('#itemform');
                 itemName = itemForm.find('input#iname');
                 itemQty = itemForm.find('input#quantity');
                 itemQtyUl = itemQty.parent().parent();
@@ -377,9 +378,9 @@ ajaxClient.view = {};
                     .on('submit', false);
 
                 // Default event handlers for click, certain keypresses
-                confirmButton = overlay.find('a.confirm')
+                confirmButton = popup.find('a.confirm')
                     .on('click', false);
-                cancelButton = overlay.find('a.cancel')
+                cancelButton = popup.find('a.cancel')
                     .on('click', function(event) {
                         cancel();
                         event.preventDefault();
@@ -394,13 +395,13 @@ ajaxClient.view = {};
                 });
 
                 buttonsEnabled = true;
-                popupStatusbar = overlay.find('div.statusbar');
+                popupStatusbar = popup.children('div.statusbar');
                 popupStatusbarText = popupStatusbar.children('p');
                 locationTemplate = parsedData.filter('div.location');
                 categoryTemplate = parsedData.filter('div.category');
                 itemTemplate = parsedData.filter('div.item');
 
-                overlay.appendTo(body);
+                popup.appendTo(overlay);
 
                 // Done starting view, start model
                 this.showStatusbar(false);
@@ -447,15 +448,17 @@ ajaxClient.view = {};
             popupTitle.text(title);
             this.enableButtons(true);
             this.setPopupConfirmText('Done');
-            overlay.find('li.error').remove();
+            popup.find('li.error').remove();
             deletionWarning.add(categoryForm).add(itemForm).hide();
             body.addClass('noscroll');
+            popup.show();
             overlay.removeClass('hidden');
         }
         else {
             this.enableButtons(false);
             this.showPopupStatusbar(false);
             overlay.addClass('hidden');
+            popup.hide();
             body.removeClass('noscroll');
         }
     };
@@ -486,7 +489,7 @@ ajaxClient.view = {};
 
     // Adds errors to category form, clearing existing errors
     this.addCategoryErrors = function(fieldErrors, nonFieldErrors) {
-        overlay.find('li.error').remove();
+        popup.find('li.error').remove();
         for (var i = 0; i < fieldErrors.length; i++) {
             var error = fieldErrors[i];
             var field = null;
@@ -522,7 +525,7 @@ ajaxClient.view = {};
 
     // Adds errors to item form, clearing existing errors
     this.addItemErrors = function(fieldErrors, nonFieldErrors) {
-        overlay.find('li.error').remove();
+        popup.find('li.error').remove();
         for (var i = 0; i < fieldErrors.length; i++) {
             var error = fieldErrors[i];
             var field = null;

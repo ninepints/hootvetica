@@ -1,58 +1,56 @@
-<div id="overlay" class="hidden">
-    <div class="popup">
-        <h2></h2>
+<div class="popup">
+    <h2></h2>
 
-        <div class="statusbar hidden"><p></p></div>
+    <div class="statusbar hidden"><p></p></div>
 
-        <p></p>
+    <p></p>
 
-        <form id="locationform">
-            <input id="open" name="open" type="hidden" value="" />
-        </form>
+    <form id="locationform">
+        <input id="open" name="open" type="hidden" value="" />
+    </form>
 
-        <form id="categoryform">
-            <ul class="form">
-                <li><ul class="field">
-                    <li><label for="cname">Name</label></li>
-                    <li><input id="cname" name="name" type="text" maxlength="32" /></li>
-                </ul></li>
-                <li><ul class="field">
-                    <li><label for="heat">Contains hot food</label></li>
-                    <li><input type="checkbox" name="contents_hot" id="heat"></li>
-                </ul></li>
-            </ul>
-            <input id="cparent" name="parent" type="hidden" value="" />
-        </form>
-
-        <form id="itemform">
-            <ul class="form">
-                <li><ul class="field">
-                    <li><label for="iname">Name</label></li>
-                    <li><input id="iname" name="name" type="text" maxlength="32" /></li>
-                </ul></li>
-                <li><ul class="field">
-                    <li><label for="status">Status</label></li>
-                    <li><select id="status" name="status" >
-                        <option value>---------</option>
-                        <option value="AVA">Available</option>
-                        <option value="LOW">Running Low</option>
-                        <option value="OUT">Sold Out</option>
-                        <option value="QTY">Qty Remaining</option>
-                    </select></li>
-                </ul></li>
-                <li><ul class="field">
-                    <li><label for="quantity">Quantity</label></li>
-                    <li><input id="quantity" name="quantity" type="text" size="9" /></li>
-                </ul></li>
-            </ul>
-            <input id="iparent" name="parent" type="hidden" value="" />
-        </form>
-
-        <ul class="popup-buttons">
-            <li><a href="#" class="button confirm">Done</a></li>
-            <li><a href="#" class="button cancel">Cancel</a></li>
+    <form id="categoryform">
+        <ul class="form">
+            <li><ul class="field">
+                <li><label for="cname">Name</label></li>
+                <li><input id="cname" name="name" type="text" maxlength="32" /></li>
+            </ul></li>
+            <li><ul class="field">
+                <li><label for="heat">Contains hot food</label></li>
+                <li><input type="checkbox" name="contents_hot" id="heat"></li>
+            </ul></li>
         </ul>
-    </div>
+        <input id="cparent" name="parent" type="hidden" value="" />
+    </form>
+
+    <form id="itemform">
+        <ul class="form">
+            <li><ul class="field">
+                <li><label for="iname">Name</label></li>
+                <li><input id="iname" name="name" type="text" maxlength="32" /></li>
+            </ul></li>
+            <li><ul class="field">
+                <li><label for="status">Status</label></li>
+                <li><select id="status" name="status" >
+                    <option value>---------</option>
+                    <option value="AVA">Available</option>
+                    <option value="LOW">Running Low</option>
+                    <option value="OUT">Sold Out</option>
+                    <option value="QTY">Qty Remaining</option>
+                </select></li>
+            </ul></li>
+            <li><ul class="field">
+                <li><label for="quantity">Quantity</label></li>
+                <li><input id="quantity" name="quantity" type="text" size="9" /></li>
+            </ul></li>
+        </ul>
+        <input id="iparent" name="parent" type="hidden" value="" />
+    </form>
+
+    <ul class="popup-buttons">
+        <li><a href="#" class="button confirm">Done</a></li>
+        <li><a href="#" class="button cancel">Cancel</a></li>
+    </ul>
 </div>
 
 <div class="location">
