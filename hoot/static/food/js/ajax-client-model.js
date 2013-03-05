@@ -12,13 +12,12 @@ ajaxClient.model = {};
 
     var csrftoken;
 
-    // Location data parsed from script tag
     var initLocationData;
 
     // Dictionary of mini-models (uses UUIDs for keys)
     var minimodels = {};
 
-    // Timer for data refresh and refresh request object
+    // Timer for data refresh, refresh request object
     var refreshTimer, refreshRequest;
 
     // Last model update request object
@@ -26,8 +25,7 @@ ajaxClient.model = {};
 
 
     /* Note that for minimodels, this.viewAdapter is the minimodel to
-     * miniview adapter, while viewAdapter is the main view adapter which
-     * I'm going to go ahead and use since it's in scope */
+     * miniview adapter, while viewAdapter is the main view adapter */
 
     function LocationMiniModel(json) {
         this.updateURL = json.updateURL;
@@ -43,18 +41,15 @@ ajaxClient.model = {};
         this.viewAdapter.update(this.name, this.open);
     };
 
-    // Appends an element to the model's view's children div
     LocationMiniModel.prototype.append = function(element) {
         this.viewAdapter.append(element);
     };
 
-    // Shows a toggle dialog (and automatically sends toggle request)
     LocationMiniModel.prototype.showToggleDialog = function() {
         viewAdapter.showLocationForm(!this.open,
             jQuery.proxy(this.confirmToggle, this));
     };
 
-    // Sends a toggle request to the server
     LocationMiniModel.prototype.confirmToggle = function(data) {
         postData(data, this.editURL, function() {
             // This only gets invoked if the server rejects the update
@@ -65,13 +60,11 @@ ajaxClient.model = {};
         });
     };
 
-    // Displays category add dialog
     LocationMiniModel.prototype.showAddChildDialog = function() {
         viewAdapter.showCategoryForm('New Category', false, this.uid,
             jQuery.proxy(this.confirmAddChild, this));
     };
 
-    // Sends category add request to the server
     LocationMiniModel.prototype.confirmAddChild = function(data) {
         postData(data, this.addChildURL, viewAdapter.addCategoryErrors);
     };
@@ -110,40 +103,33 @@ ajaxClient.model = {};
         this.viewAdapter.update(this.name, this.heat, true);
     };
 
-    // Appends an element to the model's view
     CategoryMiniModel.prototype.append = function(element) {
         this.viewAdapter.append(element);
     };
 
-    // Displays item add dialog
     CategoryMiniModel.prototype.showAddChildDialog = function() {
         viewAdapter.showItemForm('New Item', '', 'AVA', this.uid,
             jQuery.proxy(this.confirmAddChild, this));
     };
 
-    // Sends item add request to server
     CategoryMiniModel.prototype.confirmAddChild = function(data) {
         postData(data, this.addChildURL, viewAdapter.addItemErrors);
     };
 
-    // Shows category edit dialog
     CategoryMiniModel.prototype.showEditDialog = function() {
         viewAdapter.showCategoryForm(this.name, this.heat, this.parent,
             jQuery.proxy(this.confirmEdit, this));
     };
 
-    // Sends category edit request to server
     CategoryMiniModel.prototype.confirmEdit = function(data) {
         postData(data, this.editURL, viewAdapter.addCategoryErrors);
     };
 
-    // Shows category delete dialog
     CategoryMiniModel.prototype.showDeleteDialog = function() {
         viewAdapter.showDeletionWarning('Category', this.name, true,
             jQuery.proxy(this.confirmDelete, this));
     };
 
-    // Sends category delete request to server
     CategoryMiniModel.prototype.confirmDelete = function() {
         postData(null, this.deleteURL);
     };
@@ -185,13 +171,11 @@ ajaxClient.model = {};
         this.viewAdapter.update(this.name, this.qty, this.status, true);
     };
 
-    // Displays item edit dialog
     ItemMiniModel.prototype.showEditDialog = function() {
         viewAdapter.showItemForm(this.name, this.qty, this.status,
             this.parent, jQuery.proxy(this.confirmEdit, this));
     };
 
-    // Sends item edit request to server
     ItemMiniModel.prototype.confirmEdit = function(data) {
         postData(data, this.editURL, viewAdapter.addItemErrors);
     };
@@ -216,13 +200,11 @@ ajaxClient.model = {};
         });
     };
 
-    // Displays item delete dialog
     ItemMiniModel.prototype.showDeleteDialog = function() {
         viewAdapter.showDeletionWarning('Item', this.name, false,
             jQuery.proxy(this.confirmDelete, this));
     };
 
-    // Sends item delete request to server
     ItemMiniModel.prototype.confirmDelete = function() {
         postData(null, this.deleteURL);
     };
@@ -308,7 +290,7 @@ ajaxClient.model = {};
         for (var uid in minimodels) { minimodels[uid].remove(); }
         minimodels = newMinimodels;
 
-        // Trigger updates that are dependent on children
+        // Trigger view updates that are dependent on children
         for (var uid in minimodels) {
             if ('childDependentUpdate' in minimodels[uid])
                 minimodels[uid].childDependentUpdate();
@@ -399,7 +381,6 @@ ajaxClient.model = {};
     };
 
 
-    // Main model initialization
     this.init = function(locationData, rInterval, rIntervalErr, adapter) {
         initLocationData = locationData;
         refreshInterval = rInterval ||  300;
@@ -415,8 +396,6 @@ ajaxClient.model = {};
         viewAdapter = adapter;
     };
 
-    // Main model start method
-    // Sets up mini-models and starts refresh timer
     this.start = function() {
         var location = new LocationMiniModel(initLocationData);
         location.setViewAdapter(viewAdapter.makeLocationMiniViewAdapter(
@@ -442,7 +421,7 @@ ajaxClient.model = {};
             }
         }
 
-        // Trigger updates that are dependent on children
+        // Trigger view updates that are dependent on children
         for (var uid in minimodels) {
             if ('childDependentUpdate' in minimodels[uid])
                 minimodels[uid].childDependentUpdate();
@@ -451,8 +430,8 @@ ajaxClient.model = {};
         refreshTimer = setTimeout(refreshData, refreshInterval * 1000);
     };
 
-    // Cancels last model update request
     this.cancelRequest = function() {
+        // Cancel last model update request
         if (postRequest) postRequest.abort();
     };
 }).apply(ajaxClient.model);

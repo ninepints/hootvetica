@@ -7,7 +7,7 @@ $(document).ready(function() {
         var parent = $(this).parent().addClass('hidden');
         setTimeout(function() {
             parent.remove();
-            if (messagelist.children('li').length == 0)
+            if (messagelist.children('li').length === 0)
                 messagelist.remove();
         }, 1000);
     });
