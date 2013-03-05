@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load compress %}
 
-{% block title %}Not Found - {{ block.super }}{% endblock %}
+{% block title %}Not found - {{ block.super }}{% endblock %}
 
 {% block css %}{% compress css %}{{ block.super }}{% endcompress %}{% endblock %}
 {% block js %}{% compress js %}{{ block.super }}{% endcompress %}{% endblock %}
@@ -12,7 +12,7 @@
 
 {% block content %}
     <div class="info banner indented">
-        <h2>Not Found (HTTP 404)</h2>
+        <h2>Not found (HTTP 404)</h2>
         <h3>The page you requested couldn't be located.</h3>
     </div>
 {% endblock %}

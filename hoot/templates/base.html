@@ -27,12 +27,12 @@
                 {% block usermenu %}
                     {% if user.is_authenticated %}
                         {% if user.is_staff %}
-                            <li><a href="{% url 'admin:index' %}">Admin Site</a></li>
+                            <li><a href="{% url 'admin:index' %}">Admin site</a></li>
                         {% endif %}
-                        <li><a href="{% url 'django.contrib.auth.views.password_change' %}">Change Password</a></li>
-                        <li><a href="{% url 'django.contrib.auth.views.logout' %}?next={{ request.path }}">Log Out</a></li>
+                        <li><a href="{% url 'django.contrib.auth.views.password_change' %}">Change password</a></li>
+                        <li><a href="{% url 'django.contrib.auth.views.logout' %}?next={{ request.path }}">Log out</a></li>
                     {% else %}
-                        <li><a href="{% url 'django.contrib.auth.views.login' %}?next={{ request.path }}">Log In</a></li>
+                        <li><a href="{% url 'django.contrib.auth.views.login' %}?next={{ request.path }}">Log in</a></li>
                     {% endif %}
                 {% endblock %}
             </ul>
