@@ -19,8 +19,14 @@
         <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-launcher.js" %}"></script>
         <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/intro-popup.js" %}"></script>
     {% endcompress %}
-    <script>ajaxClient.initData = {% include 'food/ajax_client_config.json' %};</script>
-    <script>var introContentURL = '{% url 'ajax-intro' %}', disableIntro = {{ user.is_authenticated|lower }};</script>
+    <script>
+        ajaxClient.initData = {% include 'food/ajax_client_config.json' %};
+    </script>
+    <script>
+        var introContentURL = '{% url 'ajax-intro' %}';
+        var deferIntro = {% if not user.is_authenticated and not location.open %}true{% else %}false{% endif %};
+        var skipIntro = {{ user.is_authenticated|lower }};
+    </script>
 {% endblock %}
 
 {% block content %}

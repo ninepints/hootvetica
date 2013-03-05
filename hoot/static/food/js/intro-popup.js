@@ -1,10 +1,10 @@
 // Displays an introduction popup on the location detail page
 
 $(document).ready(function() {
-    if (ajaxClient.utils.getCookie('completedIntro') === 'true')
+    if (deferIntro || ajaxClient.utils.getCookie('completedIntro') === 'true')
         return;
     document.cookie = 'completedIntro=true;path=/';
-    if (disableIntro)
+    if (skipIntro)
         return;
 
     var body = $('body'), overlay = $('#overlay'), popup,
