@@ -31,12 +31,14 @@ ajaxClient.view = {};
 
 
     function LocationMiniView(miniModelAdapter, attachCallback) {
-        // Clone/customize template markup and attach event handlers
+        // Clone template markup
         this.container = locationTemplate.clone();
         this.childrenDiv = this.container.children('div.categories');
         this.nameText = this.container.children('h1');
         this.emptyText = this.childrenDiv.children('h3').hide();
         this.closedBox = this.container.children('div.info');
+
+        // Customize "closed" banner
         if (userCanChangeLocation) {
             this.closedBox.children('p').text('No information is visible' +
                 ' to the public. You can open this location using the' +
@@ -48,10 +50,10 @@ ajaxClient.view = {};
                 ' to the public.');
             this.closedBox.children('h3').remove();
         }
-        else {
+        else
             this.closedBox.children('p').remove();
-        }
 
+        // Button setup
         this.toggleButton = this.container.find('a.toggle')
             .on('click', function(event) {
                 miniModelAdapter.showToggleDialog();
@@ -62,7 +64,6 @@ ajaxClient.view = {};
                 miniModelAdapter.showAddChildDialog();
                 event.preventDefault();
             });
-
         if (!userCanChangeLocation && !userCanAddCategories)
             this.toggleButton.parent().parent().remove();
         else {
@@ -73,22 +74,20 @@ ajaxClient.view = {};
                 this.addButton.parent().remove();
         }
 
+        // Attach self to DOM
         attachCallback(this.container);
     };
 
     LocationMiniView.prototype.update = function(name, open) {
         this.nameText.text(name);
-
         if (open)
             this.closedBox.addClass('hidden');
         else
             this.closedBox.removeClass('hidden');
-
         if (!open && !userIsAuthenticated)
             this.childrenDiv.addClass('hidden');
         else
             this.childrenDiv.removeClass('hidden');
-
         this.toggleButton.text(open ? 'Close Location' : 'Open Location');
     };
 
@@ -109,17 +108,19 @@ ajaxClient.view = {};
 
 
     function CategoryMiniView(miniModelAdapter, attachCallback) {
-        // Clone/customize template markup and attach event handlers
+        // Clone template markup
         this.container = categoryTemplate.clone();
         this.childrenDiv = this.container.children('div.items');
         this.nameText = this.container.children('h2');
         this.statusText = this.container.children('h3');
 
+        // Setup collapsing
         this.nameText.on('click', jQuery.proxy(function() {
             if (!this.container.hasClass('empty'))
                 this.container.toggleClass('collapsed');
         }, this));
 
+        // Setup buttons
         this.editButton = this.container.find('a.edit')
             .on('click', function(event) {
                 miniModelAdapter.showEditDialog();
@@ -135,7 +136,6 @@ ajaxClient.view = {};
                 miniModelAdapter.showAddChildDialog();
                 event.preventDefault();
             });
-
         if (!userCanChangeCategories && !userCanDeleteCategories &&
                 !userCanAddItems)
             this.editButton.parent().parent().remove();
@@ -149,6 +149,7 @@ ajaxClient.view = {};
                 this.addButton.parent().remove();
         }
 
+        // Attach self to DOM
         attachCallback(this.container);
     };
 
@@ -170,13 +171,10 @@ ajaxClient.view = {};
             this.container.addClass('out');
             this.statusText.text('Sold out')
         }
-        else {
+        else
             this.statusText.text('Available');
-        }
     };
 
-    // Applies a highlight class for 50ms, which should fade slowly using
-    // a CSS transition
     CategoryMiniView.prototype.flash = function() {
         this.container.addClass('highlight slow-trans');
         setTimeout(jQuery.proxy(function() {
@@ -197,11 +195,12 @@ ajaxClient.view = {};
 
 
     function ItemMiniView(miniModelAdapter, attachCallback) {
-        // Clone/customize template markup and attach event handlers
+        // Clone template markup
         this.container = itemTemplate.clone();
         this.nameText = this.container.children('h3');
         this.statusText = this.container.children('p');
 
+        // Button setup
         this.availableButton = this.container.find('a.available')
             .on('click', function(event) {
                 miniModelAdapter.showSetAvailableDialog();
@@ -222,9 +221,8 @@ ajaxClient.view = {};
                 miniModelAdapter.showDeleteDialog();
                 event.preventDefault();
             });
-
         if (!userCanChangeItems && !userCanChangeItemStatuses &&
-            !userCanDeleteItems)
+                !userCanDeleteItems)
             this.editButton.parent().parent().remove();
         else {
             this.container.addClass('editable');
@@ -248,6 +246,7 @@ ajaxClient.view = {};
             });
         }
 
+        // Attach self to DOM
         attachCallback(this.container);
     };
 
@@ -255,7 +254,6 @@ ajaxClient.view = {};
             suppressFlash) {
         this.nameText.text(name);
         this.container.removeClass('low out');
-
         if (status === 'AVA')
             this.statusText.text('Available');
         else if (status === 'LOW') {
@@ -268,13 +266,10 @@ ajaxClient.view = {};
         }
         else if (status === 'QTY')
             this.statusText.text(qty + ' left');
-
         if (!suppressFlash)
             this.flash();
     };
 
-    // Applies a highlight class for 50ms, which should fade slowly using
-    // a CSS transition
     ItemMiniView.prototype.flash = function() {
         this.container.addClass('highlight');
         setTimeout(jQuery.proxy(function() {
@@ -287,28 +282,29 @@ ajaxClient.view = {};
     };
 
 
-    // Shows quantity field when status is set to quantity display
     function qtyFieldVisCheck() {
-        if (itemStatus.val() !== 'QTY') itemQtyUl.hide();
-        else itemQtyUl.show();
+        // Show quantity field iff status is set to quantity display
+        if (itemStatus.val() !== 'QTY')
+            itemQtyUl.hide();
+        else
+            itemQtyUl.show();
     };
 
-    // Attaches provided click handler to popup confirm button
     function setConfirmCallback(confirmCallback) {
+        // Attach provided click handler to popup confirm button
         confirmButton.off('click').on('click', function(event) {
             if (buttonsEnabled) confirmCallback();
             event.preventDefault();
         });
     };
 
-    // Hides popup and cancels active request
     function cancel() {
+        // Hide popup and cancel active request
         ajaxClient.view.showPopup(false);
         modelAdapter.cancelRequest();
     };
 
 
-    // Main view initialization
     this.init = function(URL, authenticated, canChangeLocation,
             canAddCategories, canChangeCategories, canDeleteCategories,
             canAddItems, canChangeItems, canChangeItemStatuses,
@@ -331,8 +327,6 @@ ajaxClient.view = {};
         overlay = $('div#overlay');
     };
 
-    // Main view start
-    // Downloads UI elements then starts model
     this.start = function() {
         // Hide static content
         var staticUI = contentDiv.children('div.location').hide();
@@ -347,7 +341,7 @@ ajaxClient.view = {};
             success: jQuery.proxy(function(data, textStatus, jqXHR) {
                 staticUI.remove();
 
-                // On success, process new DOM tree
+                // On success, process downloaded markup
                 var parsedData = $(data);
                 popup = parsedData.filter('div.popup').hide();
                 overlay.on('click', function(event) {
@@ -374,10 +368,17 @@ ajaxClient.view = {};
                 itemStatus = itemForm.find('select#status')
                     .on('change', qtyFieldVisCheck);
                 itemParent = itemForm.children('input#iparent');
+
+                popupStatusbar = popup.children('div.statusbar');
+                popupStatusbarText = popupStatusbar.children('p');
+
+                locationTemplate = parsedData.filter('div.location');
+                categoryTemplate = parsedData.filter('div.category');
+                itemTemplate = parsedData.filter('div.item');
+
+                // Attach event handlers for buttons and enter/esc keypresses
                 locationForm.add(categoryForm).add(itemForm)
                     .on('submit', false);
-
-                // Default event handlers for click, certain keypresses
                 confirmButton = popup.find('a.confirm')
                     .on('click', false);
                 cancelButton = popup.find('a.cancel')
@@ -393,14 +394,9 @@ ajaxClient.view = {};
                         cancelButton.trigger('click');
                     }
                 });
+                buttonsEnabled = false;
 
-                buttonsEnabled = true;
-                popupStatusbar = popup.children('div.statusbar');
-                popupStatusbarText = popupStatusbar.children('p');
-                locationTemplate = parsedData.filter('div.location');
-                categoryTemplate = parsedData.filter('div.category');
-                itemTemplate = parsedData.filter('div.item');
-
+                // Attach popup to DOM
                 popup.appendTo(overlay);
 
                 // Done starting view, start model
@@ -409,7 +405,7 @@ ajaxClient.view = {};
             }, this),
 
             error: jQuery.proxy(function(jqXHR, textStatus, errorThrown) {
-                // Redisplay static content if UI load fails
+                // Load failed, redisplay static content
                 var msg = 'Failed to load UI';
                 this.setStatusbar('error', errorThrown ? msg +
                     ' (' + errorThrown + ')' : msg);
@@ -423,7 +419,6 @@ ajaxClient.view = {};
 
     this.append = function(element) { contentDiv.append(element) };
 
-    // Shows/hides the main statusbar
     this.showStatusbar = function(bool) {
         if (bool)
             statusbar.removeClass('hidden');
@@ -431,7 +426,6 @@ ajaxClient.view = {};
             statusbar.addClass('hidden');
     };
 
-    // Gives the main statusbar the specified style and message
     this.setStatusbar = function(sbclass, text) {
         var wasHidden = statusbar.hasClass('hidden');
         statusbar.removeClass().addClass('statusbar');
@@ -442,7 +436,23 @@ ajaxClient.view = {};
             statusbar.addClass(sbclass);
     };
 
-    // Hides or resets and displays the editing popup
+    this.showPopupStatusbar = function(bool) {
+        if (bool)
+            popupStatusbar.removeClass('hidden');
+        else
+            popupStatusbar.addClass('hidden');
+    };
+
+    this.setPopupStatusbar = function(sbclass, text) {
+        var wasHidden = popupStatusbar.hasClass('hidden');
+        popupStatusbar.removeClass().addClass('statusbar');
+        if (wasHidden)
+            popupStatusbar.addClass('hidden');
+        popupStatusbarText.text(text);
+        if (sbclass)
+            popupStatusbar.addClass(sbclass);
+    };
+
     this.showPopup = function(bool, title) {
         if (bool) {
             popupTitle.text(title);
@@ -450,6 +460,7 @@ ajaxClient.view = {};
             this.setPopupConfirmText('Done');
             popup.find('li.error').remove();
             deletionWarning.add(categoryForm).add(itemForm).hide();
+
             body.addClass('noscroll');
             popup.show();
             overlay.removeClass('hidden');
@@ -457,25 +468,24 @@ ajaxClient.view = {};
         else {
             this.enableButtons(false);
             this.showPopupStatusbar(false);
+
             overlay.addClass('hidden');
             popup.hide();
             body.removeClass('noscroll');
         }
     };
 
-    // Displays editing popup with given location status
-    // and confirmation callback function, automatically invoking callback
     this.showLocationForm = function(opening, confirmCallback) {
         this.showPopup(true, (opening ? 'Opening' : 'Closing')+' Location');
         locationOpen.val(opening.toString());
         setConfirmCallback(function() {
             confirmCallback(locationForm.serialize());
         });
+
+        // User can't edit form, so callback is invoked immediately
         confirmCallback(locationForm.serialize());
     };
 
-    // Displays editing popup with given category information
-    // and confirmation callback function
     this.showCategoryForm = function(name, hot, parent, confirmCallback) {
         this.showPopup(true, 'Edit Category');
         categoryForm.show();
@@ -487,7 +497,6 @@ ajaxClient.view = {};
         });
     };
 
-    // Adds errors to category form, clearing existing errors
     this.addCategoryErrors = function(fieldErrors, nonFieldErrors) {
         popup.find('li.error').remove();
         for (var i = 0; i < fieldErrors.length; i++) {
@@ -508,8 +517,6 @@ ajaxClient.view = {};
         }
     };
 
-    // Displays editing popup with given item information
-    // and confirmation callback function
     this.showItemForm = function(name, qty, status,
                                  parent, confirmCallback) {
         this.showPopup(true, 'Edit Item');
@@ -523,7 +530,6 @@ ajaxClient.view = {};
         });
     };
 
-    // Adds errors to item form, clearing existing errors
     this.addItemErrors = function(fieldErrors, nonFieldErrors) {
         popup.find('li.error').remove();
         for (var i = 0; i < fieldErrors.length; i++) {
@@ -545,18 +551,17 @@ ajaxClient.view = {};
         }
     };
 
-    // Displays editing popup with given item status
-    // and confirmation callback function, automatically invoking callback
     this.showItemStatusForm = function(status, confirmCallback) {
         this.showPopup(true, 'Updating Item');
         itemStatus.val(status);
         setConfirmCallback(function() {
             confirmCallback(itemForm.serialize());
         });
+
+        // User can't edit form, so callback is invoked immediately
         confirmCallback(itemForm.serialize());
     };
 
-    // Displays delete confirmation dialog with given callback function
     this.showDeletionWarning = function(model, name,
                                         ominous, confirmCallback) {
         this.showPopup(true, 'Delete ' + model + ' "' + name + '"');
@@ -572,7 +577,6 @@ ajaxClient.view = {};
         setConfirmCallback(confirmCallback);
     };
 
-    // Enables or disables editing popup controls
     this.enableButtons = function(bool) {
         if (bool) {
             confirmButton.removeClass('disabled');
@@ -586,28 +590,8 @@ ajaxClient.view = {};
         }
     };
 
-    // Sets the text on the editing popup confirm button
     this.setPopupConfirmText = function(text) {
         confirmButton.text(text);
-    };
-
-    // Shows/hides the editing popup statusbar
-    this.showPopupStatusbar = function(bool) {
-        if (bool)
-            popupStatusbar.removeClass('hidden');
-        else
-            popupStatusbar.addClass('hidden');
-    };
-
-    // Gives the editing popup statusbar the specified style and message
-    this.setPopupStatusbar = function(sbclass, text) {
-        var wasHidden = popupStatusbar.hasClass('hidden');
-        popupStatusbar.removeClass().addClass('statusbar');
-        if (wasHidden)
-            popupStatusbar.addClass('hidden');
-        popupStatusbarText.text(text);
-        if (sbclass)
-            popupStatusbar.addClass(sbclass);
     };
 
     // Accessors for mini-view constructors
