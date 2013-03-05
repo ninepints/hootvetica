@@ -476,7 +476,7 @@ ajaxClient.view = {};
     };
 
     this.showLocationForm = function(opening, confirmCallback) {
-        this.showPopup(true, (opening ? 'Opening' : 'Closing')+' Location');
+        this.showPopup(true, (opening ? 'Opening' : 'Closing')+' location');
         locationOpen.val(opening.toString());
         setConfirmCallback(function() {
             confirmCallback(locationForm.serialize());
@@ -487,7 +487,7 @@ ajaxClient.view = {};
     };
 
     this.showCategoryForm = function(name, hot, parent, confirmCallback) {
-        this.showPopup(true, 'Edit Category');
+        this.showPopup(true, 'Edit category');
         categoryForm.show();
         categoryName.val(name).focus().select();
         categoryHeat.prop('checked', hot);
@@ -519,7 +519,7 @@ ajaxClient.view = {};
 
     this.showItemForm = function(name, qty, status,
                                  parent, confirmCallback) {
-        this.showPopup(true, 'Edit Item');
+        this.showPopup(true, 'Edit item');
         itemForm.show();
         itemName.val(name).focus().select();
         itemQty.val(qty);
@@ -552,7 +552,7 @@ ajaxClient.view = {};
     };
 
     this.showItemStatusForm = function(status, confirmCallback) {
-        this.showPopup(true, 'Updating Item');
+        this.showPopup(true, 'Updating item');
         itemStatus.val(status);
         setConfirmCallback(function() {
             confirmCallback(itemForm.serialize());

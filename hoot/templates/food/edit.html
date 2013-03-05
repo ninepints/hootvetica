@@ -2,7 +2,7 @@
 {% load static from staticfiles %}
 {% load compress %}
 
-{% block title %}Edit {{ model }} - {{ block.super }}{% endblock %}
+{% block title %}Edit {{ model|lower }} - {{ block.super }}{% endblock %}
 
 {% block css %}{% compress css %}{{ block.super }}{% endcompress %}{% endblock %}
 
@@ -15,7 +15,7 @@
 
 {% block content %}
 <section class="gray banner indented">
-    <h2>{{ action|capfirst }} {{ model|capfirst }}</h2>
+    <h2>{{ action|capfirst }} {{ model|lower }}</h2>
 
     <form method="post" action="">
         {% csrf_token %}

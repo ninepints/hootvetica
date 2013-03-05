@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load compress %}
 
-{% block title %}Delete {{ model }} - {{ block.super }}{% endblock %}
+{% block title %}Delete {{ model|lower }} - {{ block.super }}{% endblock %}
 
 {% block css %}{% compress css %}{{ block.super }}{% endcompress %}{% endblock %}
 {% block js %}{% compress js %}{{ block.super }}{% endcompress %}{% endblock %}
@@ -10,7 +10,7 @@
 
 {% block content %}
     <section class="gray banner indented">
-        <h2>Delete {{ model|capfirst }} "{{ name }}"</h2>
+        <h2>Delete {{ model|lower }} "{{ name }}"</h2>
 
         <form method="post" action="">
             {% csrf_token %}

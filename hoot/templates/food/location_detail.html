@@ -48,7 +48,7 @@
 
         {% if not location.open %}
             <div class="indented banner info">
-                <h2>Location Closed</h2>
+                <h2>Location closed</h2>
                 {% if perms.food.change_location or perms.food.set_location_status %}
                     <p>No information is visible to the public. You can open this location using the controls above.</p>
                 {% elif user.is_authenticated %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load compress %}
 
-{% block title %}Internal Server Error - {{ block.super }}{% endblock %}
+{% block title %}Internal server error - {{ block.super }}{% endblock %}
 
 {% block css %}{% compress css %}{{ block.super }}{% endcompress %}{% endblock %}
 {% block js %}{% compress js %}{{ block.super }}{% endcompress %}{% endblock %}
@@ -12,7 +12,7 @@
 
 {% block content %}
     <div class="error banner indented">
-        <h2>Internal Server Error (HTTP 500)</h2>
+        <h2>Internal server error (HTTP 500)</h2>
         <h3>An unexpected error occurred.</h3>
     </div>
 {% endblock %}
