@@ -10,9 +10,9 @@ class Location(models.Model):
         max_length=24,
         primary_key=True,
         validators=[validate_slug],
-        help_text='The unique ID of this location, which will determine the \
-        location\'s URL. For instance, entering "foo" would yield something \
-        like "example.com/location/foo/".')
+        help_text=('The unique ID of this location, which will determine the '
+        'location\'s URL. For instance, entering "foo" would yield something '
+        'like "example.com/location/foo/".'))
     name = models.CharField(max_length=32)
     open = models.BooleanField()
     last_modified = models.DateTimeField(auto_now=True, editable=False)
