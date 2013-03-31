@@ -25,7 +25,7 @@ class Location(models.Model):
         return (item_class.objects.filter(parent__parent_id=self.uid)
                             .filter(parent__contents_hot=True)
                             .exclude(status='OUT')
-                            .count() > 0)
+                            .exists())
 
     @models.permalink
     def get_absolute_url(self):
@@ -51,7 +51,7 @@ class Category(models.Model):
         return self.parent.uid
 
     def food_available(self):
-        return self.item_set.exclude(status='OUT').count() > 0
+        return self.item_set.exclude(status='OUT').exists()
 
     def clean(self):
         if not self.uid:
