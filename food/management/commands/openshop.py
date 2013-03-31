@@ -1,6 +1,7 @@
+import uuid
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from food.models import Location, Item, WeeklyClosure, OneTimeClosure
+from food.models import Location, Category, Item, WeeklyClosure, OneTimeClosure
 
 class Command(BaseCommand):
     args = '[location ...]'
@@ -42,5 +43,21 @@ class Command(BaseCommand):
             Item.objects.filter(parent__parent__in=locations).update(
                 status='AVA', last_modified=current_time)
 
+        self.do_hardcoded_menu_updates(current_time)
         self.stdout.write(
             'Opened {} location{}'.format(count, '' if count == 1 else 's'))
+
+    def do_hardcoded_menu_updates(self, current_time):
+        # This could be nicer (i.e. not hardcoded) but I don't think
+        # doing it properly is worth the time commitment
+
+        if current_time.weekday() == 6:
+            Item.objects.bulk_create([Item(
+                uid=uuid.uuid4().hex, parent=cat, name='HBCB',
+                status='AVA', last_modified=current_time)
+            for cat in Category.objects.filter(name='Chicken')])
+            Item.objects.bulk_create([Item(
+                uid=uuid.uuid4().hex, parent=cat, name='Specialty',
+                status='AVA', last_modified=current_time)
+            for cat in Category.objects.filter(name='Pizza')])
+
