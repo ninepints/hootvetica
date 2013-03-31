@@ -98,3 +98,42 @@ class Item(models.Model):
     class Meta:
         ordering = ('name',)
         permissions = (('set_item_status', 'Can change item status'),)
+
+
+class Closure(models.Model):
+    location = models.ForeignKey(Location)
+
+    class Meta:
+        abstract = True
+
+
+class WeeklyClosure(Closure):
+    weekday = models.PositiveIntegerField(choices=(
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday')))
+
+    def __unicode__(self):
+        return self.get_weekday_display()
+
+    class Meta:
+        ordering = ('weekday',)
+
+
+class OneTimeClosure(Closure):
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def clean(self):
+        if self.end_date < self.start_date:
+            raise ValidationError('End date cannot be earlier than start date.')
+
+    def __unicode__(self):
+        return u'{} to {}'.format(self.start_date, self.end_date)
+
+    class Meta:
+        ordering = ('start_date', 'end_date')
