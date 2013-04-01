@@ -122,6 +122,8 @@ ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
 LOGIN_REDIRECT_URL = '/'
 
+CSRF_FAILURE_VIEW = 'hoot.views.csrf_failure'
+
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'hoot.wsgi.application'
 
