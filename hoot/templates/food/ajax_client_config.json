@@ -9,7 +9,7 @@
     "userCanChangeItems": {{ perms.food.change_item|lower }},
     "userCanChangeItemStatuses": true,
     "userCanDeleteItems": {{ perms.food.delete_item|lower }},
-    "location": {% include 'food/location_init_data.json' %}{% if refresh_interval %},
+    "location": {% include 'food/location_data.json' %}{% if refresh_interval %},
     "refreshInterval": {{ refresh_interval }}{% endif %}{% if refresh_interval_err %},
     "refreshIntervalErr": {{ refresh_interval_err }}{% endif %}
 }
