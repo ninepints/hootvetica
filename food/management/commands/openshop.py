@@ -1,13 +1,15 @@
 import uuid
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.conf import settings
 from food.models import Location, Category, Item, WeeklyClosure, OneTimeClosure
 
 class Command(BaseCommand):
     args = '[location ...]'
-    help = ('Opens the specified locations. If no locations were specified, '
-            'opens all locations with no associated closures corresponding to '
-            'the current date.')
+    help = ('Opens the specified locations or, if no locations were specified '
+            'and the current time is less than one minute after '
+            'settings.OPEN_TIME, opens all locations with no associated '
+            'closures corresponding to the current date.')
 
     def handle(self, *args, **options):
         current_time = timezone.localtime(timezone.now())
@@ -18,6 +20,12 @@ class Command(BaseCommand):
             count = locations.update(open=True, last_modified=current_time)
             Item.objects.filter(parent__parent__in=locations).update(
                 status='AVA', last_modified=current_time)
+
+        elif (current_time.hour, current_time.minute) != settings.OPEN_TIME:
+            self.stdout.write('Exiting: current time ({0}) is not open time '
+                '({1[0]:02}:{1[1]:02})'.format(
+                    current_time, settings.OPEN_TIME))
+            return
 
         else:
             weekly_closures = set(
