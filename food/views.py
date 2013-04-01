@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllow
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.views import redirect_to_login
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from food.models import Location, Category, Item
 from food.forms import LocationForm, CategoryForm, ItemForm, ItemStatusForm
 
@@ -75,6 +77,10 @@ class PermissionRequiredMixin(object):
 
 class LocationView(LocationMixin, DetailView):
     template_name = 'food/location_detail.html'
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, *args, **kwargs):
+        return super(LocationView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(LocationView, self).get_context_data(**kwargs)
