@@ -15,7 +15,7 @@
         <h2>Forbidden (HTTP 403)</h2>
         <h3>The authenticity of your request couldn't be verified.</h3>
         {% if no_referer %}
-            <p>This site requires a 'Referer' header to be sent by your browser and no such header was received. The header is necessary to ensure that your browser is not being hijacked by third parties. If you have configured your browser not to send 'Referer' headers, you will need to re-enable them before your request can be fulfilled.</p>
+            <p>This application requires a 'Referer' header to be sent by your browser and no such header was received. The header is necessary to ensure that your browser is not being hijacked by third parties. If you have configured your browser not to send 'Referer' headers, you will need to re-enable them before your request can be fulfilled.</p>
         {% endif %}
         {% if DEBUG and reason %}
             <p>Reason given for failure:</p>
