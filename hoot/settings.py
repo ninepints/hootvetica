@@ -186,3 +186,7 @@ LOGGING = {
         },
     }
 }
+
+# Tuples containing the (hour, minute) at which locations open and close.
+OPEN_TIME = (21, 30)
+CLOSE_TIME = (1, 30)
