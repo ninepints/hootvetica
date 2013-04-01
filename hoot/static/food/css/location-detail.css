@@ -213,7 +213,7 @@ div.category.out:nth-child(2n)
 
 div.category.highlight, div.category.highlight:nth-child(2n)
 {
-    background-color: rgb(255,213,125);
+    background-color: rgb(255,216,148);
 
     -webkit-transition-duration: 0s;
     -moz-transition-duration: 0s;
@@ -322,7 +322,7 @@ div.item.out
 
 div.item.highlight
 {
-    background-color: rgb(255,213,125);
+    background-color: rgb(255,216,148);
 
     -webkit-transition-duration: 0.35s, 0s;
     -moz-transition-duration: 0.35s, 0s;
