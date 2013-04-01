@@ -186,7 +186,7 @@ div.category.collapsed > h2::after
     content: none;
 }
 
-div.category:nth-child(2n+1)
+div.category:nth-child(2n)
 {
     background-color: rgb(163,207,104);
 }
@@ -196,7 +196,7 @@ div.category.empty
     background-color: white;
 }
 
-div.category.empty:nth-child(2n+1)
+div.category.empty:nth-child(2n)
 {
     background-color: rgb(240,240,240);
 }
@@ -206,12 +206,12 @@ div.category.out
     background-color: rgb(245,164,157);
 }
 
-div.category.out:nth-child(2n+1)
+div.category.out:nth-child(2n)
 {
     background-color: rgb(220,148,141);
 }
 
-div.category.highlight, div.category.highlight:nth-child(2n+1)
+div.category.highlight, div.category.highlight:nth-child(2n)
 {
     background-color: rgb(255,213,125);
 

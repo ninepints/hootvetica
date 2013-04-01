@@ -99,7 +99,7 @@ ajaxClient.view = {};
     };
 
     LocationMiniView.prototype.append = function(element) {
-        this.childrenDiv.append(element);
+        this.emptyText.before(element);
     };
 
     LocationMiniView.prototype.remove = function() {
