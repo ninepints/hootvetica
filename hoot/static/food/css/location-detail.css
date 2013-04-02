@@ -394,7 +394,6 @@ div#overlay
     left: 0;
     background-color: rgba(0,0,0,0.5);
     opacity: 1;
-    overflow-y: scroll;
     z-index: 1;
 
     -webkit-transition-property: opacity;
