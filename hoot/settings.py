@@ -52,6 +52,9 @@ AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET']
 AWS_STORAGE_BUCKET_NAME = os.environ['AWS_BUCKET_NAME']
 AWS_QUERYSTRING_AUTH = False
 
+GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID')
+GOOGLE_ANALYTICS_DOMAIN = os.environ.get('GOOGLE_ANALYTICS_DOMAIN')
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = ''
@@ -135,13 +138,14 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'hoot.context_processors.google_analytics',
+    'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request'
 )
 
 INSTALLED_APPS = (
