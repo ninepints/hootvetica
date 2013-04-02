@@ -3,7 +3,12 @@
 $(document).ready(function() {
     if (deferIntro || ajaxClient.utils.getCookie('completedIntro') === 'true')
         return;
-    document.cookie = 'completedIntro=true;path=/';
+
+    var expires = new Date()
+    expires.setUTCFullYear(expires.getUTCFullYear() + 10)
+    document.cookie = 'completedIntro=true;path=/;max-age=315360000;expires=' +
+        expires.toUTCString();
+
     if (skipIntro)
         return;
 
