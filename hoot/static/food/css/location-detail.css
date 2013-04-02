@@ -3,8 +3,8 @@
 a.button
 {
     display: inline-block;
-    border: 0.125em solid rgb(64,64,64);
-    padding: 0.125em 0.5em;
+    border: 0.0625em solid rgb(64,64,64);
+    padding: 0.1875em 0.5em;
     line-height: 1em;
     text-align: center;
     text-decoration: none;
