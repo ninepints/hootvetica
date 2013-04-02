@@ -46,6 +46,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATICFILES_STORAGE = 'hoot.storage.CachedS3BotoStorage'
 COMPRESS_STORAGE = STATICFILES_STORAGE
 COMPRESS_OUTPUT_DIR = 'compress'
+COMPRESS_OFFLINE = True
 
 AWS_ACCESS_KEY_ID = os.environ['AWS_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET']
@@ -97,7 +98,6 @@ COMPRESS_CSS_FILTERS = (
     'compressor.filters.cssmin.CSSMinFilter'
 )
 COMPRESS_DATA_URI_MAX_SIZE = 40960
-COMPRESS_OFFLINE = True
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.environ['DJANGO_SECRET']
