@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.views import redirect_to_login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.cache import cache_control
 from food.models import Location, Category, Item
 from food.forms import LocationForm, CategoryForm, ItemForm, ItemStatusForm
 
@@ -101,6 +102,10 @@ class LocationView(LocationMixin, DetailView):
 
 class LocationAjaxView(LocationMixin, AjaxMixin, DetailView):
     template_name = 'food/location_data.json'
+
+    @method_decorator(cache_control(no_cache=True))
+    def dispatch(self, *args, **kwargs):
+        return super(LocationAjaxView, self).dispatch(*args, **kwargs)
 
 
 # Base editing views
