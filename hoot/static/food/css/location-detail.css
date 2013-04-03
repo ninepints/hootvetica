@@ -153,7 +153,7 @@ div.category > h2::after
     right: 0.25em;
     width: 64px;
     height: 64px;
-    background-image: url(../img/arrow-d-64.png);
+    background-image: url(../../food/img/arrow-d-64.png);
     background-size: 64px 64px;
 
     -webkit-transform: rotate(-90deg);
@@ -594,6 +594,6 @@ only all and (min-resolution: 2dppx)
 {
     div.category > h2::after
     {
-        background-image: url(../img/arrow-d-128.png);
+        background-image: url(../../food/img/arrow-d-128.png);
     }
 }
