@@ -21,9 +21,7 @@
     {% block precontainer %}{% endblock %}
     <div id="container">
         <nav id="topmenu">
-            {% block homelink %}
-                <a href="{% url 'index' %}" id="homelink">Hootvetica</a>
-            {% endblock %}
+            {% block homelink %}<a href="{% url 'index' %}" id="homelink">Hootvetica</a>{% endblock %}
 
             <ul id="usermenu">
                 {% block usermenu %}
