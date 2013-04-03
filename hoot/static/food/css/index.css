@@ -24,10 +24,14 @@ div.location > h2
 
 div.location > h2::after
 {
-    content: url(../img/arrow-d-64.png);
+    content: "";
     position: absolute;
     top: 0.45em;
     right: 0.25em;
+    width: 64px;
+    height: 64px;
+    background-image: url(../img/arrow-d-64.png);
+    background-size: 64px 64px;
 }
 
 div.location.closed > h2
@@ -122,10 +126,38 @@ footer#credits a.django
 {
     width: 69px;
     background-image: url(../img/django-24.png);
+    background-size: 69px 24px;
 }
 
 footer#credits a.jquery
 {
     width: 85px;
     background-image: url(../img/jquery-24.png);
+    background-size: 85px 24px;
+}
+
+/* high-resolution images */
+
+@media
+only all and (-webkit-min-device-pixel-ratio: 2),
+only all and (min--moz-device-pixel-ratio: 2),
+only all and (-o-min-device-pixel-ratio: 2/1),
+only all and (min-resolution: 2dppx)
+{
+    div.location > h2::after
+    {
+        background-image: url(../img/arrow-d-128.png);
+    }
+
+    footer#credits a.django
+    {
+        width: 69px;
+        background-image: url(../img/django-48.png);
+    }
+
+    footer#credits a.jquery
+    {
+        width: 85px;
+        background-image: url(../img/jquery-48.png);
+    }
 }
