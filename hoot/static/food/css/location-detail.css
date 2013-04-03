@@ -1,4 +1,4 @@
-/* Buttons */
+/* buttons */
 
 a.button
 {
@@ -26,7 +26,7 @@ a.button.disabled
     cursor: default;
 }
 
-/* Locations */
+/* locations */
 
 div.location
 {
@@ -86,6 +86,11 @@ ul.location-buttons > li
     float: left;
 }
 
+div.location > div.categories
+{
+    margin: 1.5em 0;
+}
+
 div.location > div.categories.hidden
 {
     display: none;
@@ -96,7 +101,7 @@ div.categories > h3
     padding: 0 0.5em;
 }
 
-/* Categories */
+/* categories */
 
 div.category
 {
@@ -279,7 +284,7 @@ ul.category-buttons > li
     float: left;
 }
 
-/* Items */
+/* items */
 
 div.item
 {
@@ -378,7 +383,7 @@ ul.item-buttons a
     width: 4.5em;
 }
 
-/* Popups */
+/* popups */
 
 body.noscroll
 {
@@ -449,7 +454,7 @@ ul.popup-buttons > li
     float: left;
 }
 
-/* Statusbars */
+/* statusbars */
 
 div.statusbar
 {

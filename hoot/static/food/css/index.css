@@ -78,7 +78,8 @@ footer#credits
 
 footer#credits > p
 {
-    margin: 0.75em 1em;
+    margin: 0;
+    padding: 0.75em 1em;
     font-weight: 100;
     float: left;
 }
@@ -88,28 +89,42 @@ span#byline
     font-weight: normal;
 }
 
-footer#credits > a
+footer#credits > ul
+{
+    margin: 0;
+    padding: 0 0.5em;
+    float: right;
+    overflow: hidden;
+}
+
+footer#credits > ul > li
+{
+    float: left;
+}
+
+footer#credits a
 {
     display: inline-block;
     height: 24px;
-    margin: 0.75em 1em 0.75em 0;
+    padding: 0.75em 0.5em;
+    background-origin: content-box;
+    background-repeat: no-repeat;
     color: transparent;
-    float: right;
     opacity: 0.275;
 }
 
-footer#credits > a:hover
+footer#credits a:hover
 {
     opacity: 1;
 }
 
-footer#credits > a.django
+footer#credits a.django
 {
     width: 69px;
     background-image: url(../img/django-24.png);
 }
 
-footer#credits > a.jquery
+footer#credits a.jquery
 {
     width: 85px;
     background-image: url(../img/jquery-24.png);
