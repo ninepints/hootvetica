@@ -136,6 +136,8 @@ div.category > h2
 {
     padding-right: 1.25em;
     cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.category.editable > h2
@@ -294,6 +296,7 @@ div.item
 {
     position: relative;
     display: inline-block;
+    max-width: 40%;
     height: 7.5em;
     margin: 0 1em 1.5em 0;
     padding: 0 1em;
@@ -342,7 +345,11 @@ div.item.highlight
 
 div.item > h3
 {
+    height: 1.5em;
     margin-bottom: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.item > p
