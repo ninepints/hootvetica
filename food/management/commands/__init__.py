@@ -28,6 +28,7 @@ def close_locations(locations, current_time):
 
 def do_hardcoded_menu_insertions(locations, current_time):
     if current_time.weekday() == 6:
+        Item.objects.filter(parent__name='Chicken').update(status='OUT')
         Item.objects.bulk_create(
             [Item(
                 uid=uuid.uuid4().hex,
