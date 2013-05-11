@@ -1,4 +1,4 @@
-# Django settings for hoot project.
+# Django settings for hootvetica project.
 import os
 from os.path import abspath, dirname
 import dj_database_url
@@ -43,7 +43,7 @@ USE_L10N = True
 USE_TZ = True
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-STATICFILES_STORAGE = 'hoot.storage.CachedS3BotoStorage'
+STATICFILES_STORAGE = 'hootvetica.storage.CachedS3BotoStorage'
 COMPRESS_STORAGE = STATICFILES_STORAGE
 COMPRESS_OUTPUT_DIR = 'compress'
 COMPRESS_OFFLINE = True
@@ -118,16 +118,16 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'hoot.urls'
+ROOT_URLCONF = 'hootvetica.urls'
 
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
 LOGIN_REDIRECT_URL = '/'
 
-CSRF_FAILURE_VIEW = 'hoot.views.csrf_failure'
+CSRF_FAILURE_VIEW = 'hootvetica.views.csrf_failure'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'hoot.wsgi.application'
+WSGI_APPLICATION = 'hootvetica.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -137,7 +137,7 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'hoot.context_processors.google_analytics',
+    'hootvetica.context_processors.google_analytics',
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
