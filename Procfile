@@ -1,1 +1,1 @@
-web: gunicorn -k gevent -w 3 hoot.wsgi
+web: gunicorn -k gevent -w 3 hootvetica.wsgi
