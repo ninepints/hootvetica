@@ -32,7 +32,7 @@ div.location > h2::after
     right: 0.25em;
     width: 64px;
     height: 64px;
-    background-image: url(../../food/img/arrow-h.svg);
+    background-image: url(../img/arrow-h.svg);
     background-size: 64px 64px;
 }
 
@@ -127,13 +127,13 @@ footer#credits a:hover
 footer#credits a.django
 {
     width: 69px;
-    background-image: url(../../food/img/django.svg);
+    background-image: url(../img/django.svg);
     background-size: 69px 24px;
 }
 
 footer#credits a.jquery
 {
     width: 85px;
-    background-image: url(../../food/img/jquery.svg);
+    background-image: url(../img/jquery.svg);
     background-size: 85px 24px;
 }

@@ -4,12 +4,12 @@
 
 {% block css %}{% compress css %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static "food/css/index.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/index.css" %}" />
 {% endcompress %}{% endblock %}
 
 {% block js %}{% compress js %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static "food/js/cs.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/cs.js" %}"></script>
 {% endcompress %}{% endblock %}
 
 {% block homelink %}
