@@ -32,7 +32,7 @@ div.location > h2::after
     right: 0.25em;
     width: 64px;
     height: 64px;
-    background-image: url(../../food/img/arrow-d-64.png);
+    background-image: url(../../food/img/arrow-h.svg);
     background-size: 64px 64px;
 }
 
@@ -127,39 +127,13 @@ footer#credits a:hover
 footer#credits a.django
 {
     width: 69px;
-    background-image: url(../../food/img/django-24.png);
+    background-image: url(../../food/img/django.svg);
     background-size: 69px 24px;
 }
 
 footer#credits a.jquery
 {
     width: 85px;
-    background-image: url(../../food/img/jquery-24.png);
+    background-image: url(../../food/img/jquery.svg);
     background-size: 85px 24px;
-}
-
-/* high-resolution images */
-
-@media
-only all and (-webkit-min-device-pixel-ratio: 2),
-only all and (min--moz-device-pixel-ratio: 2),
-only all and (-o-min-device-pixel-ratio: 2/1),
-only all and (min-resolution: 2dppx)
-{
-    div.location > h2::after
-    {
-        background-image: url(../../food/img/arrow-d-128.png);
-    }
-
-    footer#credits a.django
-    {
-        width: 69px;
-        background-image: url(../../food/img/django-48.png);
-    }
-
-    footer#credits a.jquery
-    {
-        width: 85px;
-        background-image: url(../../food/img/jquery-48.png);
-    }
 }

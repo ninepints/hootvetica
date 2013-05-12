@@ -193,10 +193,18 @@ select
     border-radius: 0;
     padding: 0 0.1875em;
     height: 1.5em;
-    background-image: url(../../food/img/arrow-d-24.png);
-    background-position: right center;
+    background-image: url(../../food/img/select.svg);
+    background-size: 1.25em 1.25em;
+    background-position: 98% 50%;
     background-repeat: no-repeat;
     color: rgb(64,64,64);
+}
+
+select:active
+{
+    background-color: rgb(64,64,64);
+    background-image: url(../../food/img/select-active.svg);
+    color: white;
 }
 
 input[type="text"], input[type="password"], select
