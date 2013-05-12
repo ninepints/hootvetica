@@ -93,7 +93,10 @@
                                             <li><a href="{% url 'item-edit-status' item.uid %}" class="button edit">Edit</a></li>
                                         {% endif %}
                                         {% if perms.food.delete_item %}
-                                            <li><a href="{% url 'item-del' item.uid %}" class="button delete">Delete</a></li>
+                                            <li><form method="POST" action="{% url 'item-del' item.uid %}">
+                                                {% csrf_token %}
+                                                <input type="submit" value="Delete" />
+                                            </form></li>
                                         {% endif %}
                                     </ul>
                                 </div>

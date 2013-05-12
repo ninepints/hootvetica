@@ -126,7 +126,7 @@ ajaxClient.model = {};
     };
 
     CategoryMiniModel.prototype.showDeleteDialog = function() {
-        viewAdapter.showDeletionWarning('category', this.name, true,
+        viewAdapter.showDeletionPopup('category', this.name, true,
             jQuery.proxy(this.confirmDelete, this));
     };
 
@@ -201,7 +201,7 @@ ajaxClient.model = {};
     };
 
     ItemMiniModel.prototype.showDeleteDialog = function() {
-        viewAdapter.showDeletionWarning('item', this.name, false,
+        viewAdapter.showDeletionPopup('item', this.name, false,
             jQuery.proxy(this.confirmDelete, this));
     };
 

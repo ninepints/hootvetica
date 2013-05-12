@@ -35,10 +35,10 @@ $(document).ready(function() {
             showItemStatusForm: function(status, confirmCallback) {
                 view.showItemStatusForm(status, confirmCallback);
             },
-            showDeletionWarning: function(model, name,
-                                          ominous, confirmCallback) {
-                view.showDeletionWarning(model, name,
-                                         ominous, confirmCallback);
+            showDeletionPopup: function(model, name,
+                                          warn, confirmCallback) {
+                view.showDeletionPopup(model, name,
+                                         warn, confirmCallback);
             },
             enableButtons: function(bool) {
                 view.enableButtons(bool);

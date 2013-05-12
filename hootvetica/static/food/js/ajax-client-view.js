@@ -562,19 +562,24 @@ ajaxClient.view = {};
         confirmCallback(itemForm.serialize());
     };
 
-    this.showDeletionWarning = function(model, name,
-                                        ominous, confirmCallback) {
-        this.showPopup(true, 'Delete ' + model + ' "' + name + '"');
-        deletionWarning.show();
-        if (ominous)
-            deletionWarning.text('Are you sure?' +
-                ' Any children will be deleted as well.' +
-                ' This action is permanent.');
+    this.showDeletionPopup = function(model, name,
+                                        warn, confirmCallback) {
+        if (warn)
+        {
+            this.showPopup(true, 'Delete ' + model + ' "' + name + '"');
+            deletionWarning.show();
+        }
         else
-            deletionWarning.text('Are you sure?' +
-                ' This action is permanent.');
+        {
+            this.showPopup(true, 'Deleting ' + model + ' "' + name + '"');
+        }
         this.setPopupConfirmText('Delete');
         setConfirmCallback(confirmCallback);
+
+        if (!warn)
+        {
+            confirmCallback();
+        }
     };
 
     this.enableButtons = function(bool) {
