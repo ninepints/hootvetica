@@ -150,17 +150,17 @@ div.category > h2::after
     content: "";
     position: absolute;
     top: 1.45em;
-    right: 0.25em;
+    right: -0.75em;
     width: 64px;
     height: 64px;
-    background-image: url(../../food/img/arrow-d-64.png);
+    background-image: url(../../food/img/arrow-v.svg);
     background-size: 64px 64px;
 
-    -webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-    -o-transform: rotate(-90deg);
-    transform: rotate(-90deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
 
     -webkit-transform-origin: top left;
     -moz-transform-origin: top left;
@@ -172,13 +172,13 @@ div.category > h2::after
 div.category.collapsed > h2::after
 {
     top: 0.45em;
-    right: -0.75em;
+    right: 0.25em;
 
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
+    -webkit-transform: none;
+    -moz-transform: none;
+    -ms-transform: none;
+    -o-transform: none;
+    transform: none;
 }
 
 .no-js div.category > h2, div.category.empty > h2
@@ -583,18 +583,4 @@ div.popup > div.statusbar
 div.popup > div.statusbar.hidden
 {
     margin: 0 -1em;
-}
-
-/* high-resolution images */
-
-@media
-only all and (-webkit-min-device-pixel-ratio: 2),
-only all and (min--moz-device-pixel-ratio: 2),
-only all and (-o-min-device-pixel-ratio: 2/1),
-only all and (min-resolution: 2dppx)
-{
-    div.category > h2::after
-    {
-        background-image: url(../../food/img/arrow-d-128.png);
-    }
 }
