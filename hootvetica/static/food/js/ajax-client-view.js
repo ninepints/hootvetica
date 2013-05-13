@@ -564,22 +564,17 @@ ajaxClient.view = {};
 
     this.showDeletionPopup = function(model, name,
                                         warn, confirmCallback) {
-        if (warn)
-        {
+        if (warn) {
             this.showPopup(true, 'Delete ' + model + ' "' + name + '"');
             deletionWarning.show();
         }
-        else
-        {
+        else {
             this.showPopup(true, 'Deleting ' + model + ' "' + name + '"');
         }
         this.setPopupConfirmText('Delete');
         setConfirmCallback(confirmCallback);
 
-        if (!warn)
-        {
-            confirmCallback();
-        }
+        if (!warn) confirmCallback();
     };
 
     this.enableButtons = function(bool) {
