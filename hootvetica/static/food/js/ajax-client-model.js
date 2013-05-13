@@ -17,8 +17,8 @@ ajaxClient.model = {};
     // Dictionary of mini-models (uses UUIDs for keys)
     var minimodels = {};
 
-    // Timer for data refresh, refresh request object
-    var refreshTimer, refreshRequest;
+    // Timers for data refresh, refresh request object
+    var refreshTimer, countdownTimer, refreshRequest;
 
     // Last model update request object
     var postRequest;
@@ -81,6 +81,10 @@ ajaxClient.model = {};
 
     LocationMiniModel.prototype.childDependentUpdate = function() {
         this.viewAdapter.childDependentUpdate();
+    }
+
+    LocationMiniModel.prototype.refreshData = function() {
+        refreshData();
     }
 
     LocationMiniModel.prototype.remove = function() {
@@ -300,7 +304,6 @@ ajaxClient.model = {};
     // Displays countdown then refreshes data
     function runRetryCountdown(secs, errorThrown) {
         var timeLeft = secs;
-        var countdownTimer;
         countdownTimer = setInterval(function() {
             if (timeLeft >= 1) {
                 var msg = 'Refresh failed, retrying in ' + timeLeft +
@@ -309,16 +312,15 @@ ajaxClient.model = {};
                     ' (' + errorThrown + ')' : msg);
                 timeLeft--;
             }
-            else {
-                clearInterval(countdownTimer);
+            else
                 refreshData();
-            }
         }, 1000);
     };
 
     // Gets updated location data
     function refreshData() {
         clearTimeout(refreshTimer);
+        clearInterval(countdownTimer);
         if (refreshRequest) refreshRequest.abort();
         viewAdapter.showStatusbar(true);
         viewAdapter.setStatusbar('busy', 'Refreshing data...');

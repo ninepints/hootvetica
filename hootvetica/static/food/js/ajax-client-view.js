@@ -37,6 +37,7 @@ ajaxClient.view = {};
         this.nameText = this.container.children('h1');
         this.emptyText = this.childrenDiv.children('h3').hide();
         this.closedBox = this.container.children('div.info');
+        this.refreshText = this.container.children('p').children('a');
 
         // Customize "closed" banner
         if (userCanChangeLocation) {
@@ -73,6 +74,11 @@ ajaxClient.view = {};
             if (!userCanAddCategories)
                 this.addButton.parent().remove();
         }
+
+        this.refreshText.on('click', function(event) {
+            miniModelAdapter.refreshData();
+            event.preventDefault();
+        });
 
         // Attach self to DOM
         attachCallback(this.container);
