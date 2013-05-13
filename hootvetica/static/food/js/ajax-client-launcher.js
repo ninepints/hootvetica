@@ -59,6 +59,9 @@ $(document).ready(function() {
                         },
                         showAddChildDialog: function() {
                             miniModel.showAddChildDialog();
+                        },
+                        refreshData: function() {
+                            miniModel.refreshData();
                         }
                     }, attachCallback);
                 return {

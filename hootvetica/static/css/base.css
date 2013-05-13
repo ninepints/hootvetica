@@ -47,17 +47,32 @@ p
     margin: 1.5em 0;
 }
 
+p.fade, span.fade
+{
+    color: rgb(160,160,160);
+}
+
+p.center
+{
+    text-align: center;
+}
+
 /* links */
 
 a
 {
-    color: rgb(128,128,128);
+    color: rgb(136,183,230);
     text-decoration: none;
 }
 
 a:hover
 {
     text-decoration: underline;
+}
+
+a:active
+{
+    color: rgb(151,203,255);
 }
 
 a.noline:hover

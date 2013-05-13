@@ -26,6 +26,12 @@ a.button.disabled
     cursor: default;
 }
 
+p.fade a.disabled, p.fade a.disabled:hover, p.fade a.disabled:active
+{
+    color: rgb(160,160,160);
+    cursor: default;
+}
+
 /* locations */
 
 div.location
@@ -86,11 +92,6 @@ ul.location-buttons > li
     float: left;
 }
 
-div.location > div.categories
-{
-    margin: 0 0 1.5em;
-}
-
 div.location > div.categories.hidden
 {
     display: none;
@@ -99,6 +100,11 @@ div.location > div.categories.hidden
 div.categories > h3
 {
     padding: 0 0.5em;
+}
+
+div.location > p
+{
+    margin: 0.75em 0;
 }
 
 /* categories */
