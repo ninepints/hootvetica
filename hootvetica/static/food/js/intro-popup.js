@@ -31,6 +31,12 @@ $(document).ready(function() {
         }, 50);
     };
 
+    function exit() {
+        overlay.addClass('hidden').off('click.intro');
+        popup.remove();
+        body.removeClass('noscroll');
+    };
+
     jQuery.ajax({
         url: introContentURL,
         dataType: 'html',
@@ -40,9 +46,7 @@ $(document).ready(function() {
             category = popup.children('div.category');
             item = category.find('div.item.editable');
             itemText = item.children('p');
-            overlay.on('click', function() {
-                popup.remove();
-            });
+            overlay.on('click.intro', exit);
             popup.on('click', function(event) {
                 event.stopPropagation();
             });
@@ -74,9 +78,7 @@ $(document).ready(function() {
                 event.preventDefault();
             });
             popup.find('a.confirm').on('click', function(event) {
-                overlay.addClass('hidden');
-                popup.remove();
-                body.removeClass('noscroll');
+                exit();
                 event.preventDefault();
             });
 
