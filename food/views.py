@@ -7,7 +7,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 from food.models import Location, Category, Item
-from food.forms import LocationForm, CategoryForm, ItemForm, ItemStatusForm
+from food.forms import (LocationForm, CategoryCreationForm, CategoryForm,
+                        ItemCreationForm, ItemForm, ItemStatusForm)
 
 # View mixins
 
@@ -22,9 +23,6 @@ class CategoryMixin(object):
 class ItemMixin(object):
     model = Item
     form_class = ItemForm
-
-class ItemStatusMixin(ItemMixin):
-    form_class = ItemStatusForm
 
 
 class FoodModelMixin(object):
@@ -163,6 +161,7 @@ class AjaxDeleteView(DeleteView):
 
 class CategoryCreateView(PermissionRequiredMixin,
                          CategoryMixin, FoodCreateView):
+    form_class = CategoryCreationForm
     required_permissions = ('food.add_category',)
 
     def get_initial(self):
@@ -177,10 +176,12 @@ class CategoryCreateView(PermissionRequiredMixin,
 
 class CategoryAjaxCreateView(PermissionRequiredMixin,
                              CategoryMixin, AjaxCreateView):
+    form_class = CategoryCreationForm
     required_permissions = ('food.add_category',)
 
 
 class ItemCreateView(PermissionRequiredMixin, ItemMixin, FoodCreateView):
+    form_class = ItemCreationForm
     required_permissions = ('food.add_item',)
 
     def get_initial(self):
@@ -194,6 +195,7 @@ class ItemCreateView(PermissionRequiredMixin, ItemMixin, FoodCreateView):
 
 
 class ItemAjaxCreateView(PermissionRequiredMixin, ItemMixin, AjaxCreateView):
+    form_class = ItemCreationForm
     required_permissions = ('food.add_item',)
 
 
@@ -217,22 +219,20 @@ class CategoryAjaxUpdateView(PermissionRequiredMixin,
     required_permissions = ('food.change_category',)
 
 
-class ItemUpdateView(PermissionRequiredMixin,
-                     ItemMixin, FoodUpdateView):
+class ItemUpdateView(PermissionRequiredMixin, ItemMixin, FoodUpdateView):
     required_permissions = ('food.change_item',)
 
 
-class ItemAjaxUpdateView(PermissionRequiredMixin,
-                         ItemMixin, AjaxUpdateView):
+class ItemAjaxUpdateView(PermissionRequiredMixin, ItemMixin, AjaxUpdateView):
     required_permissions = ('food.change_item',)
 
 
-class ItemStatusUpdateView(ItemStatusMixin, FoodUpdateView):
-    pass
+class ItemStatusUpdateView(ItemMixin, FoodUpdateView):
+    form_class = ItemStatusForm
 
 
-class ItemStatusAjaxUpdateView(ItemStatusMixin, AjaxUpdateView):
-    pass
+class ItemStatusAjaxUpdateView(ItemMixin, AjaxUpdateView):
+    form_class = ItemStatusForm
 
 
 class CategoryDeleteView(PermissionRequiredMixin,
