@@ -258,7 +258,7 @@ div.category > h3
     transition-duration: 0.35s;
 }
 
-div.category.collapsed > h3
+div.category.collapsed > h3, .no-js div.category > h3
 {
     height: 1.5em;
     margin: 0.75em 0;
