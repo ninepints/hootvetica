@@ -6,15 +6,25 @@ class LocationForm(ModelForm):
 		model = Location
 		fields = ('open',)
 
+class CategoryCreationForm(ModelForm):
+    class Meta:
+        model = Category
+        widgets = {'parent': HiddenInput}
+
 class CategoryForm(ModelForm):
     class Meta:
         model = Category
+        exclude = ('parent',)
+
+class ItemCreationForm(ModelForm):
+    class Meta:
+        model = Item
         widgets = {'parent': HiddenInput}
 
 class ItemForm(ModelForm):
     class Meta:
         model = Item
-        widgets = {'parent': HiddenInput}
+        exclude = ('parent',)
 
 class ItemStatusForm(ModelForm):
     class Meta:
