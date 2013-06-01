@@ -9,6 +9,5 @@ $(document).ready(function() {
             return;
         }
     }
-    if (fields.length >= 1)
-        fields.eq(0).focus();
+    fields.eq(0).focus();
 });
