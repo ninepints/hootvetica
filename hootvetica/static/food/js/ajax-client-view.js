@@ -8,11 +8,7 @@ ajaxClient.view = {};
     var modelAdapter;
 
     // User permissions
-    var userIsAuthenticated;
-    var userCanChangeLocation, userCanAddCategories,
-        userCanChangeCategories, userCanDeleteCategories,
-        userCanAddItems, userCanChangeItems, userCanChangeItemStatuses,
-        userCanDeleteItems;
+    var perms;
 
     // Existing page elements
     var body, contentDiv, statusbar, statusbarText, overlay;
@@ -21,16 +17,288 @@ ajaxClient.view = {};
     var UIURL;
 
     // Downloaded elements
-    var popup, popupTitle, deletionWarning, formInputs;
-    var locationForm, locationOpen;
-    var categoryForm, categoryName, categoryHeat, categoryParent;
-    var itemForm, itemName, itemQty, itemQtyUl, itemStatus, itemParent;
-    var confirmButton, cancelButton, buttonsEnabled;
-    var popupStatusbar, popupStatusbarText;
+    var popupTemplate;
+    var locationForm, categoryForm, itemForm;
     var locationTemplate, categoryTemplate, itemTemplate;
 
+    // Stack of active popups (last popup is displayed)
+    var popupStack = [];
 
-    function LocationMiniView(miniModelAdapter, attachCallback) {
+    var nextInputID = 0;
+
+
+    function Form(formElement, inputElements, state) {
+        var input, id;
+        this.formElement = formElement.on('submit', false);
+        this.inputElements = inputElements || formElement.find('input, select');
+        for (var i = 0; i < this.inputElements.length; i++) {
+            id = 'input' + nextInputID;
+            input = this.inputElements.eq(i).attr('id', id);
+            input.parent().siblings().children('label').attr('for', id);
+            nextInputID += 1;
+        }
+
+        Object.keys(state).forEach(function(name) {
+            input = this.inputElements.filter('[name="' + name + '"]');
+            input.val(state[name]);
+        }, this);
+    };
+
+    Form.prototype.attachAfter = function(element) {
+        this.formElement.insertAfter(element);
+    };
+
+    Form.prototype.setEnabled = function(bool) {
+        this.inputElements.prop('disabled', !bool);
+    };
+
+    Form.prototype.focusFirst = function() {
+        this.inputElements.eq(0).focus();
+    };
+
+    Form.prototype.serialize = function() {
+        return this.formElement.serialize();
+    };
+
+    Form.prototype.addErrors = function(json) {
+        this.clearErrors();
+
+        var nonFieldErrors = json.nonFieldErrors;
+        var fieldErrors = json.fieldErrors;
+        var formUl = this.formElement.children('ul.form');
+
+        // Add non-field errors
+        var prev = formUl.prev();
+        nonFieldErrors.forEach(function(error) {
+            prev.after('<li class="error">' + error + '</li>');
+            prev = prev.next();
+        });
+
+        // Add field errors to associated fields
+        fieldErrors.forEach(function(fieldError) {
+            prev = formUl.find('[name="' + fieldError.field + '"]').parent();
+            fieldError.errors.forEach(function(error) {
+                prev.after('<li class="error">' + error + '</li>');
+                prev = prev.next();
+            });
+        });
+    };
+
+    Form.prototype.clearErrors = function() {
+        this.formElement.find('li.error').remove();
+    };
+
+
+    function Popup(title, confirmCallback, cancelCallback, content) {
+        // Clone template markup
+        this.container = popupTemplate.clone();
+        this.container.on('click', function(event) {
+            event.stopPropagation();
+        });
+        this.statusbar = this.container.children('div');
+
+        // Add button event handlers
+        this.confirmButton = this.container.find('a.confirm')
+            .on('click', this.confirm.bind(this));
+        this.cancelButton = this.container.find('a.cancel')
+            .on('click', this.cancel.bind(this));
+        this.confirmCallback = confirmCallback;
+        this.cancelCallback = cancelCallback;
+        this.disabled = false;
+
+        // Add title, content
+        this.container.children('h2').text(title);
+        this.statusbar.after(content);
+
+        // Attach to DOM
+        this.container.appendTo(overlay);
+    };
+
+    Popup.prototype.setVisible = function(bool) {
+        if (bool) this.container.show();
+        else this.container.hide();
+    };
+
+    Popup.prototype.setStatusbarVisible = function(bool) {
+        if (bool) this.statusbar.removeClass('hidden');
+        else this.statusbar.addClass('hidden');
+    };
+
+    Popup.prototype.setStatusbarContent = function(content, sbclass) {
+        this.statusbar.children('p').text(content);
+        if (sbclass) {
+            var wasHidden = this.statusbar.hasClass('hidden');
+            this.statusbar.removeClass()
+                .addClass('statusbar').addClass(sbclass);
+            if (wasHidden)
+                this.statusbar.addClass('hidden');
+        }
+    };
+
+    Popup.prototype.setEnabled = function(bool) {
+        this.disabled = !bool;
+        if (bool)
+            this.confirmButton.removeClass('disabled');
+        else
+            this.confirmButton.addClass('disabled');
+    };
+
+    Popup.prototype.setConfirmText = function(text) {
+        this.confirmButton.text(text);
+    };
+
+    Popup.prototype.close = function() {
+        popPopup();
+    };
+
+    Popup.prototype.cancel = function(event) {
+        this.cancelCallback();
+        if (event) event.preventDefault();
+    };
+
+    Popup.prototype.confirm = function(event) {
+        if (!this.disabled)
+            this.confirmCallback();
+        if (event) event.preventDefault();
+    };
+
+
+    function FormPopup(title, confirmCallback, cancelCallback, content, form) {
+        Popup.apply(this, arguments);
+        this.form = form;
+        this.form.attachAfter(this.statusbar);
+    };
+    FormPopup.prototype = Object.create(Popup.prototype);
+    FormPopup.prototype.constructor = FormPopup;
+
+    FormPopup.prototype.setVisible = function(bool) {
+        Popup.prototype.setVisible.apply(this, arguments);
+        if (bool) this.form.focusFirst();
+    }
+
+    FormPopup.prototype.setEnabled = function(bool) {
+        Popup.prototype.setEnabled.apply(this, arguments);
+        this.form.setEnabled(bool);
+    };
+
+    FormPopup.prototype.confirm = function(event) {
+        if (!this.disabled)
+            this.confirmCallback(this.form.serialize());
+        if (event) event.preventDefault();
+    };
+
+    FormPopup.prototype.getForm = function() {
+        return this.form;
+    };
+
+
+    function MiniView(adapter) {
+        this.modelAdapter = adapter;
+        this.disabled = false;
+    };
+
+    MiniView.prototype.setEnabled = function(bool) {
+        this.disabled = !bool;
+        if (bool)
+            this.container.children('ul').find('a').removeClass('disabled');
+        else
+            this.container.children('ul').find('a').addClass('disabled');
+    };
+
+    MiniView.prototype.backgroundRequest = function(requestFunc) {
+        this.setEnabled(false);
+        requestFunc((function() {
+            this.setEnabled(true);
+        }).bind(this));
+    };
+
+    MiniView.prototype.launchPopup = function(title, content, requestFunc) {
+        var popup, abortCallback;
+        var miniview = this;
+
+        popup = new Popup(title,
+
+            // Popup confirmation callback
+            function() {
+                popup.setEnabled(false);
+                abortCallback = requestFunc({
+                    accepted: function() {
+                        miniview.setEnabled(true);
+                        popup.close();
+                    },
+                    error: function(error) {
+                        abortCallback = null;
+                        popup.setEnabled(true);
+                        popup.setStatusbarContent(error, 'error');
+                        popup.setStatusbarVisible(true);
+                        popup.setConfirmText('Retry');
+                    }
+                });
+            },
+
+            // Popup cancellation callback
+            function() {
+                if (abortCallback)
+                    abortCallback();
+                miniview.setEnabled(true);
+                popup.close();
+            },
+
+            content);
+
+        this.setEnabled(false);
+        pushPopup(popup);
+        return popup;
+    };
+
+    MiniView.prototype.launchFormPopup = function(title, form, requestFunc) {
+        var popup, abortCallback;
+        var miniview = this;
+
+        popup = new FormPopup(title,
+
+            // Popup confirmation callback
+            function(data) {
+                popup.setEnabled(false);
+                abortCallback = requestFunc(data, {
+                    accepted: function() {
+                        miniview.setEnabled(true);
+                        popup.close();
+                    },
+                    rejected: function(json) {
+                        abortCallback = null;
+                        popup.setEnabled(true);
+                        popup.getForm().addErrors(json);
+                    },
+                    error: function(error) {
+                        abortCallback = null;
+                        popup.setEnabled(true);
+                        popup.setStatusbarContent(error, 'error');
+                        popup.setStatusbarVisible(true);
+                        popup.setConfirmText('Retry');
+                    }
+                });
+            },
+
+            // Popup cancellation callback
+            function() {
+                if (abortCallback)
+                    abortCallback();
+                miniview.setEnabled(true);
+                popup.close();
+            },
+
+            '', form);
+
+        this.setEnabled(false);
+        pushPopup(popup);
+        return popup;
+    };
+
+
+    function LocationMiniView(adapter, attachCallback) {
+        MiniView.apply(this, arguments);
+
         // Clone template markup
         this.container = locationTemplate.clone();
         this.childrenDiv = this.container.children('div.categories');
@@ -40,13 +308,13 @@ ajaxClient.view = {};
         this.refreshText = this.container.children('p').children('a');
 
         // Customize "closed" banner
-        if (userCanChangeLocation) {
+        if (perms.changeLocation) {
             this.closedBox.children('p').text('No information is visible' +
                 ' to the public. You can open this location using the' +
                 ' controls above.');
             this.closedBox.children('h3').remove();
         }
-        else if (userIsAuthenticated) {
+        else if (perms.authenticated) {
             this.closedBox.children('p').text('No information is visible' +
                 ' to the public.');
             this.closedBox.children('h3').remove();
@@ -56,55 +324,80 @@ ajaxClient.view = {};
 
         // Button setup
         this.toggleButton = this.container.find('a.toggle')
-            .on('click', function(event) {
-                miniModelAdapter.showToggleDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.startToggleRequest();
                 event.preventDefault();
-            });
+            }).bind(this));
         this.addButton = this.container.find('a.add')
-            .on('click', function(event) {
-                miniModelAdapter.showAddChildDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.launchAddChildPopup();
                 event.preventDefault();
-            });
-        if (!userCanChangeLocation && !userCanAddCategories)
+            }).bind(this));
+        if (!perms.changeLocation && !perms.addCategories)
             this.toggleButton.parent().parent().remove();
         else {
             this.container.addClass('editable');
-            if (!userCanChangeLocation)
+            if (!perms.changeLocation)
                 this.toggleButton.parent().remove();
-            if (!userCanAddCategories)
+            if (!perms.addCategories)
                 this.addButton.parent().remove();
         }
 
-        this.refreshText.on('click', function(event) {
-            miniModelAdapter.refreshData();
+        // Refresh button setup
+        var refreshing = false;
+        this.refreshText.on('click', (function(event) {
+            if (!refreshing) {
+                refreshing = true;
+                this.refreshText.addClass('disabled').text('Refreshing...');
+                this.modelAdapter.refreshData((function() {
+                    refreshing = false;
+                    this.refreshText.removeClass('disabled')
+                        .text('Refresh now');
+                }).bind(this));
+            }
             event.preventDefault();
-        });
+        }).bind(this));
 
         // Attach self to DOM
         attachCallback(this.container);
     };
+    LocationMiniView.prototype = Object.create(MiniView.prototype);
+    LocationMiniView.prototype.constructor = LocationMiniView;
 
-    LocationMiniView.prototype.update = function(name, open) {
-        this.nameText.text(name);
-        if (open)
-            this.closedBox.addClass('hidden');
-        else
-            this.closedBox.removeClass('hidden');
-        if (!open && !userIsAuthenticated)
-            this.childrenDiv.addClass('hidden');
-        else
-            this.childrenDiv.removeClass('hidden');
-        this.toggleButton.text(open ? 'Close Location' : 'Open Location');
-    };
+    LocationMiniView.prototype.update = function(json) {
+        if (json) {
+            this.nameText.text(json.name);
+            if (json.open)
+                this.closedBox.addClass('hidden');
+            else
+                this.closedBox.removeClass('hidden');
+            if (!json.open && !perms.authenticated)
+                this.childrenDiv.addClass('hidden');
+            else
+                this.childrenDiv.removeClass('hidden');
+            this.toggleButton.text(json.open ?
+                'Close Location' : 'Open Location');
+        }
 
-    LocationMiniView.prototype.childDependentUpdate = function() {
         if (this.childrenDiv.children().length === 1)
             this.emptyText.show();
         else
             this.emptyText.hide();
     };
 
-    LocationMiniView.prototype.append = function(element) {
+    LocationMiniView.prototype.launchAddChildPopup = function() {
+        this.launchFormPopup('Add category',
+            new Form(categoryForm.clone(), null, {name: 'New category'}),
+            this.modelAdapter.startAddChildRequest);
+    };
+
+    LocationMiniView.prototype.startToggleRequest = function() {
+        this.backgroundRequest(this.modelAdapter.startToggleRequest);
+    };
+
+    LocationMiniView.prototype.attachChild = function(element) {
         this.emptyText.before(element);
     };
 
@@ -113,7 +406,9 @@ ajaxClient.view = {};
     };
 
 
-    function CategoryMiniView(miniModelAdapter, attachCallback) {
+    function CategoryMiniView(adapter, attachCallback) {
+        MiniView.apply(this, arguments);
+
         // Clone template markup
         this.container = categoryTemplate.clone();
         this.childrenDiv = this.container.children('div.items');
@@ -121,51 +416,53 @@ ajaxClient.view = {};
         this.statusText = this.container.children('h3');
 
         // Setup collapsing
-        this.nameText.on('click', jQuery.proxy(function() {
+        this.nameText.on('click', (function() {
             if (!this.container.hasClass('empty'))
                 this.container.toggleClass('collapsed');
-        }, this));
+        }).bind(this));
 
         // Setup buttons
         this.editButton = this.container.find('a.edit')
-            .on('click', function(event) {
-                miniModelAdapter.showEditDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.launchEditPopup();
                 event.preventDefault();
-            });
+            }).bind(this));
         this.deleteButton = this.container.find('a.delete')
-            .on('click', function(event) {
-                miniModelAdapter.showDeleteDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.launchDeletePopup();
                 event.preventDefault();
-            });
+            }).bind(this));
         this.addButton = this.container.find('a.add')
-            .on('click', function(event) {
-                miniModelAdapter.showAddChildDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.launchAddChildPopup();
                 event.preventDefault();
-            });
-        if (!userCanChangeCategories && !userCanDeleteCategories &&
-                !userCanAddItems)
+            }).bind(this));
+        if (!perms.changeCategories && !perms.deleteCategories &&
+                !perms.addItems)
             this.editButton.parent().parent().remove();
         else {
             this.container.addClass('editable');
-            if (!userCanChangeCategories)
+            if (!perms.changeCategories)
                 this.editButton.parent().remove();
-            if (!userCanDeleteCategories)
+            if (!perms.deleteCategories)
                 this.deleteButton.parent().remove();
-            if (!userCanAddItems)
+            if (!perms.addItems)
                 this.addButton.parent().remove();
         }
 
         // Attach self to DOM
         attachCallback(this.container);
     };
+    CategoryMiniView.prototype = Object.create(MiniView.prototype);
+    CategoryMiniView.prototype.constructor = CategoryMiniView;
 
-    CategoryMiniView.prototype.update = function(name, hot, suppressFlash) {
-        this.nameText.text(name);
-        if (!suppressFlash)
-            this.flash();
-    };
+    CategoryMiniView.prototype.update = function(json, suppressFlash) {
+        if (json)
+            this.nameText.text(json.name);
 
-    CategoryMiniView.prototype.childDependentUpdate = function() {
         var children = this.childrenDiv.children();
         var soldOutChildren = children.filter('.out');
         this.container.removeClass('empty out');
@@ -179,19 +476,41 @@ ajaxClient.view = {};
         }
         else
             this.statusText.text('Available');
+
+        if (json && !suppressFlash)
+            this.flash();
     };
 
     CategoryMiniView.prototype.flash = function() {
         this.container.addClass('highlight slow-trans');
-        setTimeout(jQuery.proxy(function() {
+        setTimeout((function() {
             this.container.removeClass('highlight');
-        }, this), 50);
-        setTimeout(jQuery.proxy(function() {
+        }).bind(this), 50);
+        setTimeout((function() {
             this.container.removeClass('slow-trans');
-        }, this), 3050);
+        }).bind(this), 3050);
     };
 
-    CategoryMiniView.prototype.append = function(element) {
+    CategoryMiniView.prototype.launchAddChildPopup = function() {
+        this.launchFormPopup('Add item',
+            new Form(itemForm.clone(), null, {name: 'New item', status: 'AVA'}),
+            this.modelAdapter.startAddChildRequest);
+    };
+
+    CategoryMiniView.prototype.launchEditPopup = function() {
+        this.launchFormPopup('Edit category "' + this.nameText.text() + '"',
+            new Form(categoryForm.clone(), null, this.modelAdapter.getState()),
+            this.modelAdapter.startEditRequest);
+    };
+
+    CategoryMiniView.prototype.launchDeletePopup = function() {
+        this.launchPopup('Delete category "' + this.nameText.text() + '"',
+            $('<p>Are you sure? Any items in this category ' +
+                'will also be deleted.</p>'),
+            this.modelAdapter.startDeleteRequest).setConfirmText('Delete');
+    };
+
+    CategoryMiniView.prototype.attachChild = function(element) {
         this.childrenDiv.append(element);
     };
 
@@ -200,7 +519,9 @@ ajaxClient.view = {};
     };
 
 
-    function ItemMiniView(miniModelAdapter, attachCallback) {
+    function ItemMiniView(adapter, attachCallback) {
+        MiniView.apply(this, arguments);
+
         // Clone template markup
         this.container = itemTemplate.clone();
         this.nameText = this.container.children('h3');
@@ -208,45 +529,49 @@ ajaxClient.view = {};
 
         // Button setup
         this.availableButton = this.container.find('a.available')
-            .on('click', function(event) {
-                miniModelAdapter.showSetAvailableDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.startStatusRequest('AVA');
                 event.preventDefault();
-            });
+            }).bind(this));
         this.unavailableButton = this.container.find('a.out')
-            .on('click', function(event) {
-                miniModelAdapter.showSetUnavailableDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.startStatusRequest('OUT');
                 event.preventDefault();
-            });
+            }).bind(this));
         this.editButton = this.container.find('a.edit')
-            .on('click', function(event) {
-                miniModelAdapter.showEditDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.launchEditPopup();
                 event.preventDefault();
-            });
+            }).bind(this));
         this.deleteButton = this.container.find('a.delete')
-            .on('click', function(event) {
-                miniModelAdapter.showDeleteDialog();
+            .on('click', (function(event) {
+                if (!this.disabled)
+                    this.startDeleteRequest();
                 event.preventDefault();
-            });
-        if (!userCanChangeItems && !userCanChangeItemStatuses &&
-                !userCanDeleteItems)
+            }).bind(this));
+        if (!perms.changeItems && !perms.changeItemStatuses &&
+                !perms.deleteItems)
             this.editButton.parent().parent().remove();
         else {
             this.container.addClass('editable');
-            if (userCanChangeItems || !userCanChangeItemStatuses) {
+            if (perms.changeItems || !perms.changeItemStatuses) {
                 this.availableButton.parent().remove();
                 this.unavailableButton.parent().remove();
             }
-            if (!userCanChangeItems)
+            if (!perms.changeItems)
                 this.editButton.parent().remove();
-            if (!userCanDeleteItems)
+            if (!perms.deleteItems)
                 this.deleteButton.parent().remove();
 
-            this.container.on('click', jQuery.proxy(function(event) {
+            this.container.on('click', (function(event) {
                 $('div.item.active').not(this.container)
                     .removeClass('active');
                 this.container.addClass('active');
                 event.stopPropagation();
-            }, this));
+            }).bind(this));
             $('body').on('click', function() {
                 $('div.item.active').removeClass('active');
             });
@@ -255,32 +580,52 @@ ajaxClient.view = {};
         // Attach self to DOM
         attachCallback(this.container);
     };
+    ItemMiniView.prototype = Object.create(MiniView.prototype);
+    ItemMiniView.prototype.constructor = ItemMiniView;
 
-    ItemMiniView.prototype.update = function(name, qty, status,
-            suppressFlash) {
-        this.nameText.text(name);
-        this.container.removeClass('low out');
-        if (status === 'AVA')
-            this.statusText.text('Available');
-        else if (status === 'LOW') {
-            this.statusText.text('Running low');
-            this.container.addClass('low');
+    ItemMiniView.prototype.update = function(json, suppressFlash) {
+        if (json) {
+            this.nameText.text(json.name);
+            this.container.removeClass('low out');
+            if (json.status === 'AVA')
+                this.statusText.text('Available');
+            else if (json.status === 'LOW') {
+                this.statusText.text('Running low');
+                this.container.addClass('low');
+            }
+            else if (json.status === 'OUT') {
+                this.statusText.text('Sold out');
+                this.container.addClass('out');
+            }
+            else if (json.status === 'QTY')
+                this.statusText.text(json.quantity + ' left');
         }
-        else if (status === 'OUT') {
-            this.statusText.text('Sold out');
-            this.container.addClass('out');
-        }
-        else if (status === 'QTY')
-            this.statusText.text(qty + ' left');
-        if (!suppressFlash)
+
+        if (json && !suppressFlash)
             this.flash();
     };
 
     ItemMiniView.prototype.flash = function() {
         this.container.addClass('highlight');
-        setTimeout(jQuery.proxy(function() {
+        setTimeout((function() {
             this.container.removeClass('highlight');
-        }, this), 50);
+        }).bind(this), 50);
+    };
+
+    ItemMiniView.prototype.launchEditPopup = function() {
+        this.launchFormPopup('Edit item "' + this.nameText.text() + '"',
+            new Form(itemForm.clone(), null, this.modelAdapter.getState()),
+            this.modelAdapter.startEditRequest);
+    };
+
+    ItemMiniView.prototype.startStatusRequest = function(status) {
+        this.backgroundRequest((function(completionCallback) {
+            this.modelAdapter.startStatusRequest(status, completionCallback);
+        }).bind(this));
+    };
+
+    ItemMiniView.prototype.startDeleteRequest = function() {
+        this.backgroundRequest(this.modelAdapter.startDeleteRequest);
     };
 
     ItemMiniView.prototype.remove = function() {
@@ -288,43 +633,34 @@ ajaxClient.view = {};
     };
 
 
-    function qtyFieldVisCheck() {
-        // Show quantity field iff status is set to quantity display
-        if (itemStatus.val() !== 'QTY')
-            itemQtyUl.hide();
-        else
-            itemQtyUl.show();
+    function pushPopup(popup) {
+        if (popupStack.length === 0) {
+            body.addClass('noscroll');
+            overlay.removeClass('hidden');
+        }
+        else {
+            popupStack[popupStack.length - 1].setVisible(false);
+        }
+        popupStack.push(popup);
+        popup.setVisible(true);
     };
 
-    function setConfirmCallback(confirmCallback) {
-        // Attach provided click handler to popup confirm button
-        confirmButton.off('click').on('click', function(event) {
-            if (buttonsEnabled) confirmCallback();
-            event.preventDefault();
-        });
+    function popPopup() {
+        var popup = popupStack.pop();
+        popup.setVisible(false);
+        if (popupStack.length === 0) {
+            body.removeClass('noscroll');
+            overlay.addClass('hidden');
+        }
+        else {
+            popupStack[popupStack.length - 1].setVisible(true);
+        }
     };
 
-    function cancel() {
-        // Hide popup and cancel active request
-        ajaxClient.view.showPopup(false);
-        modelAdapter.cancelRequest();
-    };
 
-
-    this.init = function(URL, authenticated, canChangeLocation,
-            canAddCategories, canChangeCategories, canDeleteCategories,
-            canAddItems, canChangeItems, canChangeItemStatuses,
-            canDeleteItems, adapter) {
+    this.init = function(URL, permissions, adapter) {
         UIURL = URL;
-        userIsAuthenticated = authenticated;
-        userCanChangeLocation = canChangeLocation;
-        userCanAddCategories = canAddCategories;
-        userCanChangeCategories = canChangeCategories;
-        userCanDeleteCategories = canDeleteCategories;
-        userCanAddItems = canAddItems;
-        userCanChangeItems = canChangeItems;
-        userCanChangeItemStatuses = canChangeItemStatuses;
-        userCanDeleteItems = canDeleteItems;
+        perms = permissions;
         modelAdapter = adapter;
         body = $('body');
         contentDiv = $('div#container');
@@ -336,280 +672,90 @@ ajaxClient.view = {};
     this.start = function() {
         // Hide static content
         var staticUI = contentDiv.children('div.location').hide();
-        this.showStatusbar(true);
-        this.setStatusbar('busy', 'Loading UI...');
+        this.setStatusbarVisible(true);
+        this.setStatusbarContent('Loading UI...', 'busy');
 
         // Load UI
         jQuery.ajax({
             url: UIURL,
             dataType: 'html',
 
-            success: jQuery.proxy(function(data, textStatus, jqXHR) {
+            success: (function(data) {
                 staticUI.remove();
 
                 // On success, process downloaded markup
-                var parsedData = $(data);
-                popup = parsedData.filter('div.popup').hide();
+                var components = $(data);
+                popupTemplate = components.filter('div.popup');
+                locationForm = components.filter('form.locationform');
+                categoryForm = components.filter('form.categoryform');
+                itemForm = components.filter('form.itemform');
+                locationTemplate = components.filter('div.location');
+                categoryTemplate = components.filter('div.category');
+                itemTemplate = components.filter('div.item');
+
                 overlay.on('click', function(event) {
-                    cancel();
+                    if (popupStack)
+                        popupStack[popupStack.length - 1].cancel();
                     event.stopPropagation();
                 });
-                popup.on('click', function(event) {
-                    event.stopPropagation();
-                });
-                popupTitle = popup.children('h2');
-                deletionWarning = popup.children('p');
-                formInputs = popup.find('input, select');
 
-                locationForm = popup.children('#locationform');
-                locationOpen = locationForm.children('input#open');
-                categoryForm = popup.children('#categoryform');
-                categoryName = categoryForm.find('input#cname');
-                categoryHeat = categoryForm.find('input#heat');
-                categoryParent = categoryForm.children('input#cparent');
-                itemForm = popup.children('#itemform');
-                itemName = itemForm.find('input#iname');
-                itemQty = itemForm.find('input#quantity');
-                itemQtyUl = itemQty.parent().parent();
-                itemStatus = itemForm.find('select#status')
-                    .on('change', qtyFieldVisCheck);
-                itemParent = itemForm.children('input#iparent');
-
-                popupStatusbar = popup.children('div.statusbar');
-                popupStatusbarText = popupStatusbar.children('p');
-
-                locationTemplate = parsedData.filter('div.location');
-                categoryTemplate = parsedData.filter('div.category');
-                itemTemplate = parsedData.filter('div.item');
-
-                // Attach event handlers for buttons and enter/esc keypresses
-                locationForm.add(categoryForm).add(itemForm)
-                    .on('submit', false);
-                confirmButton = popup.find('a.confirm')
-                    .on('click', false);
-                cancelButton = popup.find('a.cancel')
-                    .on('click', function(event) {
-                        cancel();
-                        event.preventDefault();
-                    });
                 $(document).on('keydown', function(event) {
-                    if (event.which === 13) {
-                        confirmButton.trigger('click');
-                    }
-                    else if (event.which === 27) {
-                        cancelButton.trigger('click');
+                    if (popupStack) {
+                        if (event.which === 13) {
+                            popupStack[popupStack.length - 1].confirm();
+                        }
+                        else if (event.which === 27) {
+                            popupStack[popupStack.length - 1].cancel();
+                        }
                     }
                 });
-                buttonsEnabled = false;
-
-                // Attach popup to DOM
-                popup.appendTo(overlay);
 
                 // Done starting view, start model
-                this.showStatusbar(false);
+                this.setStatusbarVisible(false);
                 modelAdapter.start();
-            }, this),
+            }).bind(this),
 
-            error: jQuery.proxy(function(jqXHR, textStatus, errorThrown) {
+            error: (function(jqXHR, textStatus) {
                 // Load failed, redisplay static content
                 var msg = 'Failed to load UI';
-                this.setStatusbar('error', errorThrown ? msg +
-                    ' (' + errorThrown + ')' : msg);
-                setTimeout(jQuery.proxy(function() {
-                    this.showStatusbar(false);
-                }, this), 10000);
+                if (jqXHR.status && jqXHR.status !== 200)
+                    msg += ' (HTTP ' + jqXHR.status +')';
+                else if (textStatus)
+                    msg += ' (' + textStatus +')';
+                this.setStatusbarContent(msg, 'error');
+                setTimeout((function() {
+                    this.setStatusbarVisible(false);
+                }).bind(this), 10000);
                 staticUI.show();
-            }, this)
+            }).bind(this)
         });
     };
 
-    this.append = function(element) { contentDiv.append(element) };
+    this.attachChild = function(element) { contentDiv.append(element) };
 
-    this.showStatusbar = function(bool) {
-        if (bool)
-            statusbar.removeClass('hidden');
-        else
-            statusbar.addClass('hidden');
+    this.setStatusbarVisible = function(bool) {
+        if (bool) statusbar.removeClass('hidden');
+        else statusbar.addClass('hidden');
     };
 
-    this.setStatusbar = function(sbclass, text) {
-        var wasHidden = statusbar.hasClass('hidden');
-        statusbar.removeClass().addClass('statusbar');
-        if (wasHidden)
-            statusbar.addClass('hidden');
-        statusbarText.text(text);
-        if (sbclass)
-            statusbar.addClass(sbclass);
-    };
-
-    this.showPopupStatusbar = function(bool) {
-        if (bool)
-            popupStatusbar.removeClass('hidden');
-        else
-            popupStatusbar.addClass('hidden');
-    };
-
-    this.setPopupStatusbar = function(sbclass, text) {
-        var wasHidden = popupStatusbar.hasClass('hidden');
-        popupStatusbar.removeClass().addClass('statusbar');
-        if (wasHidden)
-            popupStatusbar.addClass('hidden');
-        popupStatusbarText.text(text);
-        if (sbclass)
-            popupStatusbar.addClass(sbclass);
-    };
-
-    this.showPopup = function(bool, title) {
-        if (bool) {
-            popupTitle.text(title);
-            this.enableButtons(true);
-            this.setPopupConfirmText('Done');
-            popup.find('li.error').remove();
-            deletionWarning.add(categoryForm).add(itemForm).hide();
-
-            body.addClass('noscroll');
-            popup.show();
-            overlay.removeClass('hidden');
+    this.setStatusbarContent = function(content, sbclass) {
+        statusbar.children('p').text(content);
+        if (sbclass) {
+            var wasHidden = statusbar.hasClass('hidden');
+            statusbar.removeClass().addClass('statusbar').addClass(sbclass);
+            if (wasHidden)
+                statusbar.addClass('hidden');
         }
-        else {
-            this.enableButtons(false);
-            this.showPopupStatusbar(false);
-
-            overlay.addClass('hidden');
-            popup.hide();
-            body.removeClass('noscroll');
-        }
-    };
-
-    this.showLocationForm = function(opening, confirmCallback) {
-        this.showPopup(true, (opening ? 'Opening' : 'Closing')+' location');
-        locationOpen.val(opening.toString());
-        setConfirmCallback(function() {
-            confirmCallback(locationForm.serialize());
-        });
-
-        // User can't edit form, so callback is invoked immediately
-        confirmCallback(locationForm.serialize());
-    };
-
-    this.showCategoryForm = function(name, hot, parent, confirmCallback) {
-        this.showPopup(true, 'Edit category');
-        categoryForm.show();
-        categoryName.val(name).focus().select();
-        categoryHeat.prop('checked', hot);
-        categoryParent.val(parent);
-        setConfirmCallback(function() {
-            confirmCallback(categoryForm.serialize());
-        });
-    };
-
-    this.addCategoryErrors = function(fieldErrors, nonFieldErrors) {
-        popup.find('li.error').remove();
-        for (var i = 0; i < fieldErrors.length; i++) {
-            var error = fieldErrors[i];
-            var field = null;
-            if (error.field === 'name') field = categoryName.parent();
-            else if (error.field === 'contents_hot') field = categoryHeat.parent();
-            if (field) {
-                for (var j = 0; j < error.errors.length; j++) {
-                    field.after('<li class="error">' +
-                        error.errors[j] + '</li>');
-                }
-            }
-        }
-        var form = categoryForm.children('ul.form');
-        for (var i = nonFieldErrors.length - 1; i >= 0; i--) {
-            form.prepend('<li class="error">' + nonFieldErrors[i] + '</li>');
-        }
-    };
-
-    this.showItemForm = function(name, qty, status,
-                                 parent, confirmCallback) {
-        this.showPopup(true, 'Edit item');
-        itemForm.show();
-        itemName.val(name).focus().select();
-        itemQty.val(qty);
-        itemStatus.val(status).change();
-        itemParent.val(parent);
-        setConfirmCallback(function() {
-            confirmCallback(itemForm.serialize());
-        });
-    };
-
-    this.addItemErrors = function(fieldErrors, nonFieldErrors) {
-        popup.find('li.error').remove();
-        for (var i = 0; i < fieldErrors.length; i++) {
-            var error = fieldErrors[i];
-            var field = null;
-            if (error.field === 'name') field = itemName.parent();
-            else if (error.field === 'quantity') field = itemQty.parent();
-            else if (error.field === 'status') field = itemStatus.parent();
-            if (field) {
-                for (var j = 0; j < error.errors.length; j++) {
-                    field.after('<li class="error">' +
-                        error.errors[j] + '</li>');
-                }
-            }
-        }
-        var form = itemForm.children('ul.form');
-        for (var i = nonFieldErrors.length - 1; i >= 0; i--) {
-            form.prepend('<li class="error">' + nonFieldErrors[i] + '</li>');
-        }
-    };
-
-    this.showItemStatusForm = function(status, confirmCallback) {
-        this.showPopup(true, 'Updating item');
-        itemStatus.val(status);
-        setConfirmCallback(function() {
-            confirmCallback(itemForm.serialize());
-        });
-
-        // User can't edit form, so callback is invoked immediately
-        confirmCallback(itemForm.serialize());
-    };
-
-    this.showDeletionPopup = function(model, name,
-                                        warn, confirmCallback) {
-        if (warn) {
-            this.showPopup(true, 'Delete ' + model + ' "' + name + '"');
-            deletionWarning.show();
-        }
-        else {
-            this.showPopup(true, 'Deleting ' + model + ' "' + name + '"');
-        }
-        this.setPopupConfirmText('Delete');
-        setConfirmCallback(confirmCallback);
-
-        if (!warn) confirmCallback();
-    };
-
-    this.enableButtons = function(bool) {
-        if (bool) {
-            confirmButton.removeClass('disabled');
-            buttonsEnabled = true;
-            formInputs.prop('disabled', false);
-        }
-        else {
-            confirmButton.addClass('disabled');
-            buttonsEnabled = false;
-            formInputs.prop('disabled', true);
-        }
-    };
-
-    this.setPopupConfirmText = function(text) {
-        confirmButton.text(text);
     };
 
     // Accessors for mini-view constructors
-    this.makeLocationMiniView = function(miniModelAdapter,
-            attachCallback) {
-        return new LocationMiniView(miniModelAdapter,
-            attachCallback);
+    this.makeLocationMiniView = function(adapter, attachCallback) {
+        return new LocationMiniView(adapter, attachCallback);
     };
-    this.makeCategoryMiniView = function(miniModelAdapter, attachCallback) {
-        return new CategoryMiniView(miniModelAdapter, attachCallback);
+    this.makeCategoryMiniView = function(adapter, attachCallback) {
+        return new CategoryMiniView(adapter, attachCallback);
     };
-    this.makeItemMiniView = function(miniModelAdapter, attachCallback) {
-        return new ItemMiniView(miniModelAdapter, attachCallback);
+    this.makeItemMiniView = function(adapter, attachCallback) {
+        return new ItemMiniView(adapter, attachCallback);
     };
 }).apply(ajaxClient.view);
