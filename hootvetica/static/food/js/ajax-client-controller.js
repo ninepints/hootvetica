@@ -6,8 +6,7 @@ $(document).ready(function() {
     var view = ajaxClient.view;
 
     var start = function(initData) {
-        model.init(initData.location,
-            initData.refreshInterval, initData.refreshIntervalErr,
+        model.init(initData.location, initData.refreshInterval,
             {
                 // Main view adapter
                 attachChild: function(element) {

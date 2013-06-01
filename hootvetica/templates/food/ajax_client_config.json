@@ -12,6 +12,5 @@
         "deleteItems": {{ perms.food.delete_item|lower }},
     },
     "location": {% include 'food/location_data.json' %}{% if refresh_interval %},
-    "refreshInterval": {{ refresh_interval }}{% endif %}{% if refresh_interval_err %},
-    "refreshIntervalErr": {{ refresh_interval_err }}{% endif %}
+    "refreshInterval": {{ refresh_interval }}{% endif %}
 }
