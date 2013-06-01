@@ -70,8 +70,14 @@ ajaxClient.view = {};
         // Add non-field errors
         var prev = formUl.prev();
         nonFieldErrors.forEach(function(error) {
-            prev.after('<li class="error">' + error + '</li>');
-            prev = prev.next();
+            if (prev.length == 0) {
+                formUl.before('<li class="error">' + error + '</li>');
+                prev = formUl.prev();
+            }
+            else {
+                prev.after('<li class="error">' + error + '</li>');
+                prev = prev.next();
+            }
         });
 
         // Add field errors to associated fields
