@@ -158,7 +158,7 @@ ajaxClient.model = {};
 
     LocationMiniModel.prototype.refreshData = function(completionCallback) {
         refreshData(completionCallback);
-    }
+    };
 
     LocationMiniModel.prototype.remove = function() {
         this.viewAdapter.remove();
@@ -293,7 +293,7 @@ ajaxClient.model = {};
                     errorCallback('Request failed');
             }
         };
-    }
+    };
 
     // Displays countdown then refreshes data
     function runRetryCountdown(secs, textStatus, httpStatus) {
