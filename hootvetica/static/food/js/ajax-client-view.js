@@ -186,7 +186,7 @@ ajaxClient.view = {};
     FormPopup.prototype.setVisible = function(bool) {
         Popup.prototype.setVisible.apply(this, arguments);
         if (bool) this.form.focusFirst();
-    }
+    };
 
     FormPopup.prototype.setEnabled = function(bool) {
         Popup.prototype.setEnabled.apply(this, arguments);
@@ -743,7 +743,9 @@ ajaxClient.view = {};
         });
     };
 
-    this.attachChild = function(element) { contentDiv.append(element) };
+    this.attachChild = function(element) {
+        contentDiv.append(element)
+    };
 
     this.setStatusbarVisible = function(bool) {
         if (bool) statusbar.removeClass('hidden');
