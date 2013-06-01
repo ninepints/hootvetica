@@ -6,12 +6,8 @@ ajaxClient.model = {};
 
 (function() {
     var viewAdapter;
-
-    // Location data refresh intervals following successful/failed refresh
-    var refreshInterval, refreshIntervalErr;
-
+    var refreshInterval = 300, refreshFailures = 0;
     var csrftoken;
-
     var initLocationData;
 
     // Location mini-model
@@ -332,6 +328,7 @@ ajaxClient.model = {};
             dataType: 'json',
             success: function(data) {
                 // Process new data and schedule next refresh
+                refreshFailures = 0;
                 location.update(data);
                 refreshTimer = setTimeout(refreshData,
                                           refreshInterval * 1000);
@@ -339,17 +336,21 @@ ajaxClient.model = {};
             },
             error: function(jqXHR, textStatus) {
                 // Display error message and retry
-                runRetryCountdown(refreshIntervalErr, textStatus, jqXHR.status);
+                refreshFailures += 1;
+                var wait = Math.round(
+                    Math.random() * Math.pow(2, refreshFailures));
+                runRetryCountdown(
+                    wait > refreshInterval ? refreshInterval : wait,
+                    textStatus, jqXHR.status);
             },
             complete: completionCallback
         });
     };
 
 
-    this.init = function(locationData, rInterval, rIntervalErr, adapter) {
+    this.init = function(locationData, rInterval, adapter) {
         initLocationData = locationData;
-        refreshInterval = rInterval ||  300;
-        refreshIntervalErr = rIntervalErr || 30;
+        refreshInterval = rInterval ||  refreshInterval;
         csrftoken = ajaxClient.utils.getCookie('csrftoken');
         jQuery.ajaxSetup({
             beforeSend: function(xhr, settings) {

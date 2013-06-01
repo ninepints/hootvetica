@@ -98,12 +98,6 @@ class LocationView(LocationMixin, DetailView):
                 context['refresh_interval'] = refresh_interval
         except (KeyError, ValueError):
             pass
-        try:
-            refresh_interval_err = int(self.request.GET['refresh_interval_err'])
-            if refresh_interval_err >= 5:
-                context['refresh_interval_err'] = refresh_interval_err
-        except (KeyError, ValueError):
-            pass
         context['include_children'] = True
         return context
 
