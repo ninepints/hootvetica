@@ -30,6 +30,7 @@ p.fade a.disabled, p.fade a.disabled:hover, p.fade a.disabled:active
 {
     color: rgb(160,160,160);
     cursor: default;
+    text-decoration: none;
 }
 
 /* locations */
