@@ -40,7 +40,13 @@ ajaxClient.view = {};
 
         Object.keys(state).forEach(function(name) {
             input = this.inputElements.filter('[name="' + name + '"]');
-            input.val(state[name]);
+            if (input.is('[type="checkbox"]'))
+                input.prop('checked', state[name]);
+            else if (input.is('[type="radio"]'))
+                input.filter('[value="' + state[name] + '"]')
+                    .prop('checked', true);
+            else
+                input.val(state[name]);
         }, this);
     };
 
