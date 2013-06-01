@@ -14,77 +14,154 @@ ajaxClient.model = {};
 
     var initLocationData;
 
-    // Dictionary of mini-models (uses UUIDs for keys)
-    var minimodels = {};
+    // Location mini-model
+    var location;
 
     // Timers for data refresh, refresh request object
     var refreshTimer, countdownTimer, refreshRequest;
-
-    // Last model update request object
-    var postRequest;
 
 
     /* Note that for minimodels, this.viewAdapter is the minimodel to
      * miniview adapter, while viewAdapter is the main view adapter */
 
-    function LocationMiniModel(json) {
+    function MiniModel(json, adapter) {
+        this.viewAdapter = adapter;
+        this.uid = json.uid;
+        this.modified = 0;
+        this.children = {};
+    };
+
+    MiniModel.prototype.initChildren = function(json) {
+        var child;
+        json.children.forEach(function(childJson) {
+            var child = new this.childClass();
+            child.init(childJson,
+                this.buildChildViewAdapter(child, this.attachChild.bind(this)),
+                this);
+            this.children[child.uid] = child;
+        }, this);
+    };
+
+    MiniModel.prototype.updateChildren = function(json, suppressFlash) {
+        var newChildren = {};
+        json.children.forEach(function(childJson) {
+            if (this.children[childJson.uid]) {
+                // Update existing child and move to new dictionary
+                var child = this.children[childJson.uid];
+                newChildren[child.uid] = child;
+                delete this.children[child.uid];
+                child.update(childJson, suppressFlash);
+            }
+            else {
+                // Create new child
+                var child = new this.childClass();
+                child.init(childJson,
+                    this.buildChildViewAdapter(child, this.attachChild.bind(this)),
+                    this);
+                newChildren[child.uid] = child;
+                child.update(childJson);
+            }
+        }, this);
+
+        // Remove children that no longer exist on the server
+        Object.keys(this.children).forEach(function (uid) {
+            this.children[uid].remove();
+        }, this);
+        this.children = newChildren;
+    };
+
+    MiniModel.prototype.attachChild = function(element) {
+        this.viewAdapter.attachChild(element);
+    };
+
+    MiniModel.prototype.startAddChildRequest = function(data, statusAdapter) {
+        var request = jQuery.ajax({
+            url: this.addChildURL,
+            type: 'POST',
+            data: data + '&parent=' + this.uid,
+            dataType: 'json',
+            success: (function(data) {
+                if (data.accepted) {
+                    statusAdapter.accepted();
+                    var child = new this.childClass();
+                    child.init(data.newState,
+                        this.buildChildViewAdapter(child,
+                            this.attachChild.bind(this)),
+                        this);
+                    child.update(data.newState);
+                    this.children[child.uid] = child;
+                    this.viewAdapter.update();
+                }
+                else statusAdapter.rejected(data.errors);
+            }).bind(this),
+            error: buildAjaxErrorFunc(statusAdapter.error)
+        });
+        return request.abort;
+    };
+
+    MiniModel.prototype.startEditRequest = function(data, statusAdapter) {
+        var request = jQuery.ajax({
+            url: this.editURL,
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: (function(data) {
+                if (data.accepted) {
+                    statusAdapter.accepted();
+                    this.update(data.newState);
+                }
+                else statusAdapter.rejected(data.errors);
+            }).bind(this),
+            error: buildAjaxErrorFunc(statusAdapter.error)
+        });
+        return request.abort;
+    };
+
+
+    function LocationMiniModel() {};
+    LocationMiniModel.prototype = Object.create(MiniModel.prototype);
+    LocationMiniModel.prototype.constructor = LocationMiniModel;
+    LocationMiniModel.prototype.childClass = CategoryMiniModel;
+
+    LocationMiniModel.prototype.init = function(json, adapter) {
+        MiniModel.apply(this, arguments);
+
+        if (json.children)
+            this.initChildren(json);
+
         this.updateURL = json.updateURL;
         this.editURL = json.editURL;
         this.addChildURL = json.addChildURL;
-        this.uid = json.uid;
-        this.modified = 0;
-        this.update(json);
     };
 
-    LocationMiniModel.prototype.setViewAdapter = function(viewAdapter) {
-        this.viewAdapter = viewAdapter;
-        this.viewAdapter.update(this.name, this.open);
-    };
-
-    LocationMiniModel.prototype.append = function(element) {
-        this.viewAdapter.append(element);
-    };
-
-    LocationMiniModel.prototype.showToggleDialog = function() {
-        viewAdapter.showLocationForm(!this.open,
-            jQuery.proxy(this.confirmToggle, this));
-    };
-
-    LocationMiniModel.prototype.confirmToggle = function(data) {
-        postData(data, this.editURL, function() {
-            // This only gets invoked if the server rejects the update
-            // request (so hopefully never)
-            viewAdapter.showPopupStatusbar(true);
-            viewAdapter.setPopupStatusbar('error',
-                        'Server rejected update');
-        });
-    };
-
-    LocationMiniModel.prototype.showAddChildDialog = function() {
-        viewAdapter.showCategoryForm('New Category', false, this.uid,
-            jQuery.proxy(this.confirmAddChild, this));
-    };
-
-    LocationMiniModel.prototype.confirmAddChild = function(data) {
-        postData(data, this.addChildURL, viewAdapter.addCategoryErrors);
-    };
-
-    LocationMiniModel.prototype.update = function(json) {
+    LocationMiniModel.prototype.update = function(json, suppressFlash) {
+        if (json.children)
+            this.updateChildren(json, suppressFlash);
         if (json.modified > this.modified) {
             this.name = json.name;
             this.open = json.open;
             this.modified = json.modified;
-            if (this.viewAdapter)
-                this.viewAdapter.update(this.name, this.open);
+            this.viewAdapter.update(json);
         }
+        else this.viewAdapter.update();
     };
 
-    LocationMiniModel.prototype.childDependentUpdate = function() {
-        this.viewAdapter.childDependentUpdate();
-    }
+    LocationMiniModel.prototype.startToggleRequest =
+            function(completionCallback) {
+        jQuery.ajax({
+            url: this.editURL,
+            type: 'POST',
+            data: 'open=' + !this.open,
+            dataType: 'json',
+            success: (function(data) {
+                if (data.accepted) this.update(data.newState);
+            }).bind(this),
+            complete: completionCallback
+        });
+    };
 
-    LocationMiniModel.prototype.refreshData = function() {
-        refreshData();
+    LocationMiniModel.prototype.refreshData = function(completionCallback) {
+        refreshData(completionCallback);
     }
 
     LocationMiniModel.prototype.remove = function() {
@@ -92,224 +169,149 @@ ajaxClient.model = {};
     };
 
 
-    function CategoryMiniModel(json, parent) {
+    function CategoryMiniModel() {};
+    CategoryMiniModel.prototype = Object.create(MiniModel.prototype);
+    CategoryMiniModel.prototype.constructor = CategoryMiniModel;
+    CategoryMiniModel.prototype.childClass = ItemMiniModel;
+
+    CategoryMiniModel.prototype.init = function(json, adapter, parent) {
+        MiniModel.apply(this, arguments);
+
+        if (json.children)
+            this.initChildren(json);
+
         this.editURL = json.editURL;
         this.deleteURL = json.deleteURL;
         this.addChildURL = json.addChildURL;
         this.parent = parent;
-        this.uid = json.uid;
-        this.modified = 0;
-        this.update(json);
     };
 
-    CategoryMiniModel.prototype.setViewAdapter = function(viewAdapter) {
-        this.viewAdapter = viewAdapter;
-        this.viewAdapter.update(this.name, this.heat, true);
-    };
-
-    CategoryMiniModel.prototype.append = function(element) {
-        this.viewAdapter.append(element);
-    };
-
-    CategoryMiniModel.prototype.showAddChildDialog = function() {
-        viewAdapter.showItemForm('New Item', '', 'AVA', this.uid,
-            jQuery.proxy(this.confirmAddChild, this));
-    };
-
-    CategoryMiniModel.prototype.confirmAddChild = function(data) {
-        postData(data, this.addChildURL, viewAdapter.addItemErrors);
-    };
-
-    CategoryMiniModel.prototype.showEditDialog = function() {
-        viewAdapter.showCategoryForm(this.name, this.heat, this.parent,
-            jQuery.proxy(this.confirmEdit, this));
-    };
-
-    CategoryMiniModel.prototype.confirmEdit = function(data) {
-        postData(data, this.editURL, viewAdapter.addCategoryErrors);
-    };
-
-    CategoryMiniModel.prototype.showDeleteDialog = function() {
-        viewAdapter.showDeletionPopup('category', this.name, true,
-            jQuery.proxy(this.confirmDelete, this));
-    };
-
-    CategoryMiniModel.prototype.confirmDelete = function() {
-        postData(null, this.deleteURL);
-    };
-
-    CategoryMiniModel.prototype.update = function(json) {
+    CategoryMiniModel.prototype.update = function(json, suppressFlash) {
+        if (json.children)
+            this.updateChildren(json, suppressFlash);
         if (json.modified > this.modified) {
             this.name = json.name;
             this.heat = json.contents_hot;
             this.modified = json.modified;
-            if (this.viewAdapter) this.viewAdapter.update(this.name, this.heat);
+            this.viewAdapter.update(json, suppressFlash);
         }
+        else this.viewAdapter.update();
     };
 
-    CategoryMiniModel.prototype.childDependentUpdate = function() {
-        this.viewAdapter.childDependentUpdate();
-    }
+    CategoryMiniModel.prototype.getState = function() {
+        return {name: this.name, contents_hot: this.heat};
+    };
 
-    CategoryMiniModel.prototype.flash = function() {
-        this.viewAdapter.flash();
+    CategoryMiniModel.prototype.startDeleteRequest = function(statusAdapter) {
+        var request = jQuery.ajax({
+            url: this.deleteURL,
+            type: 'POST',
+            dataType: 'json',
+            success: (function(data) {
+                if (data.accepted) {
+                    statusAdapter.accepted();
+                    this.remove();
+                }
+                else statusAdapter.error('Server rejected update');
+            }).bind(this),
+            error: buildAjaxErrorFunc(statusAdapter.error)
+        });
+        return request.abort;
     };
 
     CategoryMiniModel.prototype.remove = function() {
         this.viewAdapter.remove();
+        this.parent.viewAdapter.update();
     };
 
 
-    function ItemMiniModel(json, parent) {
+    function ItemMiniModel() {};
+    ItemMiniModel.prototype = Object.create(MiniModel.prototype);
+    ItemMiniModel.prototype.constructor = ItemMiniModel;
+
+    ItemMiniModel.prototype.init = function(json, adapter, parent) {
+        MiniModel.apply(this, arguments);
+
         this.editURL = json.editURL;
         this.editStatusURL = json.editStatusURL;
         this.deleteURL = json.deleteURL;
         this.parent = parent;
-        this.uid = json.uid;
-        this.modified = 0;
-        this.update(json);
     };
 
-    ItemMiniModel.prototype.setViewAdapter = function(viewAdapter) {
-        this.viewAdapter = viewAdapter;
-        this.viewAdapter.update(this.name, this.qty, this.status, true);
+    ItemMiniModel.prototype.update = function(json, suppressFlash) {
+        if (json.modified > this.modified) {
+            this.name = json.name;
+            this.status = json.status;
+            this.quantity = json.quantity;
+            this.modified = json.modified;
+            this.viewAdapter.update(json, suppressFlash);
+        }
+        else this.viewAdapter.update();
     };
 
-    ItemMiniModel.prototype.showEditDialog = function() {
-        viewAdapter.showItemForm(this.name, this.qty, this.status,
-            this.parent, jQuery.proxy(this.confirmEdit, this));
+    ItemMiniModel.prototype.getState = function() {
+        return {name: this.name, status: this.status, quantity: this.quantity};
     };
 
-    ItemMiniModel.prototype.confirmEdit = function(data) {
-        postData(data, this.editURL, viewAdapter.addItemErrors);
-    };
-
-    ItemMiniModel.prototype.showSetAvailableDialog = function() {
-        viewAdapter.showItemStatusForm('AVA',
-            jQuery.proxy(this.confirmEditStatus, this));
-    };
-
-    ItemMiniModel.prototype.showSetUnavailableDialog = function() {
-        viewAdapter.showItemStatusForm('OUT',
-            jQuery.proxy(this.confirmEditStatus, this));
-    };
-
-    ItemMiniModel.prototype.confirmEditStatus = function(data) {
-        postData(data, this.editStatusURL, function() {
-            // Again, only gets invoked if the server rejects the update
-            // request (so hopefully never)
-            viewAdapter.showPopupStatusbar(true);
-            viewAdapter.setPopupStatusbar('error',
-                        'Server rejected update');
+    ItemMiniModel.prototype.startStatusRequest = function(status,
+            completionCallback) {
+        jQuery.ajax({
+            url: this.editStatusURL,
+            type: 'POST',
+            data: 'status=' + status,
+            dataType: 'json',
+            success: (function(data) {
+                if (data.accepted) this.update(data.newState);
+            }).bind(this),
+            complete: completionCallback
         });
     };
 
-    ItemMiniModel.prototype.showDeleteDialog = function() {
-        viewAdapter.showDeletionPopup('item', this.name, false,
-            jQuery.proxy(this.confirmDelete, this));
-    };
-
-    ItemMiniModel.prototype.confirmDelete = function() {
-        postData(null, this.deleteURL);
-    };
-
-    ItemMiniModel.prototype.update = function(json) {
-        if (json.modified > this.modified) {
-            this.name = json.name;
-            this.qty = json.quantity;
-            this.status = json.status;
-            this.modified = json.modified;
-            if (this.viewAdapter)
-                this.viewAdapter.update(this.name, this.qty, this.status);
-        }
-    };
-
-    ItemMiniModel.prototype.flash = function() {
-        this.viewAdapter.flash();
+    ItemMiniModel.prototype.startDeleteRequest = function(completionCallback) {
+        jQuery.ajax({
+            url: this.deleteURL,
+            type: 'POST',
+            dataType: 'json',
+            success: (function(data) {
+                if (data.accepted) this.remove();
+            }).bind(this),
+            complete: completionCallback
+        });
     };
 
     ItemMiniModel.prototype.remove = function() {
         this.viewAdapter.remove();
+        this.parent.viewAdapter.update();
     };
 
 
-    // Updates existing model hierarchy with new location data
-    function processUpdates(locationData) {
-        var newMinimodels = {};
-
-        // Update location model and move to "new" dictionary
-        var location = minimodels[locationData.uid];
-        delete minimodels[locationData.uid];
-        newMinimodels[locationData.uid] = location;
-        location.update(locationData);
-
-        // For each category in new location data:
-        for (var i = 0; i < locationData.categories.length; i++) {
-            var categoryData = locationData.categories[i];
-            var category;
-
-            if (minimodels[categoryData.uid]) {
-                // Update existing model and move to "new" dictionary
-                category = minimodels[categoryData.uid];
-                delete minimodels[categoryData.uid];
-                newMinimodels[categoryData.uid] = category;
-                category.update(categoryData);
+    // Builds an ajax error handler that invokes the provided callback
+    function buildAjaxErrorFunc(errorCallback) {
+        return function(jqXHR, textStatus) {
+            if (textStatus !== 'abort') {
+                if (jqXHR.status && jqXHR.status !== 200)
+                    errorCallback('Request failed (HTTP ' + jqXHR.status + ')');
+                else if (textStatus)
+                    errorCallback('Request failed (' + textStatus + ')');
+                else
+                    errorCallback('Request failed');
             }
-            else {
-                // Make a new model
-                category = new CategoryMiniModel(categoryData,
-                                                 locationData.uid);
-                category.setViewAdapter(
-                    viewAdapter.makeCategoryMiniViewAdapter(category,
-                        jQuery.proxy(location.append, location)));
-                newMinimodels[categoryData.uid] = category;
-                category.flash();
-            }
-
-            // For each item in new category data:
-            for (var j = 0; j < categoryData.items.length; j++) {
-                var itemData = categoryData.items[j];
-                var item;
-
-                if (minimodels[itemData.uid]) {
-                    // Update existing model and move to "new" dictionary
-                    item = minimodels[itemData.uid];
-                    delete minimodels[itemData.uid];
-                    newMinimodels[itemData.uid] = item;
-                    item.update(itemData);
-                }
-                else {
-                    // Make a new model
-                    var item = new ItemMiniModel(itemData,
-                                                 categoryData.uid);
-                    item.setViewAdapter(viewAdapter.makeItemMiniViewAdapter(
-                        item, jQuery.proxy(category.append, category)));
-                    newMinimodels[itemData.uid] = item;
-                    item.flash();
-                }
-            }
-        }
-
-        // Remove old models and corresponding views
-        for (var uid in minimodels) { minimodels[uid].remove(); }
-        minimodels = newMinimodels;
-
-        // Trigger view updates that are dependent on children
-        for (var uid in minimodels) {
-            if ('childDependentUpdate' in minimodels[uid])
-                minimodels[uid].childDependentUpdate();
-        }
-    };
+        };
+    }
 
     // Displays countdown then refreshes data
-    function runRetryCountdown(secs, errorThrown) {
+    function runRetryCountdown(secs, textStatus, httpStatus) {
         var timeLeft = secs;
         countdownTimer = setInterval(function() {
             if (timeLeft >= 1) {
                 var msg = 'Refresh failed, retrying in ' + timeLeft +
                     (timeLeft === 1 ? ' second...' : ' seconds...');
-                viewAdapter.setStatusbar('error', errorThrown ? msg +
-                    ' (' + errorThrown + ')' : msg);
+
+                if (httpStatus && httpStatus !== 200)
+                    msg += ' (HTTP ' + httpStatus +')';
+                else if (textStatus)
+                    msg += ' (' + textStatus +')';
+                viewAdapter.setStatusbarContent(msg, 'error');
                 timeLeft--;
             }
             else
@@ -317,68 +319,29 @@ ajaxClient.model = {};
         }, 1000);
     };
 
-    // Gets updated location data
-    function refreshData() {
+    // Fetches updated location data
+    function refreshData(completionCallback) {
         clearTimeout(refreshTimer);
         clearInterval(countdownTimer);
         if (refreshRequest) refreshRequest.abort();
-        viewAdapter.showStatusbar(true);
-        viewAdapter.setStatusbar('busy', 'Refreshing data...');
+        viewAdapter.setStatusbarVisible(true);
+        viewAdapter.setStatusbarContent('Refreshing data...', 'busy');
 
         refreshRequest = jQuery.ajax({
             url: initLocationData.updateURL,
             dataType: 'json',
-            success: function(data, textStatus, jqXHR) {
+            success: function(data) {
                 // Process new data and schedule next refresh
-                processUpdates(data);
+                location.update(data);
                 refreshTimer = setTimeout(refreshData,
                                           refreshInterval * 1000);
-                viewAdapter.showStatusbar(false);
+                viewAdapter.setStatusbarVisible(false);
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus) {
                 // Display error message and retry
-                runRetryCountdown(refreshIntervalErr, errorThrown);
-            }
-        });
-    };
-
-    // POSTs given data to given URL, closing popup on success
-    function postData(data, url, errorCallback) {
-        if (postRequest) postRequest.abort();
-        viewAdapter.enableButtons(false);
-        viewAdapter.showPopupStatusbar(true);
-        viewAdapter.setPopupStatusbar('busy', 'Sending request...');
-
-        postRequest = jQuery.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            dataType: 'json',
-            success: function(data, textStatus, jqXHR) {
-                if (!data.accepted) {
-                    // Bad data, display model validation errors
-                    viewAdapter.enableButtons(true);
-                    viewAdapter.showPopupStatusbar(false);
-                    if (errorCallback) {
-                        errorCallback(data.fieldErrors,
-                                      data.nonFieldErrors);
-                    }
-                }
-                else {
-                    // Update accepted, close popup and refresh data
-                    viewAdapter.showPopup(false);
-                    refreshData();
-                }
+                runRetryCountdown(refreshIntervalErr, textStatus, jqXHR.status);
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-                // Request failed, display error message
-                viewAdapter.setPopupConfirmText('Retry');
-                viewAdapter.enableButtons(true);
-                var msg = 'Request failed';
-                viewAdapter.showPopupStatusbar(true);
-                viewAdapter.setPopupStatusbar('error', errorThrown ? msg +
-                    ' (' + errorThrown + ')' : msg);
-            }
+            complete: completionCallback
         });
     };
 
@@ -396,44 +359,18 @@ ajaxClient.model = {};
             }
         });
         viewAdapter = adapter;
+        LocationMiniModel.prototype.buildChildViewAdapter =
+            viewAdapter.makeCategoryMiniViewAdapter;
+        CategoryMiniModel.prototype.buildChildViewAdapter =
+            viewAdapter.makeItemMiniViewAdapter;
     };
 
     this.start = function() {
-        var location = new LocationMiniModel(initLocationData);
-        location.setViewAdapter(viewAdapter.makeLocationMiniViewAdapter(
-            location, viewAdapter.append));
-        minimodels[initLocationData.uid] = location;
-
-        // Initialize mini-models
-        for (var i = 0; i < initLocationData.categories.length; i++) {
-            var categoryData = initLocationData.categories[i];
-            var category = new CategoryMiniModel(categoryData,
-                                                 initLocationData.uid);
-            category.setViewAdapter(
-                viewAdapter.makeCategoryMiniViewAdapter(
-                    category, jQuery.proxy(location.append, location)));
-            minimodels[categoryData.uid] = category;
-
-            for (var j = 0; j < categoryData.items.length; j++) {
-                var itemData = categoryData.items[j];
-                var item = new ItemMiniModel(itemData, categoryData.uid);
-                item.setViewAdapter(viewAdapter.makeItemMiniViewAdapter(
-                    item, jQuery.proxy(category.append, category)));
-                minimodels[itemData.uid] = item;
-            }
-        }
-
-        // Trigger view updates that are dependent on children
-        for (var uid in minimodels) {
-            if ('childDependentUpdate' in minimodels[uid])
-                minimodels[uid].childDependentUpdate();
-        }
-
+        location = new LocationMiniModel();
+        location.init(initLocationData,
+            viewAdapter.makeLocationMiniViewAdapter(
+                location, viewAdapter.attachChild));
+        location.update(initLocationData, true);
         refreshTimer = setTimeout(refreshData, refreshInterval * 1000);
-    };
-
-    this.cancelRequest = function() {
-        // Cancel last model update request
-        if (postRequest) postRequest.abort();
     };
 }).apply(ajaxClient.model);

@@ -9,33 +9,28 @@
     </ul>
 </div>
 
-<form class="locationform">
-    <input id="open" name="open" type="hidden" value="" />
-</form>
-
 <form class="categoryform">
     <ul class="form">
         <li><ul class="field">
-            <li><label for="cname">Name</label></li>
-            <li><input id="cname" name="name" type="text" maxlength="32" /></li>
+            <li><label>Name</label></li>
+            <li><input name="name" type="text" maxlength="32" /></li>
         </ul></li>
         <li><ul class="field">
-            <li><label for="heat">Contains hot food</label></li>
-            <li><input type="checkbox" name="contents_hot" id="heat"></li>
+            <li><label>Contains hot food</label></li>
+            <li><input type="checkbox" name="contents_hot" /></li>
         </ul></li>
     </ul>
-    <input id="cparent" name="parent" type="hidden" value="" />
 </form>
 
 <form class="itemform">
     <ul class="form">
         <li><ul class="field">
-            <li><label for="iname">Name</label></li>
-            <li><input id="iname" name="name" type="text" maxlength="32" /></li>
+            <li><label>Name</label></li>
+            <li><input name="name" type="text" maxlength="32" /></li>
         </ul></li>
         <li><ul class="field">
-            <li><label for="status">Status</label></li>
-            <li><select id="status" name="status" >
+            <li><label>Status</label></li>
+            <li><select name="status">
                 <option value>---------</option>
                 <option value="AVA">Available</option>
                 <option value="LOW">Running Low</option>
@@ -44,11 +39,10 @@
             </select></li>
         </ul></li>
         <li><ul class="field">
-            <li><label for="quantity">Quantity</label></li>
-            <li><input id="quantity" name="quantity" type="text" size="9" /></li>
+            <li><label>Quantity</label></li>
+            <li><input name="quantity" type="text" size="9" /></li>
         </ul></li>
     </ul>
-    <input id="iparent" name="parent" type="hidden" value="" />
 </form>
 
 <div class="location">
