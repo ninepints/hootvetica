@@ -247,7 +247,7 @@ input[type="submit"]
     margin: 0 0 1.5em;
 }
 
-input:disabled
+input:disabled, select:disabled
 {
     opacity: 0.5;
 }
@@ -256,6 +256,13 @@ input[type="button"]:disabled, input[type="submit"]:disabled
 {
     background-color: transparent;
     color: rgb(64,64,64);
+}
+
+select:disabled
+{
+    background-color: white;
+    background-image: url(../img/select.svg);
+    color: rgb(64, 64, 64);
 }
 
 
