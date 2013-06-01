@@ -1,0 +1,10 @@
+{
+    "name": "{{ item.name|escapejs }}",
+    "quantity": "{% if item.quantity %}{{ item.quantity }}{% endif %}",
+    "status": "{{ item.status }}",
+    "editURL": "{% url 'item-edit-ajax' item.uid %}",
+    "editStatusURL": "{% url 'item-edit-status-ajax' item.uid %}",
+    "deleteURL": "{% url 'item-del-ajax' item.uid %}",
+    "modified": "{{ item.last_modified|date:"U" }}",
+    "uid": "{{ item.uid }}"
+}

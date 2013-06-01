@@ -1,0 +1,4 @@
+{
+    "accepted": true,
+    "newState": {% include state_template_name %}
+}

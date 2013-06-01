@@ -15,14 +15,20 @@ from food.forms import (LocationForm, CategoryCreationForm, CategoryForm,
 class LocationMixin(object):
     model = Location
     form_class = LocationForm
+    state_template_name = 'food/location_data.json'
+    context_object_name = 'location'
 
 class CategoryMixin(object):
     model = Category
     form_class = CategoryForm
+    state_template_name = 'food/category_data.json'
+    context_object_name = 'category'
 
 class ItemMixin(object):
     model = Item
     form_class = ItemForm
+    state_template_name = 'food/item_data.json'
+    context_object_name = 'item'
 
 
 class FoodModelMixin(object):
@@ -36,10 +42,12 @@ class FoodModelMixin(object):
 
 
 class AjaxMixin(object):
-    def render_to_response(self, context, **response_kwargs):
+    def render_to_response(self, context, templates=None, **response_kwargs):
+        if templates is None:
+            templates = self.get_template_names()
         return self.response_class(
             request = self.request,
-            template = self.get_template_names(),
+            template = templates,
             context = context,
             mimetype = 'application/json',
             **response_kwargs)
@@ -53,8 +61,9 @@ class AjaxFormMixin(AjaxMixin):
 
     def form_valid(self, form):
         self.object = form.save()
-        return HttpResponse('{"accepted": true}',
-                            mimetype='application/json')
+        return self.render_to_response(
+            self.get_context_data(state_template_name=self.state_template_name),
+            templates=['food/update_accept.json'])
 
 
 class PermissionRequiredMixin(object):
@@ -95,6 +104,7 @@ class LocationView(LocationMixin, DetailView):
                 context['refresh_interval_err'] = refresh_interval_err
         except (KeyError, ValueError):
             pass
+        context['include_children'] = True
         return context
 
 
@@ -104,6 +114,11 @@ class LocationAjaxView(LocationMixin, AjaxMixin, DetailView):
     @method_decorator(cache_control(no_cache=True))
     def dispatch(self, *args, **kwargs):
         return super(LocationAjaxView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(LocationAjaxView, self).get_context_data(**kwargs)
+        context['include_children'] = True
+        return context
 
 
 # Base editing views
