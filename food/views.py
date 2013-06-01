@@ -145,6 +145,7 @@ class FoodUpdateView(FoodModelMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(FoodUpdateView, self).get_context_data(**kwargs)
         context['action'] = 'edit'
+        context['name'] = self.get_object().name
         return context
 
 
@@ -157,7 +158,7 @@ class FoodDeleteView(FoodModelMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super(FoodDeleteView, self).get_context_data(**kwargs)
-        context['name'] = kwargs['object'].name
+        context['name'] = self.get_object().name
         return context
 
 
