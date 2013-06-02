@@ -482,7 +482,7 @@ ul.popup-buttons > li
 
 div.statusbar
 {
-    height: 1.5em;
+    max-height: 9em;
     padding: 0.75em 1em;
     background-color: rgb(240,240,240);
     overflow: hidden;
@@ -577,7 +577,7 @@ div.statusbar.busy
 
 div.statusbar.hidden
 {
-    height: 0;
+    max-height: 0;
     padding: 0 1em;
     opacity: 0;
 }
