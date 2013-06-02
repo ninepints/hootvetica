@@ -161,11 +161,15 @@ ajaxClient.view = {};
 
     Popup.prototype.close = function() {
         popPopup();
+        this.container.remove();
     };
 
     Popup.prototype.cancel = function(event) {
         this.cancelCallback();
-        if (event) event.preventDefault();
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
     };
 
     Popup.prototype.confirm = function(event) {
@@ -706,19 +710,17 @@ ajaxClient.view = {};
                 itemTemplate = components.filter('div.item');
 
                 overlay.on('click', function(event) {
-                    if (popupStack)
+                    if (popupStack.length > 0)
                         popupStack[popupStack.length - 1].cancel();
                     event.stopPropagation();
                 });
 
-                $(document).on('keydown', function(event) {
-                    if (popupStack) {
-                        if (event.which === 13) {
+                $(document).on('keyup', function(event) {
+                    if (popupStack.length > 0) {
+                        if (event.which === 13)
                             popupStack[popupStack.length - 1].confirm();
-                        }
-                        else if (event.which === 27) {
+                        else if (event.which === 27)
                             popupStack[popupStack.length - 1].cancel();
-                        }
                     }
                 });
 
