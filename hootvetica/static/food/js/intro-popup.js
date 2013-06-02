@@ -32,7 +32,7 @@ $(document).ready(function() {
     };
 
     function exit() {
-        overlay.addClass('hidden').off('click.intro');
+        overlay.addClass('hidden');
         popup.remove();
         body.removeClass('noscroll');
     };
@@ -46,7 +46,6 @@ $(document).ready(function() {
             category = popup.children('div.category');
             item = category.find('div.item.editable');
             itemText = item.children('p');
-            overlay.on('click.intro', exit);
             popup.on('click', function(event) {
                 event.stopPropagation();
             });
