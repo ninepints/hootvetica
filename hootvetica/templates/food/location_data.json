@@ -6,7 +6,7 @@
     "addChildURL": "{% url 'category-add-ajax' %}",
     "modified": "{{ location.last_modified|date:"U" }}",
     "uid": "{{ location.uid }}"{% if include_children %},
-    "children": [{% for category in location.category_set.all %}
+    "children": [{% for category in location.category_set.select_related %}
         {% include 'food/category_data.json' %}
     {% if not forloop.last %}, {% endif %}{% endfor %}]{% endif %}
 }
