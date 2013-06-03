@@ -27,6 +27,14 @@ class Location(models.Model):
                             .exclude(status='OUT')
                             .exists())
 
+    def get_tree_last_modified(self):
+        categories = self.category_set.select_related()
+        items = (item for category in categories
+                 for item in category.item_set.all())
+        return max(self.last_modified,
+                   max(categories, key=lambda x: x.last_modified).last_modified,
+                   max(items, key=lambda x: x.last_modified).last_modified)
+
     @models.permalink
     def get_absolute_url(self):
         return ('location', (), {'pk': self.uid})

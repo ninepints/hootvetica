@@ -4,8 +4,8 @@
     "editURL": "{% url 'category-edit-ajax' category.uid %}",
     "deleteURL": "{% url 'category-del-ajax' category.uid %}",
     "addChildURL": "{% url 'item-add-ajax' %}",
-    "modified": "{{ category.last_modified|date:"U" }}",
-    "uid": "{{ category.uid }}"{% if include_children %},
+    "modified": {{ category.last_modified|date:"U" }},
+    "uid": "{{ category.uid }}"{% if full_tree %},
     "children": [{% for item in category.item_set.all %}
         {% include 'food/item_data.json' %}
     {% if not forloop.last %}, {% endif %}{% endfor %}]{% endif %}

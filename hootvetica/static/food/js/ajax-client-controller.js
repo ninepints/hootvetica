@@ -49,6 +49,9 @@ $(document).ready(function() {
                         update: function(json) {
                             miniView.update(json);
                         },
+                        setTreeModTime: function(time) {
+                            miniView.setTreeModTime(time);
+                        },
                         attachChild: function(element) {
                             miniView.attachChild(element);
                         },
