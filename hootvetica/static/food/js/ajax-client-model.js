@@ -133,6 +133,8 @@ ajaxClient.model = {};
     LocationMiniModel.prototype.update = function(json, suppressFlash) {
         if (json.children)
             this.updateChildren(json, suppressFlash);
+        if (json.treeModified)
+            this.viewAdapter.setTreeModTime(json.treeModified);
         if (json.modified > this.modified) {
             this.name = json.name;
             this.open = json.open;
@@ -301,7 +303,7 @@ ajaxClient.model = {};
         countdownTimer = setInterval(function() {
             if (timeLeft >= 1) {
                 var msg = 'Refresh failed, retrying in ' + timeLeft +
-                    (timeLeft === 1 ? ' second...' : ' seconds...');
+                    ((timeLeft === 1) ? ' second...' : ' seconds...');
 
                 if (httpStatus && httpStatus !== 200)
                     msg += ' (HTTP ' + httpStatus +')';
@@ -340,7 +342,7 @@ ajaxClient.model = {};
                 var wait = Math.round(
                     Math.random() * Math.pow(2, refreshFailures));
                 runRetryCountdown(
-                    wait > refreshInterval ? refreshInterval : wait,
+                    (wait > refreshInterval) ? refreshInterval : wait,
                     textStatus, jqXHR.status);
             },
             complete: completionCallback

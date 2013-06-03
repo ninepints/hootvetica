@@ -5,6 +5,6 @@
     "editURL": "{% url 'item-edit-ajax' item.uid %}",
     "editStatusURL": "{% url 'item-edit-status-ajax' item.uid %}",
     "deleteURL": "{% url 'item-del-ajax' item.uid %}",
-    "modified": "{{ item.last_modified|date:"U" }}",
+    "modified": {{ item.last_modified|date:"U" }},
     "uid": "{{ item.uid }}"
 }

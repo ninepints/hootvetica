@@ -98,7 +98,7 @@ class LocationView(LocationMixin, DetailView):
                 context['refresh_interval'] = refresh_interval
         except (KeyError, ValueError):
             pass
-        context['include_children'] = True
+        context['full_tree'] = True
         return context
 
 
@@ -111,7 +111,7 @@ class LocationAjaxView(LocationMixin, AjaxMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(LocationAjaxView, self).get_context_data(**kwargs)
-        context['include_children'] = True
+        context['full_tree'] = True
         return context
 
 

@@ -19,7 +19,7 @@ ajaxClient.utils = {};
             }
         }
         return cookieValue;
-    }
+    };
 
     // Checks whether the given URL is same-origin
     // relative to the current location
@@ -36,10 +36,14 @@ ajaxClient.utils = {};
             // or any other URL that isn't scheme relative or absolute
             // i.e relative.
             !(/^(\/\/|http:|https:).*/.test(url));
-    }
+    };
 
     // Checks whether the given method is non-destructive
     this.safeMethod = function(method) {
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
+    };
+
+    this.getEpochTime = function() {
+        return Math.round(Date.now() / 1000);
+    };
 }).apply(ajaxClient.utils);

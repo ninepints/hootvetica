@@ -321,6 +321,7 @@ ajaxClient.view = {};
         this.nameText = this.container.children('h1');
         this.emptyText = this.childrenDiv.children('h3').hide();
         this.closedBox = this.container.children('div.info');
+        this.treeModText = this.container.children('p').children('span');
         this.refreshText = this.container.children('p').children('a');
 
         // Customize "closed" banner
@@ -378,6 +379,9 @@ ajaxClient.view = {};
 
         // Attach self to DOM
         attachCallback(this.container);
+
+        this.treeModTime = 0;
+        setInterval(this.updateTreeModText.bind(this), 60000);
     };
     LocationMiniView.prototype = Object.create(MiniView.prototype);
     LocationMiniView.prototype.constructor = LocationMiniView;
@@ -401,6 +405,54 @@ ajaxClient.view = {};
             this.emptyText.show();
         else
             this.emptyText.hide();
+    };
+
+    LocationMiniView.prototype.setTreeModTime = function(time) {
+        var newTime = time || ajaxClient.utils.getEpochTime();
+        if (newTime > this.treeModTime) {
+            this.treeModTime = newTime;
+            this.updateTreeModText();
+        };
+    };
+
+    LocationMiniView.prototype.updateTreeModText = function() {
+        var delta = ajaxClient.utils.getEpochTime() - this.treeModTime;
+        if (delta < 0) {
+            this.treeModText.text('0 minutes ago');
+            return;
+        }
+
+        var periods = [60 * 60 * 24 * 365,
+                       60 * 60 * 24 * 30,
+                       60 * 60 * 24 * 7,
+                       60 * 60 * 24,
+                       60 * 60,
+                       60],
+            periodNames = ['year', 'month', 'week',
+                           'day', 'hour', 'minute'],
+            deltas = [];
+        for (var i = 0; i < periods.length; i++) {
+            deltas.push(Math.floor(delta / periods[i]));
+            delta %= periods[i];
+        }
+
+        var text = '';
+        for (i = 0; i < periods.length; i++) {
+            if (deltas[i] > 0) {
+                text = deltas[i] + ' ' + periodNames[i] +
+                    ((deltas[i] !== 1) ? 's' : '');
+                break;
+            }
+        }
+        if (i === 6)
+            text = '0 minutes ago';
+        else if (i < 5 && deltas[i + 1] > 0)
+            text += ', ' + deltas[i + 1] + ' ' + periodNames[i + 1] +
+                ((deltas[i + 1] !== 1) ? 's' : '') + ' ago';
+        else
+            text += ' ago'
+
+        this.treeModText.text(text);
     };
 
     LocationMiniView.prototype.launchAddChildPopup = function() {
