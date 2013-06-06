@@ -31,9 +31,21 @@ class Location(models.Model):
         categories = self.category_set.select_related()
         items = (item for category in categories
                  for item in category.item_set.all())
-        return max(self.last_modified,
-                   max(categories, key=lambda x: x.last_modified).last_modified,
-                   max(items, key=lambda x: x.last_modified).last_modified)
+
+        # These values are only compared if no child categories/items exist.
+        # Reusing this location's modification timestamp instead of datetime.min
+        # saves us some timezone math
+        category_max, item_max = self.last_modified, self.last_modified
+
+        try:
+            category_max = max(categories,
+                               key=lambda x: x.last_modified).last_modified
+            item_max = max(items,
+                           key=lambda x: x.last_modified).last_modified
+        except ValueError:
+            pass
+        return max(self.last_modified, category_max, item_max)
+
 
     @models.permalink
     def get_absolute_url(self):
