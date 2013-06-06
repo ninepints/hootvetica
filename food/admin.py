@@ -10,7 +10,7 @@ class OneTimeClosureInline(admin.TabularInline):
     extra = 1
 
 class LocationAdmin(admin.ModelAdmin):
-    fields = ('name', 'uid', 'open')
+    fields = ('name', 'uid')
     list_display = ('name', 'uid', 'open')
     inlines = (WeeklyClosureInline, OneTimeClosureInline)
 
