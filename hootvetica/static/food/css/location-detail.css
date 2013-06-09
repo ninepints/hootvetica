@@ -404,6 +404,22 @@ div.item > p
     font-weight: 200;
 }
 
+div.item > select
+{
+    background-color: transparent;
+    width: 8.5em;
+}
+
+div.item > select:active
+{
+    background-color: rgb(64,64,64);
+}
+
+div.item > select:disabled
+{
+    background-color: transparent;
+}
+
 ul.item-buttons
 {
     position: absolute;

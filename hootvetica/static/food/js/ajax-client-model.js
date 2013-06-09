@@ -105,6 +105,7 @@ ajaxClient.model = {};
                 if (data.accepted) {
                     statusAdapter.accepted();
                     this.update(data.newState);
+                    if (this.parent) this.parent.viewAdapter.update();
                 }
                 else statusAdapter.rejected(data.errors);
             }).bind(this),
@@ -250,7 +251,14 @@ ajaxClient.model = {};
             data: 'status=' + status,
             dataType: 'json',
             success: (function(data) {
-                if (data.accepted) this.update(data.newState);
+                if (data.accepted) {
+                    this.update(data.newState);
+                    this.parent.viewAdapter.update();
+                }
+                else this.viewAdapter.update(this.getState(), true);
+            }).bind(this),
+            error: (function() {
+                this.viewAdapter.update(this.getState(), true);
             }).bind(this),
             complete: completionCallback
         });
