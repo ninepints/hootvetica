@@ -5,8 +5,9 @@ admin.autodiscover()
 urlpatterns = patterns('',
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout'),
-    (r'^accounts/pwchange/$', 'django.contrib.auth.views.password_change'),
-    (r'^accounts/pwchange/done/$',
+    (r'^accounts/password_change/$',
+        'django.contrib.auth.views.password_change'),
+    (r'^accounts/password_change/done/$',
         'django.contrib.auth.views.password_change_done'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
