@@ -139,7 +139,6 @@ class FoodUpdateView(FoodModelMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(FoodUpdateView, self).get_context_data(**kwargs)
         context['action'] = 'edit'
-        context['name'] = self.get_object().name
         return context
 
 

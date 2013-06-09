@@ -15,7 +15,7 @@
 
 {% block content %}
 <section class="gray banner indented">
-    <h2>{{ action|capfirst }} {{ model|lower }}{% if name %} "{{ name }}"{% endif %}</h2>
+    <h2>{{ action|capfirst }} {{ model|lower }}</h2>
 
     <form method="post" action="">
         {% csrf_token %}

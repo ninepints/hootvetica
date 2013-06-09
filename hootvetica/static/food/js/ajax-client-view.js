@@ -586,15 +586,16 @@ ajaxClient.view = {};
     };
 
     CategoryMiniView.prototype.launchEditPopup = function() {
-        this.launchFormPopup('Edit category "' + this.nameText.text() + '"',
+        this.launchFormPopup('Edit category',
             new Form(categoryForm.clone(), null, this.modelAdapter.getState()),
             this.modelAdapter.startEditRequest);
     };
 
     CategoryMiniView.prototype.launchDeletePopup = function() {
-        this.launchPopup('Delete category "' + this.nameText.text() + '"',
-            $('<p>Are you sure? Any items in this category ' +
-                'will also be deleted.</p>'),
+        this.launchPopup('Delete category',
+            $('<p>Are you sure you want to delete the category "' +
+                this.nameText.text() +
+                '"? Any items in this category will also be deleted.</p>'),
             this.modelAdapter.startDeleteRequest).setConfirmText('Delete');
     };
 
@@ -710,7 +711,7 @@ ajaxClient.view = {};
     };
 
     ItemMiniView.prototype.launchEditPopup = function() {
-        this.launchFormPopup('Edit item "' + this.nameText.text() + '"',
+        this.launchFormPopup('Edit item',
             new Form(buildItemForm(), null, this.modelAdapter.getState()),
             this.modelAdapter.startEditRequest);
     };
