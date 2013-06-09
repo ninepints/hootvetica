@@ -10,11 +10,11 @@
 
 {% block content %}
     <section class="gray banner indented">
-        <h2>Delete {{ model|lower }} "{{ name }}"</h2>
+        <h2>Delete {{ model|lower }}</h2>
 
         <form method="post" action="">
             {% csrf_token %}
-            <p>Are you sure?</p>
+            <p>Are you sure you want to delete the {{ model|lower }} "{{ name }}"?</p>
             <input type="submit" value="Delete" />
         </form>
     </section>
