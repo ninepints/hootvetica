@@ -38,16 +38,17 @@ ajaxClient.view = {};
             nextInputID += 1;
         }
 
-        Object.keys(state).forEach(function(name) {
-            input = this.inputElements.filter('[name="' + name + '"]');
-            if (input.is('[type="checkbox"]'))
-                input.prop('checked', state[name]);
-            else if (input.is('[type="radio"]'))
-                input.filter('[value="' + state[name] + '"]')
-                    .prop('checked', true);
-            else
-                input.val(state[name]);
-        }, this);
+        if (state)
+            Object.keys(state).forEach(function(name) {
+                input = this.inputElements.filter('[name="' + name + '"]');
+                if (input.is('[type="checkbox"]'))
+                    input.prop('checked', state[name]).trigger('change');
+                else if (input.is('[type="radio"]'))
+                    input.filter('[value="' + state[name] + '"]')
+                        .prop('checked', true).trigger('change');
+                else
+                    input.val(state[name]).trigger('change');
+            }, this);
     };
 
     Form.prototype.attachAfter = function(element) {
@@ -237,6 +238,8 @@ ajaxClient.view = {};
 
             // Popup confirmation callback
             function() {
+                popup.setStatusbarContent('Sending request...', 'busy');
+                popup.setStatusbarVisible(true);
                 popup.setEnabled(false);
                 abortCallback = requestFunc({
                     accepted: function() {
@@ -276,6 +279,8 @@ ajaxClient.view = {};
 
             // Popup confirmation callback
             function(data) {
+                popup.setStatusbarContent('Sending request...', 'busy');
+                popup.setStatusbarVisible(true);
                 popup.setEnabled(false);
                 abortCallback = requestFunc(data, {
                     accepted: function() {
@@ -285,13 +290,16 @@ ajaxClient.view = {};
                     rejected: function(json) {
                         abortCallback = null;
                         popup.setEnabled(true);
+                        popup.setStatusbarVisible(false);
                         popup.getForm().addErrors(json);
+                        popup.setConfirmText('Done');
                     },
                     error: function(error) {
                         abortCallback = null;
                         popup.setEnabled(true);
                         popup.setStatusbarContent(error, 'error');
                         popup.setStatusbarVisible(true);
+                        popup.getForm().clearErrors();
                         popup.setConfirmText('Retry');
                     }
                 });
@@ -467,7 +475,7 @@ ajaxClient.view = {};
 
     LocationMiniView.prototype.launchAddChildPopup = function() {
         this.launchFormPopup('Add category',
-            new Form(categoryForm.clone(), null, {name: 'New category'}),
+            new Form(categoryForm.clone(), null),
             this.modelAdapter.startAddChildRequest);
     };
 
@@ -573,7 +581,7 @@ ajaxClient.view = {};
 
     CategoryMiniView.prototype.launchAddChildPopup = function() {
         this.launchFormPopup('Add item',
-            new Form(itemForm.clone(), null, {name: 'New item', status: 'AVA'}),
+            new Form(buildItemForm(), null, {status: 'AVA'}),
             this.modelAdapter.startAddChildRequest);
     };
 
@@ -703,7 +711,7 @@ ajaxClient.view = {};
 
     ItemMiniView.prototype.launchEditPopup = function() {
         this.launchFormPopup('Edit item "' + this.nameText.text() + '"',
-            new Form(itemForm.clone(), null, this.modelAdapter.getState()),
+            new Form(buildItemForm(), null, this.modelAdapter.getState()),
             this.modelAdapter.startEditRequest);
     };
 
@@ -744,6 +752,21 @@ ajaxClient.view = {};
         else {
             popupStack[popupStack.length - 1].setVisible(true);
         }
+    };
+
+    function buildItemForm() {
+        var formElement = itemForm.clone();
+        var qtyField = formElement.find('[name="quantity"]');
+        var qtyParent = qtyField.parent().parent().parent();
+        formElement.find('select').on('change', function() {
+            if ($(this).val() === 'QTY')
+                qtyParent.show();
+            else {
+                qtyParent.hide();
+                qtyField.val('');
+            }
+        });
+        return formElement;
     };
 
 
