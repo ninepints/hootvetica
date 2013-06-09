@@ -651,9 +651,6 @@ ajaxClient.view = {};
                 this.container.addClass('active');
                 event.stopPropagation();
             }).bind(this));
-            $('body').on('click', function() {
-                $('div.item.active').removeClass('active');
-            });
         }
 
         // Attach self to DOM
@@ -785,6 +782,10 @@ ajaxClient.view = {};
                         else if (event.which === 27)
                             popupStack[popupStack.length - 1].cancel();
                     }
+                });
+
+                body.on('click', function() {
+                    $('div.item.active').removeClass('active');
                 });
 
                 // Done starting view, start model
