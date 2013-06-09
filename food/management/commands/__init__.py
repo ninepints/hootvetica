@@ -22,7 +22,7 @@ def open_locations(locations, current_time):
     return count
 
 def close_locations(locations, current_time):
-    count = locations.update(open=False, last_modified=current_time)
+    count = locations.update(open=False, message='', last_modified=current_time)
     do_hardcoded_menu_deletions(locations)
     return count
 

@@ -38,7 +38,7 @@
         {% if perms.food.change_location or perms.food.set_location_status or perms.food.add_category %}
             <ul class="location-buttons">
                 {% if perms.food.change_location or perms.food.set_location_status %}
-                    <li><a class="button" href="{% url 'location-edit' location.uid %}" class="button toggle">Open/Close Location</a></li>
+                    <li><a class="button" href="{% url 'location-edit' location.uid %}" class="button edit">Edit</a></li>
                 {% endif %}
                 {% if perms.food.add_category %}
                     <li><a class="button" href="{% url 'category-add' %}?parent={{ location.uid }}" class="button add">Add Category</a></li>
@@ -60,6 +60,10 @@
         {% endif %}
 
         {% if location.open or user.is_authenticated %}
+            {% if location.message %}
+                <div class="messagebar"><p>{{ location.message }}</p></div>
+            {% endif %}
+
             <div class="categories">
                 {% for category in location.category_set.select_related %}
                     <div class="category{% if category.item_set.count == 0 %} empty{% elif not category.food_available %} out{% endif %}{% if perms.food.change_category or perms.food.delete_category or perms.food.add_item %} editable{% endif %} indented banner">

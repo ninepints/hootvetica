@@ -9,6 +9,19 @@
     </ul>
 </div>
 
+<form class="locationform">
+    <ul class="form">
+        <li><ul class="field">
+            <li><label>Message</label></li>
+            <li><input name="message" type="text" maxlength="128" /></li>
+        </ul></li>
+        <li><ul class="field">
+            <li><label>Open</label></li>
+            <li><input name="open" type="checkbox" /></li>
+        </ul></li>
+    </ul>
+</form>
+
 <form class="categoryform">
     <ul class="form">
         <li><ul class="field">
@@ -48,7 +61,7 @@
 <div class="location">
     <h1></h1>
     <ul class="location-buttons">
-        <li><a href="#" class="button toggle">Open/Close Location</a></li>
+        <li><a href="#" class="button edit">Edit</a></li>
         <li><a href="#" class="button add">Add Category</a></li>
     </ul>
     <div class="indented banner info">
@@ -56,6 +69,7 @@
         <h3>You can't buy any food.</h3>
         <p></p>
     </div>
+    <div class="messagebar"><p></p></div>
     <div class="categories">
         <h3>There aren't any items associated with this location.</h3>
     </div>

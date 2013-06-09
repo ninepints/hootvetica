@@ -22,6 +22,9 @@ $(document).ready(function() {
                         attachCallback) {
                     var miniView = view.makeLocationMiniView({
                             // Location mini-model adapter
+                            getState: function() {
+                                return miniModel.getState();
+                            },
                             startAddChildRequest: function(data,
                                     statusAdapter) {
                                 return miniModel.startAddChildRequest(data, {
@@ -36,9 +39,18 @@ $(document).ready(function() {
                                     }
                                 });
                             },
-                            startToggleRequest: function(completionCallback) {
-                                miniModel.startToggleRequest(
-                                    completionCallback);
+                            startEditRequest: function(data, statusAdapter) {
+                                return miniModel.startEditRequest(data, {
+                                    accepted: function() {
+                                        statusAdapter.accepted();
+                                    },
+                                    rejected: function(json) {
+                                        statusAdapter.rejected(json);
+                                    },
+                                    error: function(error) {
+                                        statusAdapter.error(error);
+                                    }
+                                });
                             },
                             refreshData: function(completionCallback) {
                                 miniModel.refreshData(completionCallback);

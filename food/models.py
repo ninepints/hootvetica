@@ -15,6 +15,7 @@ class Location(models.Model):
         'like "example.com/location/foo/".'))
     name = models.CharField(max_length=32)
     open = models.BooleanField()
+    message = models.CharField(max_length=128, blank=True)
     last_modified = models.DateTimeField(auto_now=True, editable=False)
 
     def get_location_uid(self):
@@ -56,7 +57,7 @@ class Location(models.Model):
 
     class Meta:
         ordering = ('name',)
-        permissions = (('set_location_status', 'Can open/close location'),)
+        permissions = (('set_location_status', 'Can change location status'),)
 
 
 class Category(models.Model):

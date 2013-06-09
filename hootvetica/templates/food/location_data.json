@@ -1,6 +1,7 @@
 {
     "name": "{{ location.name|escapejs }}",
     "open": {{ location.open|lower }},
+    "message": "{{ location.message|escapejs }}",
     "updateURL": "{% url 'location-ajax' location.uid %}",
     "editURL": "{% url 'location-edit-ajax' location.uid %}",
     "addChildURL": "{% url 'category-add-ajax' %}",
