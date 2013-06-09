@@ -24,7 +24,7 @@ $(document).ready(function() {
         }
     };
 
-    function flash() {
+    function flash(item) {
         item.addClass('highlight');
         setTimeout(function() {
             item.removeClass('highlight');
@@ -44,8 +44,7 @@ $(document).ready(function() {
             popup = $(data).filter('div.popup');
             stageTexts = popup.children('p');
             category = popup.children('div.category');
-            item = category.find('div.item.editable');
-            itemText = item.children('p');
+            selects = category.find('select');
             popup.on('click', function(event) {
                 event.stopPropagation();
             });
@@ -58,23 +57,15 @@ $(document).ready(function() {
                     category.removeClass('collapsed');
                 }
             });
-            item.on('click', function() {
-                if (!item.hasClass('active'))
-                    item.addClass('active');
-            });
-            item.find('a.available').on('click', function(event) {
+            selects.on('change', function() {
+                var self = $(this);
+                var item = self.parent();
+                if (self.val() === 'AVA')
+                    item.removeClass('out');
+                else if (self.val() === 'OUT')
+                    item.addClass('out');
+                flash(item);
                 advance();
-                flash();
-                item.removeClass('out');
-                itemText.text('Available');
-                event.preventDefault();
-            });
-            item.find('a.out').on('click', function(event) {
-                advance();
-                flash();
-                item.addClass('out');
-                itemText.text('Sold out');
-                event.preventDefault();
             });
             popup.find('a.confirm').on('click', function(event) {
                 exit();
