@@ -585,31 +585,17 @@ div.statusbar.info
 
 div.statusbar.busy
 {
-    background-image: -webkit-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
-    background-image: -moz-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
-    background-image: -ms-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
-    background-image: -o-repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
-    background-image: repeating-linear-gradient(45deg, rgb(240,240,240), rgb(240,240,240) 1.25em, rgb(224,224,224) 1.25em, rgb(224,224,224) 2.5em);
-    -webkit-animation-name: busyAnim;
-    -moz-animation-name: busyAnim;
-    -ms-animation-name: busyAnim;
-    -o-animation-name: busyAnim;
-    animation-name: busyAnim;
-    -webkit-animation-duration: 60s;
-    -moz-animation-duration: 60s;
-    -ms-animation-duration: 60s;
-    -o-animation-duration: 60s;
-    animation-duration: 60s;
-    -webkit-animation-timing-function: linear;
-    -moz-animation-timing-function: linear;
-    -ms-animation-timing-function: linear;
-    -o-animation-timing-function: linear;
-    animation-timing-function: linear;
-    -webkit-animation-iteration-count: infinite;
-    -moz-animation-iteration-count: infinite;
-    -ms-animation-iteration-count: infinite;
-    -o-animation-iteration-count: infinite;
-    animation-iteration-count: infinite;
+    background-image: -webkit-linear-gradient(45deg, rgb(240,240,240) 25%, rgb(224,224,224) 25%, rgb(224,224,224) 50%, rgb(240,240,240) 50%, rgb(240,240,240) 75%, rgb(224,224,224) 75%);
+    background-image: -moz-linear-gradient(45deg, rgb(240,240,240) 25%, rgb(224,224,224) 25%, rgb(224,224,224) 50%, rgb(240,240,240) 50%, rgb(240,240,240) 75%, rgb(224,224,224) 75%);
+    background-image: -ms-linear-gradient(45deg, rgb(240,240,240) 25%, rgb(224,224,224) 25%, rgb(224,224,224) 50%, rgb(240,240,240) 50%, rgb(240,240,240) 75%, rgb(224,224,224) 75%);
+    background-image: -o-linear-gradient(45deg, rgb(240,240,240) 25%, rgb(224,224,224) 25%, rgb(224,224,224) 50%, rgb(240,240,240) 50%, rgb(240,240,240) 75%, rgb(224,224,224) 75%);
+    background-image: linear-gradient(45deg, rgb(240,240,240) 25%, rgb(224,224,224) 25%, rgb(224,224,224) 50%, rgb(240,240,240) 50%, rgb(240,240,240) 75%, rgb(224,224,224) 75%);
+    background-size: 3.535em 3.535em;
+    -webkit-animation: busyAnim 60s linear infinite;
+    -moz-animation: busyAnim 60s linear infinite;
+    -ms-animation: busyAnim 60s linear infinite;
+    -o-animation: busyAnim 60s linear infinite;
+    animation: busyAnim 60s linear infinite;
 }
 
 @-webkit-keyframes busyAnim
