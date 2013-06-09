@@ -43,11 +43,13 @@ div.location
 div.location > h1
 {
     margin: 0.375em 0.125em;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.location.editable > h1
 {
-    margin-right: 2.25em;
+    margin-right: 1.625em;
 }
 
 div.location > div.info
@@ -307,6 +309,7 @@ div.category.collapsed > h3, .no-js div.category > h3
 
 div.category > div.items
 {
+    margin-right: -1em;
     overflow: hidden;
 }
 
@@ -366,6 +369,11 @@ div.item
 div.item.editable
 {
     cursor: pointer;
+}
+
+.no-js div.item.editable
+{
+    cursor: default;
 }
 
 div.item.active, .no-js div.item
@@ -542,11 +550,11 @@ div.statusbar
     background-color: rgb(240,240,240);
     overflow: hidden;
 
-    -webkit-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    -moz-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    -ms-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    -o-transition-property: height, margin-top, padding-top, padding-bottom, opacity;
-    transition-property: height, margin-top, padding-top, padding-bottom, opacity;
+    -webkit-transition-property: max-height, margin-top, padding-top, padding-bottom, opacity;
+    -moz-transition-property: max-height, margin-top, padding-top, padding-bottom, opacity;
+    -ms-transition-property: max-height, margin-top, padding-top, padding-bottom, opacity;
+    -o-transition-property: max-height, margin-top, padding-top, padding-bottom, opacity;
+    transition-property: max-height, margin-top, padding-top, padding-bottom, opacity;
 
     -webkit-transition-duration: 0.35s;
     -moz-transition-duration: 0.35s;

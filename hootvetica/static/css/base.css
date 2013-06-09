@@ -191,6 +191,7 @@ input[type="text"], input[type="password"]
     -o-box-sizing: border-box;
     box-sizing: border-box;
     border: 0.0625em solid rgb(64,64,64);
+    border-radius: 0;
     padding: 0 0.1875em;
     height: 1.5em;
     color: rgb(64,64,64);
@@ -230,6 +231,7 @@ input[type="text"], input[type="password"], select
 input[type="button"], input[type="submit"]
 {
     border: 0.0625em solid rgb(64,64,64);
+    border-radius: 0;
     padding: 0.1875em 0.5em;
     line-height: 1em;
     background-color: transparent;
@@ -329,6 +331,7 @@ nav#topmenu
     font-size: 1.5em;
     line-height: 1.5em;
     color: white;
+    float: left;
 }
 
 ul#usermenu
