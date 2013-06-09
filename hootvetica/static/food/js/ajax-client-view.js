@@ -215,6 +215,7 @@ ajaxClient.view = {};
 
     MiniView.prototype.setEnabled = function(bool) {
         this.disabled = !bool;
+        this.container.children('select').prop('disabled', !bool);
         if (bool)
             this.container.children('ul').find('a').removeClass('disabled');
         else
@@ -607,18 +608,14 @@ ajaxClient.view = {};
         this.statusText = this.container.children('p');
 
         // Button setup
-        this.availableButton = this.container.find('a.available')
-            .on('click', (function(event) {
+        this.statusSelect = this.container.children('select')
+            .on('change', (function(event) {
                 if (!this.disabled)
-                    this.startStatusRequest('AVA');
-                event.preventDefault();
-            }).bind(this));
-        this.unavailableButton = this.container.find('a.out')
-            .on('click', (function(event) {
-                if (!this.disabled)
-                    this.startStatusRequest('OUT');
-                event.preventDefault();
-            }).bind(this));
+                    this.startStatusRequest(this.statusSelect.val());
+            }).bind(this))
+            .on('click', function(event) {
+                event.stopPropagation();
+            });
         this.editButton = this.container.find('a.edit')
             .on('click', (function(event) {
                 if (!this.disabled)
@@ -631,15 +628,10 @@ ajaxClient.view = {};
                     this.startDeleteRequest();
                 event.preventDefault();
             }).bind(this));
-        if (!perms.changeItems && !perms.changeItemStatuses &&
-                !perms.deleteItems)
+        if (!perms.changeItems && !perms.deleteItems)
             this.editButton.parent().parent().remove();
         else {
             this.container.addClass('editable');
-            if (perms.changeItems || !perms.changeItemStatuses) {
-                this.availableButton.parent().remove();
-                this.unavailableButton.parent().remove();
-            }
             if (!perms.changeItems)
                 this.editButton.parent().remove();
             if (!perms.deleteItems)
@@ -653,6 +645,14 @@ ajaxClient.view = {};
             }).bind(this));
         }
 
+        // Inline select setup
+        if (!perms.changeItemStatuses && !perms.changeItems)
+            this.statusSelect.remove();
+        else {
+            this.statusText.remove();
+            this.statusText = this.statusSelect.children().eq(0);
+        }
+
         // Attach self to DOM
         attachCallback(this.container);
     };
@@ -662,19 +662,32 @@ ajaxClient.view = {};
     ItemMiniView.prototype.update = function(json, suppressFlash) {
         if (json) {
             this.nameText.text(json.name);
+
             this.container.removeClass('low out');
+            if (json.status === 'LOW')
+                this.container.addClass('low');
+            if (json.status === 'OUT')
+                this.container.addClass('out');
+
             if (json.status === 'AVA')
                 this.statusText.text('Available');
-            else if (json.status === 'LOW') {
+            else if (json.status === 'LOW')
                 this.statusText.text('Running low');
-                this.container.addClass('low');
-            }
-            else if (json.status === 'OUT') {
+            else if (json.status === 'OUT')
                 this.statusText.text('Sold out');
-                this.container.addClass('out');
-            }
             else if (json.status === 'QTY')
                 this.statusText.text(json.quantity + ' left');
+
+            if (perms.changeItemStatuses || perms.changeItems) {
+                if (json.status === 'AVA' || json.status === 'OUT') {
+                    this.statusSelect.val(json.status);
+                    this.statusText.detach();
+                }
+                else if (json.status === 'LOW' || json.status === 'QTY') {
+                    this.statusSelect.prepend(this.statusText);
+                    this.statusText.prop('selected', true);
+                }
+            }
         }
 
         if (json && !suppressFlash)
