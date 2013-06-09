@@ -138,24 +138,15 @@ ajaxClient.model = {};
         if (json.modified > this.modified) {
             this.name = json.name;
             this.open = json.open;
+            this.message = json.message;
             this.modified = json.modified;
             this.viewAdapter.update(json);
         }
         else this.viewAdapter.update();
     };
 
-    LocationMiniModel.prototype.startToggleRequest =
-            function(completionCallback) {
-        jQuery.ajax({
-            url: this.editURL,
-            type: 'POST',
-            data: 'open=' + !this.open,
-            dataType: 'json',
-            success: (function(data) {
-                if (data.accepted) this.update(data.newState);
-            }).bind(this),
-            complete: completionCallback
-        });
+    LocationMiniModel.prototype.getState = function() {
+        return {open: this.open, message: this.message};
     };
 
     LocationMiniModel.prototype.refreshData = function(completionCallback) {

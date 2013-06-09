@@ -4,7 +4,7 @@ from food.models import Location, Category, Item
 class LocationForm(ModelForm):
 	class Meta:
 		model = Location
-		fields = ('open',)
+		fields = ('message', 'open')
 
 class CategoryCreationForm(ModelForm):
     class Meta:

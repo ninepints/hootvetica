@@ -321,6 +321,8 @@ ajaxClient.view = {};
         this.nameText = this.container.children('h1');
         this.emptyText = this.childrenDiv.children('h3').hide();
         this.closedBox = this.container.children('div.info');
+        this.messageDiv = this.container.children('div.messagebar');
+        this.messageText = this.messageDiv.children('p');
         this.treeModText = this.container.children('p').children('span');
         this.refreshText = this.container.children('p').children('a');
 
@@ -340,10 +342,10 @@ ajaxClient.view = {};
             this.closedBox.children('p').remove();
 
         // Button setup
-        this.toggleButton = this.container.find('a.toggle')
+        this.editButton = this.container.find('a.edit')
             .on('click', (function(event) {
                 if (!this.disabled)
-                    this.startToggleRequest();
+                    this.launchEditPopup();
                 event.preventDefault();
             }).bind(this));
         this.addButton = this.container.find('a.add')
@@ -353,11 +355,11 @@ ajaxClient.view = {};
                 event.preventDefault();
             }).bind(this));
         if (!perms.changeLocation && !perms.addCategories)
-            this.toggleButton.parent().parent().remove();
+            this.editButton.parent().parent().remove();
         else {
             this.container.addClass('editable');
             if (!perms.changeLocation)
-                this.toggleButton.parent().remove();
+                this.editButton.parent().remove();
             if (!perms.addCategories)
                 this.addButton.parent().remove();
         }
@@ -389,16 +391,23 @@ ajaxClient.view = {};
     LocationMiniView.prototype.update = function(json) {
         if (json) {
             this.nameText.text(json.name);
+
             if (json.open)
                 this.closedBox.addClass('hidden');
             else
                 this.closedBox.removeClass('hidden');
+
             if (!json.open && !perms.authenticated)
-                this.childrenDiv.addClass('hidden');
-            else
+                this.childrenDiv.add(this.messageDiv).addClass('hidden');
+            else {
                 this.childrenDiv.removeClass('hidden');
-            this.toggleButton.text(json.open ?
-                'Close Location' : 'Open Location');
+                if (json.message) {
+                    this.messageText.text(json.message);
+                    this.messageDiv.removeClass('hidden');
+                }
+                else
+                    this.messageDiv.addClass('hidden');
+            }
         }
 
         if (this.childrenDiv.children().length === 1)
@@ -461,8 +470,10 @@ ajaxClient.view = {};
             this.modelAdapter.startAddChildRequest);
     };
 
-    LocationMiniView.prototype.startToggleRequest = function() {
-        this.backgroundRequest(this.modelAdapter.startToggleRequest);
+    LocationMiniView.prototype.launchEditPopup = function() {
+        this.launchFormPopup('Edit location',
+            new Form(locationForm.clone(), null, this.modelAdapter.getState()),
+            this.modelAdapter.startEditRequest);
     };
 
     LocationMiniView.prototype.attachChild = function(element) {
