@@ -209,7 +209,7 @@ select
     border-radius: 0;
     padding: 0 0.1875em;
     height: 1.5em;
-    background-image: url(../img/select.svg);
+    background-image: url(/img/select.svg);
     background-size: 1.25em 1.25em;
     background-position: 98% 50%;
     background-repeat: no-repeat;
@@ -219,7 +219,7 @@ select
 select:active
 {
     background-color: rgb(64,64,64);
-    background-image: url(../img/select-active.svg);
+    background-image: url(/img/select-active.svg);
     color: white;
 }
 
@@ -263,7 +263,7 @@ input[type="button"]:disabled, input[type="submit"]:disabled
 select:disabled
 {
     background-color: white;
-    background-image: url(../img/select.svg);
+    background-image: url(/img/select.svg);
     color: rgb(64, 64, 64);
 }
 
