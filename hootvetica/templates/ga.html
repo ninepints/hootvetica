@@ -5,5 +5,7 @@
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     ga('create', '{{ GOOGLE_ANALYTICS_ID }}', '{{ GOOGLE_ANALYTICS_DOMAIN }}');
-    ga('send', 'pageview');
+    ga('send', 'pageview'{% if user.is_authenticated %}, {
+        dimension1: 'true'{# Mark session as authenticated with GA #}
+    }{% endif %});
 </script>
