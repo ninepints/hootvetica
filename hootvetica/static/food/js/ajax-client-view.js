@@ -75,24 +75,22 @@ ajaxClient.view = {};
         var formUl = this.formElement.children('ul.form');
 
         // Add non-field errors
-        var prev = formUl.prev();
+        var prev = null;
         nonFieldErrors.forEach(function(error) {
-            if (prev.length == 0) {
-                formUl.before('<li class="error">' + error + '</li>');
-                prev = formUl.prev();
-            }
-            else {
-                prev.after('<li class="error">' + error + '</li>');
-                prev = prev.next();
-            }
+            if (!prev)
+                prev = $('<li class="error">' + error + '</li>')
+                    .prependTo(formUl);
+            else
+                prev = $('<li class="error">' + error + '</li>')
+                    .insertAfter(prev);
         });
 
         // Add field errors to associated fields
         fieldErrors.forEach(function(fieldError) {
             prev = formUl.find('[name="' + fieldError.field + '"]').parent();
             fieldError.errors.forEach(function(error) {
-                prev.after('<li class="error">' + error + '</li>');
-                prev = prev.next();
+                prev = $('<li class="error">' + error + '</li>')
+                    .insertAfter(prev);
             });
         });
     };
