@@ -379,6 +379,8 @@ ajaxClient.view = {};
             if (!refreshing) {
                 refreshing = true;
                 this.refreshText.addClass('disabled').text('Refreshing...');
+                ajaxClient.utils.sendGaEvent('button', 'click',
+                    'manual_refresh');
                 this.modelAdapter.refreshData((function() {
                     refreshing = false;
                     this.refreshText.removeClass('disabled')

@@ -78,6 +78,8 @@ ajaxClient.model = {};
             dataType: 'json',
             success: (function(data) {
                 if (data.accepted) {
+                    ajaxClient.utils.sendGaEvent('model', 'add',
+                        this.childClass.prototype.modelName);
                     statusAdapter.accepted();
                     var child = new this.childClass();
                     child.init(data.newState,
@@ -103,6 +105,8 @@ ajaxClient.model = {};
             dataType: 'json',
             success: (function(data) {
                 if (data.accepted) {
+                    ajaxClient.utils.sendGaEvent('model', 'change',
+                        this.modelName);
                     statusAdapter.accepted();
                     this.update(data.newState);
                     if (this.parent) this.parent.viewAdapter.update();
@@ -119,6 +123,7 @@ ajaxClient.model = {};
     LocationMiniModel.prototype = Object.create(MiniModel.prototype);
     LocationMiniModel.prototype.constructor = LocationMiniModel;
     LocationMiniModel.prototype.childClass = CategoryMiniModel;
+    LocationMiniModel.prototype.modelName = 'location';
 
     LocationMiniModel.prototype.init = function(json, adapter) {
         MiniModel.apply(this, arguments);
@@ -163,6 +168,7 @@ ajaxClient.model = {};
     CategoryMiniModel.prototype = Object.create(MiniModel.prototype);
     CategoryMiniModel.prototype.constructor = CategoryMiniModel;
     CategoryMiniModel.prototype.childClass = ItemMiniModel;
+    CategoryMiniModel.prototype.modelName = 'category';
 
     CategoryMiniModel.prototype.init = function(json, adapter, parent) {
         MiniModel.apply(this, arguments);
@@ -199,6 +205,8 @@ ajaxClient.model = {};
             dataType: 'json',
             success: (function(data) {
                 if (data.accepted) {
+                    ajaxClient.utils.sendGaEvent('model', 'delete',
+                        this.modelName);
                     statusAdapter.accepted();
                     this.remove();
                 }
@@ -218,6 +226,7 @@ ajaxClient.model = {};
     function ItemMiniModel() {};
     ItemMiniModel.prototype = Object.create(MiniModel.prototype);
     ItemMiniModel.prototype.constructor = ItemMiniModel;
+    ItemMiniModel.prototype.modelName = 'item';
 
     ItemMiniModel.prototype.init = function(json, adapter, parent) {
         MiniModel.apply(this, arguments);
@@ -252,6 +261,8 @@ ajaxClient.model = {};
             dataType: 'json',
             success: (function(data) {
                 if (data.accepted) {
+                    ajaxClient.utils.sendGaEvent('model', 'change',
+                        this.modelName);
                     this.update(data.newState);
                     this.parent.viewAdapter.update();
                 }
@@ -270,7 +281,11 @@ ajaxClient.model = {};
             type: 'POST',
             dataType: 'json',
             success: (function(data) {
-                if (data.accepted) this.remove();
+                if (data.accepted) {
+                    ajaxClient.utils.sendGaEvent('model', 'delete',
+                        this.modelName);
+                    this.remove();
+                }
             }).bind(this),
             complete: completionCallback
         });

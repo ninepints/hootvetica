@@ -38,12 +38,16 @@ ajaxClient.utils = {};
             !(/^(\/\/|http:|https:).*/.test(url));
     };
 
-    // Checks whether the given method is non-destructive
+    // Checks whether the given HTTP method is non-destructive
     this.safeMethod = function(method) {
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
     };
 
     this.getEpochTime = function() {
         return Math.round(Date.now() / 1000);
+    };
+
+    this.sendGaEvent = function(category, action, label, value) {
+        if (window.ga) ga('send', 'event', category, action, label, value);
     };
 }).apply(ajaxClient.utils);
