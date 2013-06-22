@@ -1,5 +1,5 @@
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.views import redirect_to_login
@@ -56,8 +56,14 @@ class AjaxMixin(object):
 class AjaxFormMixin(AjaxMixin):
     template_name = 'food/update_reject.json'
 
+    def _allowed_methods(self):
+        return ['POST', 'PUT', 'OPTIONS']
+
     def get(self, request, *args, **kwargs):
-        return HttpResponseNotAllowed(['POST', 'PUT'])
+        return self.http_method_not_allowed(request, *args, **kwargs)
+
+    def head(self, request, *args, **kwargs):
+        return self.http_method_not_allowed(request, *args, **kwargs)
 
     def form_valid(self, form):
         self.object = form.save()
@@ -156,8 +162,14 @@ class FoodDeleteView(FoodModelMixin, DeleteView):
 
 
 class AjaxDeleteView(DeleteView):
+    def _allowed_methods(self):
+        return ['POST', 'DELETE', 'OPTIONS']
+
     def get(self, request, *args, **kwargs):
-        return HttpResponseNotAllowed(['POST', 'DELETE'])
+        return self.http_method_not_allowed(request, *args, **kwargs)
+
+    def head(self, request, *args, **kwargs):
+        return self.http_method_not_allowed(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
