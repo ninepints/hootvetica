@@ -1,5 +1,5 @@
-from datetime import timedelta
 import re, uuid
+from datetime import timedelta
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from food.models import Location, Category, Item
@@ -69,23 +69,35 @@ class ModelTest(TestCase):
             uid=uuid.uuid4().hex, parent=self.cat6_1,
             name='item6_1_1', status='AVA')
 
-    def test_get_location_uid(self):
+    def test_parent_uid(self):
         self.assertEqual(self.loc0.get_location_uid(), 'loc0')
         for model in (self.loc1, self.cat1_0):
-            self.assertEqual(model.get_location_uid(), 'loc1')
+            uid = model.get_location_uid()
+            self.assertEqual(uid, 'loc1',
+                '{} returned location id {} (expected loc1)'.format(model, uid))
         for model in (self.loc2, self.cat2_0, self.item2_0_0):
-            self.assertEqual(model.get_location_uid(), 'loc2')
+            uid = model.get_location_uid()
+            self.assertEqual(uid, 'loc2',
+                '{} returned location id {} (expected loc2)'.format(model, uid))
         for model in (self.loc3, self.cat3_0):
-            self.assertEqual(model.get_location_uid(), 'loc3')
+            uid = model.get_location_uid()
+            self.assertEqual(uid, 'loc3',
+                '{} returned location id {} (expected loc3)'.format(model, uid))
         for model in (self.loc4, self.cat4_0, self.item4_0_0):
-            self.assertEqual(model.get_location_uid(), 'loc4')
+            uid = model.get_location_uid()
+            self.assertEqual(uid, 'loc4',
+                '{} returned location id {} (expected loc4)'.format(model, uid))
         for model in (self.loc5, self.cat5_0, self.cat5_1, self.item5_0_0):
-            self.assertEqual(model.get_location_uid(), 'loc5')
+            uid = model.get_location_uid()
+            self.assertEqual(uid, 'loc5',
+                '{} returned location id {} (expected loc5)'.format(model, uid))
         for model in (self.loc6, self.cat6_0, self.cat6_1,
                       self.item6_0_0, self.item6_1_0, self.item6_1_1):
-            self.assertEqual(model.get_location_uid(), 'loc6')
+            uid = model.get_location_uid()
+            self.assertEqual(uid, 'loc6',
+                '{} returned location id {} (expected loc6)'.format(model, uid))
 
-    def test_food_availability(self):
+    def test_availability(self):
         self.assertFalse(self.loc0.hot_food_available())
         self.assertFalse(self.loc1.hot_food_available())
         self.assertFalse(self.loc2.hot_food_available())
@@ -95,10 +107,6 @@ class ModelTest(TestCase):
         self.assertFalse(self.loc5.hot_food_available())
         self.assertFalse(self.cat5_1.food_available())
 
-        self.item6_1_0.status = 'AVA'
-        self.item6_1_0.save()
-        self.item6_1_1.status = 'AVA'
-        self.item6_1_1.save()
         self.assertTrue(self.loc6.hot_food_available())
         self.assertTrue(self.cat6_1.food_available())
 
@@ -120,7 +128,7 @@ class ModelTest(TestCase):
         self.assertTrue(self.loc6.hot_food_available())
         self.assertTrue(self.cat6_1.food_available())
 
-    def test_get_tree_last_modified(self):
+    def test_tree_last_modified(self):
         t = max(self.loc6.last_modified, self.cat6_0.last_modified,
                 self.cat6_1.last_modified, self.item6_0_0.last_modified,
                 self.item6_1_0.last_modified, self.item6_1_1.last_modified)
@@ -143,28 +151,31 @@ class ModelTest(TestCase):
         self.loc6 = Location.objects.get(uid='loc6') # Reload the model
         self.assertEqual(self.loc6.get_tree_last_modified(), t)
 
-    def test_item_validation(self):
-        item = Item(parent=self.cat1_0, name='item', status='QTY')
-        self.assertRaises(ValidationError, item.full_clean)
 
-        item = Item(parent=self.cat1_0, name='item', status='QTY', quantity=0)
-        item.full_clean()
+class ItemValidationTest(TestCase):
+    def runTest(self):
+        item = Item(name='item', status='QTY')
+        self.assertRaises(ValidationError, item.full_clean, exclude=('parent',))
+
+        item = Item(name='item', status='QTY', quantity=0)
+        item.full_clean(exclude=('parent',))
         self.assertEqual(item.status, 'OUT')
 
-        item = Item(parent=self.cat1_0, name='item', status='QTY', quantity=1)
-        item.full_clean()
+        item = Item(name='item', status='QTY', quantity=1)
+        item.full_clean(exclude=('parent',))
         self.assertEqual(item.status, 'QTY')
         self.assertEqual(item.quantity, 1)
 
-    def test_uid_generation(self):
-        loc = Location(uid='loc', name='loc', open=True)
+
+class UidGenerationTest(TestCase):
+    def runTest(self):
         uid_regex = re.compile(r'^[a-fA-F0-9]{32}$')
 
-        cat = Category(parent=loc, name='cat')
-        cat.full_clean(exclude=('parent',))
-        self.assertIsNotNone(uid_regex.match(cat.uid))
+        category = Category(name='cat')
+        category.full_clean(exclude=('parent',))
+        self.assertIsNotNone(uid_regex.match(category.uid))
 
-        item = Item(parent=cat, name='item', status='AVA')
+        item = Item(name='item', status='AVA')
         item.full_clean(exclude=('parent',))
         self.assertIsNotNone(uid_regex.match(item.uid))
 
