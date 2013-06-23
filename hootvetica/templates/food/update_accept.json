@@ -1,4 +1,4 @@
 {
-    "accepted": true,
-    "newState": {% include state_template_name %}
+    "accepted": true{% if state_template_name %},
+    "newState": {% include state_template_name %}{% endif %}
 }
