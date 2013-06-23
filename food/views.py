@@ -161,7 +161,7 @@ class FoodDeleteView(FoodModelMixin, DeleteView):
         return context
 
 
-class AjaxDeleteView(DeleteView):
+class AjaxDeleteView(AjaxMixin, DeleteView):
     def _allowed_methods(self):
         return ['POST', 'DELETE', 'OPTIONS']
 
@@ -174,8 +174,8 @@ class AjaxDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.delete()
-        return HttpResponse('{"accepted": true}',
-                            mimetype='application/json')
+        return self.render_to_response(
+            self.get_context_data(), templates=['food/update_accept.json'])
 
 
 # Editing views
