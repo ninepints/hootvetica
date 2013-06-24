@@ -478,12 +478,15 @@ class ViewTest(TestCase):
                 msg_prefix=('POST request to {} with data didn\'t redirect to '
                     'location detail page').format(url))
 
-        for url, data, action in zip(
+        for url, data, action, template in zip(
                 self.ajax_create_urls + self.ajax_update_urls +
                     self.ajax_delete_urls,
                 self.create_data + self.update_data + self.delete_data,
                 self.create_setup_actions + self.update_setup_actions +
-                    self.delete_setup_actions):
+                    self.delete_setup_actions,
+                map(lambda x: 'food/{}_data.json'.format(x) if x else None,
+                    ['category', 'item', 'location', 'category', 'item', 'item',
+                        None, None])):
             action()
 
             if 'location' in url:
@@ -511,3 +514,8 @@ class ViewTest(TestCase):
                 msg_prefix=('POST request to {} with data didn\'t result in '
                     'rendering of template '
                     'food/update_accept.json').format(url))
+            if template:
+                self.assertTemplateUsed(
+                    response, template,
+                    msg_prefix=('POST request to {} with data didn\'t result in '
+                        'rendering of template {}').format(url, template))
