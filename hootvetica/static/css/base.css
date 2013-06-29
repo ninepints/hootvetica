@@ -273,7 +273,7 @@ select:disabled
 
 body
 {
-    background-color: rgb(232,232,232);
+    background-color: rgb(240,240,240);
 }
 
 div#container
@@ -284,7 +284,7 @@ div#container
     max-width: 1024px;
     margin: 0 auto;
     border-top: none;
-    box-shadow: 0 0 85px 0 rgba(0,0,0,0.4);
+    box-shadow: 0 0 16px 0 rgba(0,0,0,0.4);
     background-color: white;
     overflow: hidden;
 }
