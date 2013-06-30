@@ -318,6 +318,10 @@ ajaxClient.view = {};
         return popup;
     };
 
+    MiniView.prototype.remove = function() {
+        this.container.remove();
+    };
+
 
     function LocationMiniView(adapter, attachCallback) {
         MiniView.apply(this, arguments);
@@ -489,10 +493,6 @@ ajaxClient.view = {};
         this.emptyText.before(element);
     };
 
-    LocationMiniView.prototype.remove = function() {
-        this.container.remove();
-    };
-
 
     function CategoryMiniView(adapter, attachCallback) {
         MiniView.apply(this, arguments);
@@ -601,10 +601,6 @@ ajaxClient.view = {};
 
     CategoryMiniView.prototype.attachChild = function(element) {
         this.childrenDiv.append(element);
-    };
-
-    CategoryMiniView.prototype.remove = function() {
-        this.container.remove();
     };
 
 
@@ -724,10 +720,6 @@ ajaxClient.view = {};
 
     ItemMiniView.prototype.startDeleteRequest = function() {
         this.backgroundRequest(this.modelAdapter.startDeleteRequest);
-    };
-
-    ItemMiniView.prototype.remove = function() {
-        this.container.remove();
     };
 
 
