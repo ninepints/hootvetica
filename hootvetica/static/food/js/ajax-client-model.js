@@ -28,11 +28,10 @@ ajaxClient.model = {};
     };
 
     MiniModel.prototype.initChildren = function(json) {
-        var child;
         json.children.forEach(function(childJson) {
             var child = new this.childClass();
             child.init(childJson,
-                this.buildChildViewAdapter(child, this.attachChild.bind(this)),
+                this.buildChildViewAdapter(child, this.viewAdapter.attachChild),
                 this);
             this.children[child.uid] = child;
         }, this);
@@ -52,7 +51,8 @@ ajaxClient.model = {};
                 // Create new child
                 var child = new this.childClass();
                 child.init(childJson,
-                    this.buildChildViewAdapter(child, this.attachChild.bind(this)),
+                    this.buildChildViewAdapter(child,
+                        this.viewAdapter.attachChild),
                     this);
                 newChildren[child.uid] = child;
                 child.update(childJson);
@@ -64,10 +64,6 @@ ajaxClient.model = {};
             this.children[uid].remove();
         }, this);
         this.children = newChildren;
-    };
-
-    MiniModel.prototype.attachChild = function(element) {
-        this.viewAdapter.attachChild(element);
     };
 
     MiniModel.prototype.startAddChildRequest = function(data, statusAdapter) {
@@ -84,7 +80,7 @@ ajaxClient.model = {};
                     var child = new this.childClass();
                     child.init(data.newState,
                         this.buildChildViewAdapter(child,
-                            this.attachChild.bind(this)),
+                            this.viewAdapter.attachChild),
                         this);
                     child.update(data.newState);
                     this.children[child.uid] = child;

@@ -17,7 +17,7 @@ $(document).ready(function() {
     var stage = 0, stageTexts;
 
     function advance() {
-        if (stage < 2) {
+        if (stage < stageTexts.length - 1) {
             stageTexts.eq(stage).addClass('fade');
             stage++;
             stageTexts.eq(stage).removeClass('hidden');
