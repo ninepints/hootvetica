@@ -201,7 +201,7 @@ div.category > h2::after
     right: -0.75em;
     width: 64px;
     height: 64px;
-    background-image: url(/img/arrow-v.svg);
+    background-image: url(../../img/arrow-v.svg);
     background-size: 64px 64px;
 
     -webkit-transform: rotate(180deg);
