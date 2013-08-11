@@ -1,6 +1,6 @@
 # Hootvetica
 
-A Django-based inventory application for The Hoot at Rice University - see it live at [http://www.hootveti.ca](http://www.hootveti.ca)
+A Django-powered inventory application for The Hoot at Rice University - see it live at [http://www.hootveti.ca](http://www.hootveti.ca)
 
 
 ## Deployment
@@ -21,7 +21,7 @@ Start by cloning the Hootvetica repository.
 
     git clone https://github.com/ninepints/hootvetica.git && cd hootvetica
 
-If you're using virtualenv, create a new environment for the project. I usually create the environment directory immediately under the project directory, but its location is up to you. Once the environment is created, run the `activate` script found in `<envdir>/bin`.
+If you're using virtualenv, create a new environment for the project. Environments are commonly located in the project's root directory. Once the environment is created, run the `activate` script found in `<envdir>/bin`.
 
     virtualenv venv
     source venv/bin/activate
@@ -65,7 +65,7 @@ If you don't want to serve static files using Amazon S3, you'll need to make som
 
 *   Change the setting `STATIC_URL` to the URL static files will be served from.
 
-You'll also have to take care of serving the static files yourself, or set the setting `DEBUG` to `True` and run Django's development server. (To use the development server, substitute `honcho run python manage.py runserver` for `honcho start` when starting the application in the next section.)
+You'll also have to take care of serving the static files yourself. (Alternatively, Django's development server will serve them for you if the `DEBUG` setting is `True`. To use the development server, substitute `honcho run python manage.py runserver` for `honcho start` when starting the application in the next section. Note that the development server is not production-ready.)
 
 
 ### First Launch
