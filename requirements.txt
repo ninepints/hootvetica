@@ -1,4 +1,4 @@
-Django==1.5.1
+Django==1.5.2
 boto==2.8.0
 dj-database-url==0.2.1
 django-compressor==1.3
