@@ -10,6 +10,18 @@ from food.models import Location, Category, Item
 from food.forms import (LocationForm, CategoryCreationForm, CategoryForm,
                         ItemCreationForm, ItemForm, ItemStatusForm)
 
+# Decorator that instructs IE10 to use IE9 compatibility mode (because as of
+# this writing IE10 is consistently crashing on some AJAX requests)
+
+def force_ie10_compat(func):
+    def decorator(request, *args, **kwargs):
+        response = func(request, *args, **kwargs)
+        if 'MSIE 10.' in request.META['HTTP_USER_AGENT']:
+            response['X-UA-Compatible'] = 'IE=9'
+        return response
+    return decorator
+
+
 # View mixins
 
 class LocationMixin(object):
@@ -92,6 +104,7 @@ class PermissionRequiredMixin(object):
 class LocationView(LocationMixin, DetailView):
     template_name = 'food/location_detail.html'
 
+    @method_decorator(force_ie10_compat)
     @method_decorator(ensure_csrf_cookie)
     def dispatch(self, *args, **kwargs):
         return super(LocationView, self).dispatch(*args, **kwargs)
