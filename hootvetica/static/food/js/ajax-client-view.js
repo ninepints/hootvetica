@@ -684,14 +684,12 @@ ajaxClient.view = {};
                 this.statusText.text(json.quantity + ' left');
 
             if (perms.changeItemStatuses || perms.changeItems) {
-                if (json.status === 'AVA' || json.status === 'OUT') {
-                    this.statusSelect.val(json.status);
+                if (json.status === 'AVA' || json.status === 'OUT')
                     this.statusText.detach();
-                }
-                else if (json.status === 'LOW' || json.status === 'QTY') {
-                    this.statusSelect.prepend(this.statusText);
-                    this.statusText.prop('selected', true);
-                }
+                else if (json.status === 'LOW' || json.status === 'QTY')
+                    this.statusText.val(json.status)
+                        .prependTo(this.statusSelect);
+                this.statusSelect.val(json.status);
             }
         }
 
