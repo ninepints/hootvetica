@@ -16,7 +16,7 @@ from food.forms import (LocationForm, CategoryCreationForm, CategoryForm,
 def force_ie10_compat(func):
     def decorator(request, *args, **kwargs):
         response = func(request, *args, **kwargs)
-        if 'MSIE 10.' in request.META['HTTP_USER_AGENT']:
+        if 'MSIE 10.' in request.META.get('HTTP_USER_AGENT', ''):
             response['X-UA-Compatible'] = 'IE=9'
         return response
     return decorator
