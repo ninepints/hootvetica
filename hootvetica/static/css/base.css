@@ -2,7 +2,7 @@
 
 body
 {
-    font-family: "Helvetica Neue", "Helvetica", sans-serif;
+    font-family: "HelveticaNeueW01-55Roma", "Helvetica Neue", "Helvetica", sans-serif;
     font-size: 1em;
     line-height: 1.5em;
     color: rgb(64,64,64);
@@ -16,7 +16,7 @@ h1, h2, h3, h4, p
 h1
 {
     font-size: 8em;
-    font-weight: 200;
+    font-family: "HelveticaNeueW01-45Ligh", "Helvetica Neue", "Helvetica", sans-serif;
     line-height: 1.125em;
     margin: 0.375em 0;
 }
@@ -45,6 +45,18 @@ h4
 p
 {
     margin: 1.5em 0;
+}
+
+b, strong
+{
+    font-weight: normal;
+    font-family: "HelveticaNeueW01-75Bold", "Helvetica Neue", "Helvetica", sans-serif;
+}
+
+i, em
+{
+    font-style: normal;
+    font-family: "HelveticaNeueW01-56It", "Helvetica Neue", "Helvetica", sans-serif;
 }
 
 p.fade, span.fade
@@ -148,7 +160,7 @@ div.banner, section.banner
 
 div.banner h2 + h3
 {
-    font-weight: 200;
+    font-family: "HelveticaNeueW01-45Ligh", "Helvetica Neue", "Helvetica", sans-serif;
 }
 
 div.error, section.error
@@ -284,7 +296,7 @@ div#container
     max-width: 1024px;
     margin: 0 auto;
     border-top: none;
-    box-shadow: 0 0 16px 0 rgba(0,0,0,0.4);
+    box-shadow: 0 0 85px 0 rgba(0,0,0,0.4);
     background-color: white;
     overflow: hidden;
 }
@@ -319,7 +331,7 @@ div#container > p
 nav#topmenu
 {
     background-color: rgb(64,64,64);
-    font-weight: 200;
+    font-family: "HelveticaNeueW01-45Ligh", "Helvetica Neue", "Helvetica", sans-serif;
     color: white;
     overflow: hidden;
 }

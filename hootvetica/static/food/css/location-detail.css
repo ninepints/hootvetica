@@ -409,7 +409,7 @@ div.item > h3
 div.item > p
 {
     margin-top: 0;
-    font-weight: 200;
+    font-family: "HelveticaNeueW01-45Ligh", "Helvetica Neue", "Helvetica", sans-serif;
 }
 
 div.item > select

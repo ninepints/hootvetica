@@ -56,6 +56,8 @@ AWS_QUERYSTRING_AUTH = False
 GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID')
 GOOGLE_ANALYTICS_DOMAIN = os.environ.get('GOOGLE_ANALYTICS_DOMAIN')
 
+LINOTYPE_LICENSING_URL = os.environ.get('LINOTYPE_LICENSING_URL')
+
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
@@ -88,7 +90,7 @@ COMPRESS_CSS_FILTERS = (
     'compressor.filters.datauri.CssDataUriFilter',
     'compressor.filters.cssmin.CSSMinFilter'
 )
-COMPRESS_DATA_URI_MAX_SIZE = 40960
+COMPRESS_DATA_URI_MAX_SIZE = 16384
 
 SECRET_KEY = os.environ['DJANGO_SECRET']
 
@@ -129,6 +131,7 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'hootvetica.context_processors.google_analytics',
+    'hootvetica.context_processors.linotype_licensing',
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',

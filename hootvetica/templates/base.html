@@ -5,6 +5,9 @@
 <head>
     <title>{% block title %}Hootvetica{% endblock %}</title>
 
+    {# django-compressor chokes on this so it stays outside the css block #}
+    <link rel="stylesheet" type="text/css" href="{% static "css/fonts.css" %}" />
+
     {% block css %}
         <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
         <link rel="stylesheet" type="text/css" href="{% static "css/base.css" %}" />
@@ -16,6 +19,7 @@
 
     {% block extrahead %}{% endblock %}
     {% if GOOGLE_ANALYTICS_ID %}{% include 'ga.html' %}{% endif %}
+    {% if LINOTYPE_LICENSING_URL %}{% include 'linotype.html' %}{% endif %}
 </head>
 
 <body>
