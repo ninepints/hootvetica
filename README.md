@@ -83,7 +83,8 @@ If you don't want to serve static files using Amazon S3, you'll need to make
 some changes to `hootvetica/settings.py`:
 
 *   Comment out the settings `DEFAULT_FILE_STORAGE`, `STATICFILES_STORAGE`,
-    `COMPRESS_STORAGE`, `AWS_BUCKET_NAME`, `AWS_ID`, and `AWS_SECRET`.
+    `COMPRESS_STORAGE`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and
+    `AWS_STORAGE_BUCKET_NAME`.
 
 *   Change the setting `STATIC_URL` to the URL static files will be served from.
 
