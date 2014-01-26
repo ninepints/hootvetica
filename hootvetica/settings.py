@@ -42,6 +42,8 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+DEFAULT_CONTENT_TYPE = 'application/xhtml+xml'
+
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATICFILES_STORAGE = 'hootvetica.storage.CachedS3BotoStorage'
 COMPRESS_STORAGE = STATICFILES_STORAGE
