@@ -39,9 +39,9 @@ $(document).ready(function() {
 
     jQuery.ajax({
         url: introContentURL,
-        dataType: 'html',
+        dataType: 'xml',
         success: function(data, textStatus, jqXHR) {
-            popup = $(data).filter('div.popup');
+            popup = $(data).find('div.popup');
             stageTexts = popup.children('p');
             category = popup.children('div.category');
             selects = category.find('select');

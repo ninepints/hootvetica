@@ -19,14 +19,14 @@
         <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/ajax-client-controller.js" %}"></script>
         <script id="ajax-client-script" type="text/javascript" src="{% static "food/js/intro-popup.js" %}"></script>
     {% endcompress %}
-    <script>
+    <script><![CDATA[
         ajaxClient.initData = {% include 'food/ajax_client_config.json' %};
-    </script>
-    <script>
+    ]]></script>
+    <script><![CDATA[
         var introContentURL = '{% url 'ajax-intro' %}';
         var deferIntro = {% if not user.is_authenticated and not location.open %}true{% else %}false{% endif %};
         var skipIntro = {{ user.is_authenticated|lower }};
-    </script>
+    ]]></script>
 {% endblock %}
 
 {% block content %}
@@ -38,10 +38,10 @@
         {% if perms.food.change_location or perms.food.set_location_status or perms.food.add_category %}
             <ul class="location-buttons">
                 {% if perms.food.change_location or perms.food.set_location_status %}
-                    <li><a class="button" href="{% url 'location-edit' location.uid %}" class="button edit">Edit</a></li>
+                    <li><a href="{% url 'location-edit' location.uid %}" class="button edit">Edit</a></li>
                 {% endif %}
                 {% if perms.food.add_category %}
-                    <li><a class="button" href="{% url 'category-add' %}?parent={{ location.uid }}" class="button add">Add Category</a></li>
+                    <li><a href="{% url 'category-add' %}?parent={{ location.uid }}" class="button add">Add Category</a></li>
                 {% endif %}
             </ul>
         {% endif %}

@@ -781,13 +781,13 @@ ajaxClient.view = {};
         // Load UI
         jQuery.ajax({
             url: UIURL,
-            dataType: 'html',
+            dataType: 'xml',
 
             success: (function(data) {
                 staticUI.remove();
 
                 // On success, process downloaded markup
-                var components = $(data);
+                var components = $(data).find('html').children();
                 popupTemplate = components.filter('div.popup');
                 locationForm = components.filter('form.locationform');
                 categoryForm = components.filter('form.categoryform');
