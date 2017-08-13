@@ -1,7 +1,6 @@
 # Hootvetica
 
-A Django-powered inventory application for The Hoot at Rice University - see it
-live at [http://www.hootveti.ca](http://www.hootveti.ca)
+An app I wrote in college to crowdsource how much food was left at The Hoot (a provider of late-night snacks). Completely unmaintained! Hopefully still works?
 
 
 ## Deployment
